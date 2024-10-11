@@ -1,0 +1,11 @@
+<div class="header">
+  <div class="user-info">
+    <i class="bi bi-person-fill"></i> 
+    <span>Tipo usuario (admin, propietario)</span>
+  </div>
+  <div class="notification-icons">
+    <i class="bi bi-bell-fill" (click)="toggleNotifications()"></i>
+  </div>
+</div>
+
+<app-notification *ngIf="showNotifications"></app-notification>
