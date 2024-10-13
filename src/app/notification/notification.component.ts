@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FineService } from '../service/fine.service';
+import { Fine } from '../fine';
 
 interface Notification {
   subject: string;
@@ -20,9 +22,13 @@ export class NotificationComponent implements OnInit {
   selectedNotification: Notification | null = null; 
   showModal = false; 
   showAlert = true; 
+  data: Fine[] = [];
 
   ngOnInit(): void {
-   
+    if (this.data != null) {
+      this.llenarData();
+    }
+
     this.notifications = [
  
       {
@@ -52,5 +58,14 @@ export class NotificationComponent implements OnInit {
 
   closeAlert() {
     this.showAlert = false; 
+  }
+
+  constructor(private fineService: FineService) {}
+
+  llenarData() {
+    this.fineService.getData().subscribe(data => {
+      this.data = data;
+      console.log(data);
+    })
   }
 }

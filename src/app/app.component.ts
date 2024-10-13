@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common'; 
 import { NotificationComponent } from './notification/notification.component';
+import { FineService } from './service/fine.service';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-root',
@@ -9,7 +11,7 @@ import { NotificationComponent } from './notification/notification.component';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent{
   title = 'mockup';
   showNotifications = false;
 
@@ -18,4 +20,13 @@ export class AppComponent {
     this.showNotifications = !this.showNotifications;
     console.log('showNotifications:', this.showNotifications); 
   }
+
+  // constructor(private fineService: FineService) {}
+
+  // llenarData() {
+  //   this.fineService.getData().subscribe(data => {
+  //     this.data = data;
+  //     console.log(data);
+  //   })
+  // }
 }
