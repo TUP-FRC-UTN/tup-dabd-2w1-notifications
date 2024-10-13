@@ -1,7 +1,7 @@
 <div class="container">
 
   
-  <div *ngIf="notifications.length === 0 && showAlert" class="empty-state">
+  <div *ngIf="data.length === 0 && showAlert" class="empty-state">
     <div class="custom-alert">
       <i class="bi bi-exclamation-circle"></i> No hay notificaciones nuevas.
       <button type="button" class="btn-close" (click)="closeAlert()" aria-label="Close"></button>
@@ -9,18 +9,20 @@
   </div>
 
  
-  <div *ngIf="notifications.length > 0" class="notification-list">
-    <div *ngFor="let notification of notifications" class="notification-card">
-      <h5>{{ notification.subject }} - {{ notification.date }}</h5>
-      <p>{{ notification.description }}</p>
-      <button class="btn btn-dark" (click)="selectNotification(notification)">
-        Mostrar detalle
-      </button>
+  @for (item of data; track $index) {
+    <div *ngIf="data.length > 0" class="notification-list">
+      <div class="notification-card">
+        <h5>{{ item.subject }} - {{ item.date }}</h5>
+        <p>{{ item.description }}</p>
+        <button class="btn btn-dark" (click)="selectNotification(item)">
+          Mostrar detalle
+        </button>
+      </div>
     </div>
-  </div>
+  }
 
   
-  <div *ngIf="showModal" class="modal fade show d-block" tabindex="-1" role="dialog">
+  <!-- <div *ngIf="showModal" class="modal fade show d-block" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header bg-dark text-white">
@@ -43,5 +45,5 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
 </div>
