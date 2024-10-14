@@ -19,31 +19,33 @@
         </button>
       </div>
     </div>
-  }
 
-  
-  <!-- <div *ngIf="showModal" class="modal fade show d-block" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
-        <div class="modal-header bg-dark text-white">
-          <h5 class="modal-title">{{ selectedNotification?.subject }}</h5>
-          <button type="button" class="btn-close btn-close-white" (click)="closeModal()" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <div class="details mb-3">
-            <div class="detail-item">
-              <i class="bi bi-calendar-fill"></i> <span>{{ selectedNotification?.date }}</span>
-            </div>
-            <div class="detail-item">
-              <i class="bi bi-person-fill"></i> <span>{{ selectedNotification?.user }}</span>
-            </div>
+
+    <div *ngIf="showModal" class="modal fade show d-block" tabindex="-1" role="dialog">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header bg-dark text-white">
+            <h5 class="modal-title">{{ selectedNotification?.subject }}</h5>
+            <button type="button" class="btn-close btn-close-white" (click)="closeModal()" aria-label="Close"></button>
           </div>
-          <p>{{ selectedNotification?.description }}</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" (click)="closeModal()">Cerrar</button>
+          <div class="modal-body">
+            <div class="details mb-3">
+              <div class="detail-item">
+                <i class="bi bi-calendar-fill"></i> <span>{{ selectedNotification?.date }}</span>
+              </div>
+              <div class="detail-item">
+                <i class="bi bi-person-fill"></i> <span>{{ 'pepe'}}</span>
+              </div>
+            </div>
+            <p>{{ selectedNotification?.description }}</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="closeModal()">Cerrar</button>
+          </div>
         </div>
       </div>
     </div>
-  </div> -->
+  }
+
+  
 </div>

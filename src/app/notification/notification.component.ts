@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FineService } from '../service/fine.service';
 import { Fine } from '../fine';
+import { Subscription } from 'rxjs';
 
 interface Notification {
   subject: string;
@@ -17,17 +18,21 @@ interface Notification {
   templateUrl: './notification.component.html',
   styleUrls: ['./notification.component.css']
 })
-export class NotificationComponent implements OnInit {
+export class NotificationComponent implements OnInit, OnDestroy{
   notifications: Fine[] = []; 
   selectedNotification: Fine | null = null; 
   showModal = false; 
   showAlert = true; 
   data: Fine[] = [];
+  subscription:Subscription = new Subscription();
 
   ngOnInit(): void {
     if (this.data != null) {
       this.llenarData();
     }
+  }
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
   selectNotification(notification: Fine) {
@@ -46,10 +51,17 @@ export class NotificationComponent implements OnInit {
 
   constructor(private fineService: FineService) {}
 
+
   llenarData() {
-    this.fineService.getData().subscribe(data => {
-      this.data = data;
-      console.log(data);
-    })
+     const getAllSubscription = this.fineService.getData().subscribe({
+      next: (value:Fine[]) =>{
+        this.data = value
+        console.log(value)
+      },
+      error: ()=> {
+        alert('error al cargar las fines')
+      }
+     })
+     this.subscription.add(getAllSubscription);
   }
 }
