@@ -1,8 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FineService } from '../service/fine.service';
-import { Fine } from '../fine';
 import { Subscription } from 'rxjs';
+import { NotificationService } from '../service/notification.service';
+import { Notifications } from '../models/notifications';
+import { Fine } from '../models/fine';
 
 interface Notification {
   subject: string;
@@ -24,6 +26,7 @@ export class NotificationComponent implements OnInit, OnDestroy{
   showModal = false; 
   showAlert = true; 
   data: Fine[] = [];
+  data2: Notifications | null = null;
   subscription:Subscription = new Subscription();
 
   ngOnInit(): void {
@@ -49,7 +52,7 @@ export class NotificationComponent implements OnInit, OnDestroy{
     this.showAlert = false; 
   }
 
-  constructor(private fineService: FineService) {}
+  constructor(private fineService: FineService, private notificationService:NotificationService) {}
 
 
   llenarData() {
@@ -63,5 +66,16 @@ export class NotificationComponent implements OnInit, OnDestroy{
       }
      })
      this.subscription.add(getAllSubscription);
+
+     const getSubscription = this.notificationService.getData().subscribe({
+      next: (value:Notifications) =>{
+        this.data2 = value
+        console.log(value)
+      },
+      error: ()=> {
+        alert('error al cargar las notifications')
+      }
+     })
+     this.subscription.add(getSubscription);
   }
 }
