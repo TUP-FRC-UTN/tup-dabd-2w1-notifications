@@ -7,6 +7,7 @@ import { Notifications } from '../models/notifications';
 import { Fine } from '../models/fine';
 import { FormsModule } from '@angular/forms';
 import { Access } from '../models/access';
+import { Payments } from '../models/payments';
 
 interface Notification {
   subject: string;
@@ -29,13 +30,10 @@ export class NotificationComponent implements OnInit, OnDestroy{
   showModal = false; 
   showAlert = true; 
   originalAccessList: Access[] = []; 
+  originalFinesList:Fine[] = []
+  originalPaymentsList:Payments[] = []
   startDate: Date = new Date();
   endDate: Date= new Date();
-  data: Notifications = {
-    fines: [],
-    access: [],
-    payments: []
-  };
   data2: Notifications = {
     fines: [],
     access: [],
@@ -85,8 +83,9 @@ export class NotificationComponent implements OnInit, OnDestroy{
      const getSubscription = this.notificationService.getData().subscribe({
       next: (value:Notifications) =>{
         this.data2 = value
-        this.data = value
         this.originalAccessList = [...value.access]
+        this.originalFinesList = [...value.fines]
+        this.originalPaymentsList = [...value.payments]
         console.log(value)
       },
       error: ()=> {
@@ -118,17 +117,50 @@ export class NotificationComponent implements OnInit, OnDestroy{
   updatedList(){
 
     let accessList:Access[] = []
-    this.data.access = this.originalAccessList
+    this.data2.access = this.originalAccessList
     this.data2.access.forEach(e => {
       const createdDate = new Date(e.created_datetime);
       const startDate2 = new Date(this.startDate)
       const endDate2 = new Date(this.endDate)
-      if(createdDate >= startDate2 && createdDate <= endDate2){
+      
+
+      if(createdDate.toISOString().split('T')[0] >= startDate2.toISOString().split('T')[0] && createdDate.toISOString().split('T')[0] <= endDate2.toISOString().split('T')[0] ){
         accessList.push(e)
       }
     
     });
     this.data2.access=accessList
+
+    let finesList:Fine[] = []
+    this.data2.fines = this.originalFinesList
+    this.data2.fines.forEach(e => {
+      const createdDate = new Date(e.date);
+      const startDate2 = new Date(this.startDate)
+      const endDate2 = new Date(this.endDate)
+      
+
+      if(createdDate.toISOString().split('T')[0] >= startDate2.toISOString().split('T')[0] && createdDate.toISOString().split('T')[0] <= endDate2.toISOString().split('T')[0] ){
+        finesList.push(e)
+      }
+    
+    });
+    this.data2.fines=finesList
+
+
+    let paymentsList:Payments[] = []
+    this.data2.payments = this.originalPaymentsList
+    this.data2.payments.forEach(e => {
+      const createdDate = new Date(e.date);
+      const startDate2 = new Date(this.startDate)
+      const endDate2 = new Date(this.endDate)
+      
+
+      if(createdDate.toISOString().split('T')[0] >= startDate2.toISOString().split('T')[0] && createdDate.toISOString().split('T')[0] <= endDate2.toISOString().split('T')[0] ){
+        paymentsList.push(e)
+      }
+    
+    });
+    this.data2.payments=paymentsList
 
   }
 
