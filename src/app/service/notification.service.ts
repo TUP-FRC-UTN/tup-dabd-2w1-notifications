@@ -8,7 +8,7 @@ import { Notifications } from '../models/notifications';
 })
 export class NotificationService {
 
-  private urlApi = 'http://localhost:8080/Notification/1';
+  private urlApi = 'http://localhost:8080/Notification/3';
 
   constructor(private http: HttpClient) { }
 
