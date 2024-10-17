@@ -1,6 +1,6 @@
 export interface Fine {
     amount: number;
-    date: string;
+    date: Date;
     description: string;
     subject: string;
 }
