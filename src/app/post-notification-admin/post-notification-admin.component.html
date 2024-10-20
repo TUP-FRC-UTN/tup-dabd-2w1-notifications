@@ -4,46 +4,52 @@
     <div class="col-md-12">
       <label for="inputSubject" class="form-label">Asunto</label>
       <input type="text" class="form-control" id="inputSubject" name="subject" required maxlength="20" #subject="ngModel" [(ngModel)]="notification.subject">
-      @if (subject.invalid) {
-          
+      @if (subject.invalid && (subject.dirty || subject.touched)) {
+        <div class="alert alert-danger">
+          El asunto es requerido y debe tener máximo 20 caracteres.
+        </div>
       }
     </div>
-  
+
     <div class="col-md-12">
       <label for="inputDescription" class="form-label">Description</label>
       <input type="text" class="form-control" id="inputDescription" name="description" required #description="ngModel" [(ngModel)]="notification.description">
-      @if (description.invalid) {
-        <div>
+      @if (description.invalid && (description.dirty || description.touched)) {
+        <div class="alert alert-danger">
           La descripcion no debe estar vacia
         </div>
       }
     </div>
-  
+
     <div class="col-md-12">
       <label for="inputUsers" class="form-label">Usuarios</label>
-      <select name="users" id="inputUsers" [(ngModel)]="notification.users" multiple>
+      <select name="users" id="inputUsers" [(ngModel)]="selectedUser" required>
+        <option value="">Seleccione un usuario</option>
         <option value="Nicolasperlo29@gmail.com">Nicolasperlo29&#64;gmail.com</option>
         <option value="ejemplo@gmail.com">ejemplo&#64;gmail.com</option>
         <option value="ejemplooo@gmail.com">ejemplooo&#64;gmail.com</option>
         <option value="ejemplooooo@gmail.com">ejemplooooo&#64;gmail.com</option>
       </select>
-    </div>
-    
-  
-    <div class="col-md-12">
-      <label for="inputDate" class="form-label">Fecha</label>
-      <input type="date" class="form-control" id="inputDate" name="date" required #date="ngModel" [(ngModel)]="notification.date">
-      @if (notification.date) {
-        <div>
-          Ingrese una fecha
+      @if (form.controls['users'].invalid && (form.controls['users'].dirty || form.controls['users'].touched)) {
+        <div class="alert alert-danger">
+          Debe seleccionar un usuario.
         </div>
       }
     </div>
-  
+
+    <div class="col-md-12">
+      <label for="inputDate" class="form-label">Fecha</label>
+      <input style="margin-bottom: 4px;" type="date" class="form-control" id="inputDate" name="date" required #date="ngModel" [(ngModel)]="notification.date">
+      @if (date.invalid && (date.dirty || date.touched)) {
+        <div class="alert alert-danger">
+          Ingrese una fecha válida
+        </div>
+      }
+    </div>
+
     <div class="col-12 d-flex justify-content-between">
       <button class="btn btn-secondary" type="button" (click)="cancelar()">Cancelar</button>
       <button class="btn btn-primary" type="submit" (click)="save(form)">Guardar</button>
     </div>
   </form>
-  
 </main>

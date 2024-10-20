@@ -1,13 +1,13 @@
 <div class="container">
   <!-- Example single danger button -->
-  <div class="btn-group">
+  <div class="btn-group" style="margin-top: 10px; margin-bottom: 5px;">
     <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-      Action
+      Ver
     </button>
     <ul class="dropdown-menu">
-      <li><a class="dropdown-item" href="#" (click)="cambiar('Multas')">Fines</a></li>
-      <li><a class="dropdown-item" href="#" (click)="cambiar('Accesos')">Access</a></li>
-      <li><a class="dropdown-item" (click)="cambiar('Pagos')">Payments</a></li>
+      <li><a class="dropdown-item" href="#" (click)="cambiar('Multas')">Multas</a></li>
+      <li><a class="dropdown-item" href="#" (click)="cambiar('Accesos')">Accesos</a></li>
+      <li><a class="dropdown-item" (click)="cambiar('Pagos')">Pagos</a></li>
     </ul>
 
     <input type="date" [(ngModel)]="startDate" (ngModelChange)="updatedList()">

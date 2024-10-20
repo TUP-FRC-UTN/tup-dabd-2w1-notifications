@@ -11,7 +11,6 @@ import { NotificationGeneral } from '../notificationGeneral';
   styleUrl: './post-notification-admin.component.css'
 })
 export class PostNotificationAdminComponent {
-
   constructor(private notificationService: NotificationService) {}
 
   notification: NotificationGeneral = {
@@ -21,9 +20,13 @@ export class PostNotificationAdminComponent {
     date: new Date()
   }
 
+  selectedUser: string = ''; 
+
   save(form: NgForm) {
-    console.log('click: ', form.value)
-    if (form.valid) { 
+    console.log('click: ', form.value);
+    if (form.valid) {
+      this.notification.users = [this.selectedUser];
+      
       this.notificationService.postNotification(this.notification).subscribe({
         next: (response) => {
           console.log('Notificacion enviada: ', response);
@@ -36,6 +39,5 @@ export class PostNotificationAdminComponent {
   }
 
   cancelar() {
-    
   }
 }
