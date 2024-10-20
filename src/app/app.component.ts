@@ -4,7 +4,8 @@ import { NotificationComponent } from './notification/notification.component';
 import { FineService } from './service/fine.service';
 import { HttpClientModule } from '@angular/common/http';
 import { PostNotificationAdminComponent } from "./post-notification-admin/post-notification-admin.component";
-
+import { NotificationService } from './service/notification.service';
+NotificationService
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -14,21 +15,34 @@ import { PostNotificationAdminComponent } from "./post-notification-admin/post-n
 })
 export class AppComponent{
   title = 'mockup';
-  showNotifications = false;
+  showNotificationsDropdown = true;
   showFormNotification = false;
+  notifications: any = [];
 
-  toggleNotifications() {
-    console.log('Bell icon clicked'); 
-    this.showNotifications = !this.showNotifications;
-    console.log('showNotifications:', this.showNotifications); 
+  constructor(private notificationService: NotificationService) {}
+
+  ngOnInit(): void {
+    this.fetchNotifications();
   }
 
-  toggleFormNotification() {
-    console.log('Bell icon clicked'); 
+  toggleNotifications(): void {
+    this.showNotificationsDropdown = !this.showNotificationsDropdown;
+  }
+
+  toggleFormNotification(): void {
     this.showFormNotification = !this.showFormNotification;
-    console.log('showNotifications:', this.showFormNotification); 
   }
 
+  fetchNotifications(): void {
+    this.notificationService.getData().subscribe(data => {
+      this.notifications = [...data.fines, ...data.access, ...data.payments];
+    });
+  }
+
+  toggleNotificationsAndFetch(): void {
+    this.toggleNotifications();
+    this.fetchNotifications();
+  }
   // constructor(private fineService: FineService) {}
 
   // llenarData() {
