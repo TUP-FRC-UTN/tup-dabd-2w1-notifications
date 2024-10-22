@@ -4,8 +4,8 @@
     <span>Tipo usuario (admin, propietario)</span>
   </div>
   <div class="notification-icons" style="display: flex; gap: 40px;">
-    <div class="dropdown" (click)="toggleNotificationsAndFetch()">
-      <i class="bi bi-bell-fill"></i>
+    <div class="dropdown">
+      <i class="bi bi-bell-fill" (click)="toggleNotificationsAndFetch()"></i>
       <div *ngIf="showNotificationsDropdown" class="dropdown-menu dropdown-menu-end">
         <h6 class="dropdown-header">Notificaciones</h6>
         <div *ngIf="notifications.length === 0" class="dropdown-item">No hay notificaciones nuevas.</div>
@@ -16,13 +16,15 @@
             <small>{{ notification.date || notification.created_datetime }}</small>
           </div>
         </div>
+        <button type="button" class="btn btn-dark" (click)="toggleAllNotifications()">Mostrar todas</button>
       </div>
+      
     </div>
     <i class="bi bi-mailbox" (click)="toggleFormNotification()"></i>
   </div>
 </div>
 
-<app-notification *ngIf="showNotificationsDropdown"></app-notification>
+<app-notification *ngIf="showAllNotifications"></app-notification>
 <app-post-notification-admin *ngIf="showFormNotification"></app-post-notification-admin>
 
 

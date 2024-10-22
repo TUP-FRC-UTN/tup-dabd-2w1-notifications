@@ -3,4 +3,5 @@ export interface Fine {
     date: Date;
     description: string;
     subject: string;
+    isWarning:boolean;
 }

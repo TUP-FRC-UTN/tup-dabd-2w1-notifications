@@ -25,10 +25,10 @@ interface Notification {
 })
 export class NotificationComponent implements OnInit, OnDestroy{
   
-  notifications: Fine[] = []; 
   selectedNotification: Fine | null = null; 
   showModal = false; 
   showAlert = true; 
+  userId:number = 1;
   originalAccessList: Access[] = []; 
   originalFinesList:Fine[] = []
   originalPaymentsList:Payments[] = []
@@ -49,7 +49,7 @@ export class NotificationComponent implements OnInit, OnDestroy{
 
   ngOnInit(): void {
     if (this.data2 != null) {
-      this.llenarData();
+      this.llenarData(this.userId);
       
     }
     
@@ -79,8 +79,8 @@ export class NotificationComponent implements OnInit, OnDestroy{
   }
 
 
-  llenarData() {
-     const getSubscription = this.notificationService.getData().subscribe({
+  llenarData(userId:number) {
+     const getSubscription = this.notificationService.getData(userId).subscribe({
       next: (value:Notifications) =>{
         this.data2 = value
         this.originalAccessList = [...value.access]

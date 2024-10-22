@@ -15,26 +15,37 @@ NotificationService
 })
 export class AppComponent{
   title = 'mockup';
-  showNotificationsDropdown = true;
+  showNotificationsDropdown = false;
   showFormNotification = false;
+  showAllNotifications = false;
   notifications: any = [];
+  userId:number = 1;
 
   constructor(private notificationService: NotificationService) {}
 
   ngOnInit(): void {
     this.fetchNotifications();
   }
-
+  toggleAllNotifications(): void {
+    this.showAllNotifications = !this.showAllNotifications;
+    this.showNotificationsDropdown = false;
+    this.showFormNotification = false;
+  }
+   
   toggleNotifications(): void {
     this.showNotificationsDropdown = !this.showNotificationsDropdown;
+    this.showFormNotification = false
+    this.showAllNotifications = false
   }
 
   toggleFormNotification(): void {
     this.showFormNotification = !this.showFormNotification;
+    this.showNotificationsDropdown = false;
+    this.showAllNotifications = false
   }
 
   fetchNotifications(): void {
-    this.notificationService.getData().subscribe(data => {
+    this.notificationService.getData(this.userId).subscribe(data => {
       this.notifications = [...data.fines, ...data.access, ...data.payments];
     });
   }

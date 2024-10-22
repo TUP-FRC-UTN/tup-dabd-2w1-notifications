@@ -1,5 +1,6 @@
 <div class="container">
   <!-- Example single danger button -->
+
   <div class="btn-group" style="margin-top: 10px; margin-bottom: 5px;">
     <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
       Ver
@@ -121,7 +122,7 @@
     @for (item of data2.payments; track $index) {
       <div *ngIf="data2.payments.length > 0" class="notification-list">
         <div class="notification-card">
-          <h5>{{ item.subject }} - {{ item.date }}</h5>
+          <h5>{{ item.subject }} - {{ item.date | date: "yyyy-MM-dd" }}</h5>
           <p>{{ item.message }}</p>
           <button class="btn btn-dark" (click)="selectNotification()">
             Mostrar detalle
@@ -139,7 +140,7 @@
             <div class="modal-body">
               <div class="details mb-3">
                 <div class="detail-item">
-                  <i class="bi bi-calendar-fill"></i> <span>{{ item.date }}</span>
+                  <i class="bi bi-calendar-fill"></i> <span>{{ item.date | date: "yyyy-MM-dd"}}</span>
                 </div>
                 <div class="detail-item">
                   <i class="bi bi-person-fill"></i> <span>{{ 'Usuario'}}</span>
