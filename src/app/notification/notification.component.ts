@@ -8,6 +8,8 @@ import { Fine } from '../models/fine';
 import { FormsModule } from '@angular/forms';
 import { Access } from '../models/access';
 import { Payments } from '../models/payments';
+import { General } from '../models/general';
+
 
 interface Notification {
   subject: string;
@@ -32,15 +34,16 @@ export class NotificationComponent implements OnInit, OnDestroy{
   originalAccessList: Access[] = []; 
   originalFinesList:Fine[] = []
   originalPaymentsList:Payments[] = []
+  originalGeneralsList:General[]= []
   startDate: Date = new Date();
   endDate: Date= new Date();
   data2: Notifications = {
     fines: [],
     access: [],
-    payments: []
+    payments: [],
+    generals: []
   };
   filteredAccessList: Access[] = [];
-  
   isWithinRange: boolean | null = null;
   subscription:Subscription = new Subscription();
   selected:string = 'Accesos';
@@ -86,6 +89,8 @@ export class NotificationComponent implements OnInit, OnDestroy{
         this.originalAccessList = [...value.access]
         this.originalFinesList = [...value.fines]
         this.originalPaymentsList = [...value.payments]
+        this.originalGeneralsList = [...value.generals]
+
         console.log(value)
       },
       error: ()=> {
@@ -109,6 +114,9 @@ export class NotificationComponent implements OnInit, OnDestroy{
 
       case 'Pagos':
         this.selected = 'Pagos'
+        break;
+      case 'Generales':
+        this.selected = 'Generales'
         break;
     }
     
@@ -161,6 +169,25 @@ export class NotificationComponent implements OnInit, OnDestroy{
     
     });
     this.data2.payments=paymentsList
+
+
+
+
+
+    let generalsList:General[] = []
+    this.data2.generals = this.originalGeneralsList
+    this.data2.generals.forEach(e => {
+      const createdDate = new Date(e.created_datetime);
+      const startDate2 = new Date(this.startDate)
+      const endDate2 = new Date(this.endDate)
+      
+
+      if(createdDate.toISOString().split('T')[0] >= startDate2.toISOString().split('T')[0] && createdDate.toISOString().split('T')[0] <= endDate2.toISOString().split('T')[0] ){
+        generalsList.push(e)
+      }
+    
+    });
+    this.data2.generals=generalsList
 
   }
 
