@@ -1,7 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { NotificationService } from '../service/notification.service';
 import { NotificationGeneral } from '../notificationGeneral';
+import $ from 'jquery';
+import 'datatables.net'
+import 'datatables.net-bs5';
+import { style } from '@angular/animations';
+import "datatables.net-select"
 
 @Component({
   selector: 'app-post-notification-admin',
@@ -10,8 +15,26 @@ import { NotificationGeneral } from '../notificationGeneral';
   templateUrl: './post-notification-admin.component.html',
   styleUrl: './post-notification-admin.component.css'
 })
-export class PostNotificationAdminComponent {
+export class PostNotificationAdminComponent implements OnInit{
+
+
   constructor(private notificationService: NotificationService) {}
+
+  ngOnInit(): void {
+    $('#myTable').DataTable({
+      select: {
+        style: 'multi'
+    },
+      paging: true,
+      searching: true,
+      ordering: true,
+      lengthChange: true,
+      pageLength: 10,
+      
+
+    });
+  }
+
 
   notification: NotificationGeneral = {
     subject: '',
