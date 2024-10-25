@@ -15,6 +15,7 @@
 
     <input type="date" [(ngModel)]="startDate" (ngModelChange)="updatedList()">
     <input type="date" [(ngModel)]="endDate" (ngModelChange)="updatedList()">
+    <button>Ver registro</button>
   </div>
 
   @if (selected == 'Generales') {
@@ -26,7 +27,6 @@
       <h1>Notificaciones de {{selected}}</h1>
     </div>
   }
-  
 
   <!-- fines -->
   @if (selected == 'Multas') {

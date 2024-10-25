@@ -5,11 +5,12 @@ import { FineService } from './service/fine.service';
 import { HttpClientModule } from '@angular/common/http';
 import { PostNotificationAdminComponent } from "./post-notification-admin/post-notification-admin.component";
 import { NotificationService } from './service/notification.service';
+import { AllNotificationComponent } from "./all-notification/all-notification.component";
 NotificationService
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, NotificationComponent, PostNotificationAdminComponent], 
+  imports: [CommonModule, NotificationComponent, PostNotificationAdminComponent, AllNotificationComponent], 
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
