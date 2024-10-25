@@ -12,7 +12,7 @@ import { NotificationGeneral } from '../notificationGeneral';
 })
 export class PostNotificationAdminComponent {
   constructor(private notificationService: NotificationService) {}
-
+  //
   notification: NotificationGeneral = {
     subject: '',
     description: '',
