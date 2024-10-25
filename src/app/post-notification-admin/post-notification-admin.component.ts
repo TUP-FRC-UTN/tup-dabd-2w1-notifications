@@ -35,7 +35,6 @@ export class PostNotificationAdminComponent implements OnInit{
     });
   }
 
-
   notification: NotificationGeneral = {
     subject: '',
     description: '',
