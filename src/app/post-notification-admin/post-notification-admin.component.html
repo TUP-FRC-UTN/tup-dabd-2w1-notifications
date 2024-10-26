@@ -41,25 +41,41 @@
         </div>
       }
     </div> -->
-    <div class="col-md-12">
-      
-        <p>Notificar a: </p>
-
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="usersRbt" id="allRbt" value="allUsers" checked [(ngModel)]="radioButtonValue">
-          <label class="form-check-label" for="inlineRadio1">Todos los usuarios</label>
-        </div>
-
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="usersRbt" id="onlyToRbt" value="onlyTo" [(ngModel)]="radioButtonValue" >
-          <label class="form-check-label" for="inlineRadio2">Solamente a</label>
-        </div>
-
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="usersRbt" id="excludeRbt" value="exclude" [(ngModel)]="radioButtonValue">
-          <label class="form-check-label" for="inlineRadio2">Excluir a </label>
+    <div class="col-md-12 mb-3">
+      <h5>Notificar a:</h5>
+        <div class="row justify-content-center d-flex">
+          
+          <div class="col-auto">
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="usersRbt" id="allRbt" value="allUsers" checked [(ngModel)]="radioButtonValue">
+              <label class="form-check-label" for="inlineRadio1">Todos los usuarios</label>
+            </div>
+    
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="usersRbt" id="onlyToRbt" value="onlyTo" [(ngModel)]="radioButtonValue" >
+              <label class="form-check-label" for="inlineRadio2">Solamente a</label>
+            </div>
+    
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="usersRbt" id="excludeRbt" value="exclude" [(ngModel)]="radioButtonValue">
+              <label class="form-check-label" for="inlineRadio2">Excluir a </label>
+            </div>
+          </div>
+          
+          <div class="col-auto mr-auto">
+            <select class="form-select" [(ngModel)]="selectValue" >
+              <option value="1" disabled>Canal de comunicación</option>
+              <option value="Email">Email</option>
+              <option value="Telegram">Telegram</option>
+              <option value="SMS">SMS</option>
+            </select>
+          </div>
+         
+          
         </div>
         
+        
+      
     </div>
 
     
@@ -102,7 +118,7 @@
 
 
     <div class="col-12 d-flex justify-content-between">
-      <button class="btn btn-secondary" type="button" (click)="getSelectedUsers()">Cancelar</button>
+      <button class="btn btn-secondary" type="button" (click)="getFilteredUsers()">Cancelar</button>
       <button class="btn btn-primary" type="submit" (click)="save(form)">Guardar</button>
     </div>
   

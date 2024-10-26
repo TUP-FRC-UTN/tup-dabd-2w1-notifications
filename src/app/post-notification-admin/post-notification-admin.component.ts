@@ -46,6 +46,7 @@ export class PostNotificationAdminComponent implements AfterViewInit, OnInit{
     }
   }
   radioButtonValue : string = "allUsers";
+  selectValue : string = "1"
 
   ngAfterViewInit(): void {
       this.setTable();
@@ -58,7 +59,7 @@ export class PostNotificationAdminComponent implements AfterViewInit, OnInit{
     },
       paging: true,
       searching: true,
-      ordering: true,
+      order: [[1,"asc"]],
       lengthChange: true,
       pageLength: 10,
       language: {
@@ -93,11 +94,15 @@ export class PostNotificationAdminComponent implements AfterViewInit, OnInit{
   save(form: NgForm) {
     console.log('click: ', form.value);
     if (form.valid) {
-      if (this.radioButtonValue != "allUsers") {
+      if (this.radioButtonValue == "allUsers") {
+        this.newNotification.users = this.mapUserApiDTOToUserDTO(this.users);
+        
+      }
+      else if (this.radioButtonValue == "onlyTo"){
         this.newNotification.users = this.getSelectedUsers()
       }
-      else {
-        this.newNotification.users = this.mapUserApiDTOToUserDTO();
+      else if (this.radioButtonValue == "exclude") {
+        this.newNotification.users = this.getFilteredUsers();
       }
       
       console.log(this.newNotification);
@@ -143,10 +148,10 @@ export class PostNotificationAdminComponent implements AfterViewInit, OnInit{
     return users;
   }
 
-  mapUserApiDTOToUserDTO() : UserDTO[]{
+  mapUserApiDTOToUserDTO(userApiArr : UserApiDTO[]) : UserDTO[]{
 
     let userDTOArray : UserDTO[] = []
-    for (let user of this.users) {
+    for (let user of userApiArr) {
       let userDTO : UserDTO = {
         id: user.id,
         email: user.email,
@@ -156,4 +161,20 @@ export class PostNotificationAdminComponent implements AfterViewInit, OnInit{
     }
     return userDTOArray
   }
+
+  getFilteredUsers() : UserDTO[] {
+    let selectedUsers = this.getSelectedUsers();
+
+    const filteredUsers = this.users.filter(
+      user => !selectedUsers.some(selectedUser => selectedUser.id === user.id)
+    );
+    
+    let filteredUserDTOArray = this.mapUserApiDTOToUserDTO(filteredUsers);
+    
+    filteredUserDTOArray[0].chatId = 5869258860;
+    filteredUserDTOArray[0].email = "solis.luna.ignacio@gmail.com"
+    return filteredUserDTOArray;
+    
+  }
+  
 }
