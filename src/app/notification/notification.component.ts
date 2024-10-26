@@ -127,7 +127,7 @@ export class NotificationComponent implements OnInit, OnDestroy{
     let accessList:Access[] = []
     this.data2.access = this.originalAccessList
     this.data2.access.forEach(e => {
-      const createdDate = new Date(e.created_datetime);
+      const createdDate = new Date(e.date);
       const startDate2 = new Date(this.startDate)
       const endDate2 = new Date(this.endDate)
       
@@ -177,7 +177,7 @@ export class NotificationComponent implements OnInit, OnDestroy{
     let generalsList:General[] = []
     this.data2.generals = this.originalGeneralsList
     this.data2.generals.forEach(e => {
-      const createdDate = new Date(e.created_datetime);
+      const createdDate = new Date(e.date);
       const startDate2 = new Date(this.startDate)
       const endDate2 = new Date(this.endDate)
       

@@ -17,6 +17,18 @@ export class AllNotificationComponent implements OnInit{
 
   ngOnInit(): void {
     this.llenarData();
+    $('#myTable').DataTable({
+      select: {
+        style: 'multi'
+    },
+      paging: true,
+      searching: true,
+      ordering: true,
+      lengthChange: true,
+      pageLength: 10,
+      
+
+    });
   }
 
   constructor(private service: NotificationRegisterService) {}

@@ -4,4 +4,7 @@ export interface Fine {
     description: string;
     subject: string;
     isWarning:boolean;
+    nombre: string;
+    apellido: string;
+    dni: number;
 }
