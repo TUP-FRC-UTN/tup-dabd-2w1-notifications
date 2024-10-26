@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Notifications } from '../models/notifications';
 import { NotificationGeneral } from '../notificationGeneral';
+import { NotificationGeneralDTO } from '../models/DTOs/NotificationGeneralDTO';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +19,7 @@ export class NotificationService {
     return this.http.get<Notifications>(this.urlApi + userId); 
   }
 
-  public postNotification(notification: NotificationGeneral): Observable<NotificationGeneral> {
+  public postNotification(notification: NotificationGeneralDTO): Observable<NotificationGeneral> {
     return this.http.post<NotificationGeneral>(this.urlPost, notification);
   }
 
