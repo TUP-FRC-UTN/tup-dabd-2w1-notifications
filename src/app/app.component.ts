@@ -6,11 +6,13 @@ import { HttpClientModule } from '@angular/common/http';
 import { PostNotificationAdminComponent } from "./post-notification-admin/post-notification-admin.component";
 import { NotificationService } from './service/notification.service';
 import { AllNotificationComponent } from "./all-notification/all-notification.component";
+import { NavbarNotificationComponent } from "./navbar-notification/navbar-notification.component";
+import { UsersNavbarComponent } from "./users-navbar/users-navbar.component";
 NotificationService
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, NotificationComponent, PostNotificationAdminComponent, AllNotificationComponent], 
+  imports: [CommonModule, NotificationComponent, PostNotificationAdminComponent, AllNotificationComponent, NavbarNotificationComponent, UsersNavbarComponent], 
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
