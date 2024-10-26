@@ -12,7 +12,7 @@ export class NotificationRegisterService {
 
   constructor(private http: HttpClient) { }
   
-  public getData(): Observable<Notifications[]> {
-    return this.http.get<Notifications[]>(this.url);
+  public getData(): Observable<Notifications> {
+    return this.http.get<Notifications>(this.url);
   }
 }
