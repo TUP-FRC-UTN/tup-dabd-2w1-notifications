@@ -11,12 +11,12 @@
         <div *ngIf="notifications.length === 0" class="dropdown-item">No hay notificaciones nuevas.</div>
         <div *ngFor="let notification of notifications" class="dropdown-item">
           <div class="notification-item">
-            <h6>{{ notification.subject }}</h6>
-            <p>{{ notification.message || notification.description }}</p>
             <small>{{ notification.date || notification.created_datetime }}</small>
+            <h6><b> {{ notification.subject }}</b></h6>
+            <p>{{ notification.message || notification.description }}</p>
           </div>
         </div>
-        <button type="button" class="btn btn-dark" (click)="toggleAllNotifications()">Mostrar todas</button>
+        <button type="button" class="btn btn-link" style="justify-self: center; justify-content: center; justify-items: center;" (click)="toggleAllNotifications()">Mostrar todas</button>
       </div>
       
     </div>
