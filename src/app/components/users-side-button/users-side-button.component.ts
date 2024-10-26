@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { SideButton } from '../Models/SideButton';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { SideButton } from '../../models/SideButton';
 
 @Component({
   selector: 'app-users-side-button',

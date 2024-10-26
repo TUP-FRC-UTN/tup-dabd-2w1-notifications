@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
-import { SideButton } from '../Models/SideButton';
+import { Router, RouterOutlet } from '@angular/router';
 import { UsersSideButtonComponent } from '../users-side-button/users-side-button.component';
+import { NavbarNotificationComponent } from '../navbar-notification/navbar-notification.component';
+import { SideButton } from '../../models/SideButton';
 
 @Component({
   selector: 'app-users-navbar',
   standalone: true,
-  imports: [ UsersSideButtonComponent],
+  imports: [UsersSideButtonComponent, NavbarNotificationComponent, RouterOutlet],
   templateUrl: './users-navbar.component.html',
   styleUrl: './users-navbar.component.css'
 })

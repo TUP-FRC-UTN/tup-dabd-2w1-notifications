@@ -1,25 +1,26 @@
 import { Component } from '@angular/core';
-import { NotificationService } from '../service/notification.service';
+import { NotificationService } from '../../service/notification.service';
 import { CommonModule } from '@angular/common';
+import { Router, RouterModule } from '@angular/router';
 import { NotificationComponent } from '../notification/notification.component';
 import { PostNotificationAdminComponent } from '../post-notification-admin/post-notification-admin.component';
 
 @Component({
   selector: 'app-navbar-notification',
   standalone: true,
-  imports: [CommonModule, NotificationComponent, PostNotificationAdminComponent],
+  imports: [CommonModule, NotificationComponent, PostNotificationAdminComponent, RouterModule],
   templateUrl: './navbar-notification.component.html',
   styleUrl: './navbar-notification.component.css'
 })
 export class NavbarNotificationComponent {
-  title = 'mockup';
+
   showNotificationsDropdown = false;
   showFormNotification = false;
   showAllNotifications = false;
   notifications: any = [];
   userId:number = 1;
 
-  constructor(private notificationService: NotificationService) {}
+  constructor(private notificationService: NotificationService, private router: Router) {}
 
   ngOnInit(): void {
     this.fetchNotifications();
@@ -30,6 +31,9 @@ export class NavbarNotificationComponent {
     this.showFormNotification = false;
   }
    
+  showNotifications() {
+    this.router.navigate(['/home/notifications']);    }
+
   toggleNotifications(): void {
     this.showNotificationsDropdown = !this.showNotificationsDropdown;
     this.showFormNotification = false

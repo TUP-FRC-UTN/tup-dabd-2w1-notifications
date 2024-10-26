@@ -1,8 +1,5 @@
 import { AfterViewInit, Component, inject, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { FormsModule, NgForm, NgModel } from '@angular/forms';
-import { NotificationService } from '../service/notification.service';
-import { NotificationGeneral } from '../notificationGeneral';
-import { UserApiDTO } from '../models/DTOs/UserApiDTO';
 import $ from 'jquery';
 import 'datatables.net'
 import 'datatables.net-bs5';
@@ -10,9 +7,11 @@ import { style } from '@angular/animations';
 import "datatables.net-select"
 import { NgClass } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { General } from '../models/general';
-import { NotificationGeneralDTO } from '../models/DTOs/NotificationGeneralDTO';
-import { UserDTO } from '../models/DTOs/UserDTO';
+import { NotificationService } from '../../service/notification.service';
+import { UserApiDTO } from '../../models/DTOs/UserApiDTO';
+import { NotificationGeneralDTO } from '../../models/DTOs/NotificationGeneralDTO';
+import { UserDTO } from '../../models/DTOs/UserDTO';
+
 
 @Component({
   selector: 'app-post-notification-admin',

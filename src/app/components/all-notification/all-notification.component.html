@@ -1,0 +1,44 @@
+<h1>Registro de todas las notificaciones</h1>
+
+<div>
+    <table id="myTable" class="table table-striped table-bordered display" style="width:100%">
+      <thead>
+          <tr>
+              <th>Asunto</th>
+              <th>Descripcion</th>
+              <th>Fecha</th>
+          </tr>
+      </thead>
+      <tbody>
+        @for (notificationFine of data.fines; track $index) {
+            <tr>
+                <td>{{notificationFine.subject}}</td>
+                <td>{{notificationFine.description}}</td>
+                <td>{{notificationFine.date}}</td>
+            </tr>
+        }
+        @for (notificationFine of data.access; track $index) {
+            <tr>
+                <td>{{notificationFine.subject}}</td>
+                <td>{{notificationFine.message}}</td>
+                <td>{{notificationFine.created_datetime}}</td>
+            </tr>
+        }
+        @for (notificationFine of data.payments; track $index) {
+            <tr>
+                <td>{{notificationFine.subject}}</td>
+                <td>{{notificationFine.message}}</td>
+                <td>{{notificationFine.date}}</td>
+            </tr>
+        }
+        @for (notificationFine of data.generals; track $index) {
+            <tr>
+                <td>{{notificationFine.subject}}</td>
+                <td>{{notificationFine.message}}</td>
+                <td>{{notificationFine.created_datetime}}</td>
+            </tr>
+        }
+         
+      </tbody>
+    </table>
+  </div>
