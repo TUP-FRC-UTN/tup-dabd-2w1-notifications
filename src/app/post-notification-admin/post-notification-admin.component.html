@@ -1,9 +1,9 @@
 <main style="width: 50%; margin: 0 auto;">
-  <h1>Formulario Alta Notificacion General</h1>
+  <h2 class="text-center">Envio de Notificaciones Generales</h2>
   <form class="row g-3 needs-validation" #form="ngForm">
     <div class="col-md-12">
       <label for="inputSubject" class="form-label">Asunto</label>
-      <input type="text" class="form-control" id="inputSubject" name="subject" required maxlength="20" #subject="ngModel" [(ngModel)]="notification.subject">
+      <input type="text" class="form-control" id="inputSubject" name="subject" required maxlength="20" #subject="ngModel" [(ngModel)]="newNotification.subject">
       @if (subject.invalid && (subject.dirty || subject.touched)) {
         <div class="alert alert-danger">
           El asunto es requerido y debe tener máximo 20 caracteres.
@@ -12,8 +12,13 @@
     </div>
 
     <div class="col-md-12">
-      <label for="inputDescription" class="form-label">Description</label>
-      <input type="text" class="form-control" id="inputDescription" name="description" required #description="ngModel" [(ngModel)]="notification.description">
+      <label for="inputDescription" class="form-label">Mensaje</label>
+      <!-- <input type="text" class="form-control" id="inputDescription" name="description" required #description="ngModel" [(ngModel)]="notification.description"> -->
+       <textarea class="form-control" id="inputDescription" name="description" 
+                  required 
+                  #description="ngModel" [(ngModel)]="newNotification.description"
+                  style="resize: none;height: 6em;" >
+      </textarea>
       @if (description.invalid && (description.dirty || description.touched)) {
         <div class="alert alert-danger">
           La descripcion no debe estar vacia
@@ -21,7 +26,7 @@
       }
     </div>
 
-    <div class="col-md-12">
+    <!-- <div class="col-md-12">
       <label for="inputUsers" class="form-label">Usuarios</label>
       <select name="users" id="inputUsers" [(ngModel)]="selectedUser" required>
         <option value="">Seleccione un usuario</option>
@@ -35,68 +40,86 @@
           Debe seleccionar un usuario.
         </div>
       }
-    </div>
-
-    <div class="col-md-12">
-      <label for="inputDate" class="form-label">Fecha</label>
-      <input style="margin-bottom: 4px;" type="date" class="form-control" id="inputDate" name="date" required #date="ngModel" [(ngModel)]="notification.date">
-      @if (date.invalid && (date.dirty || date.touched)) {
-        <div class="alert alert-danger">
-          Ingrese una fecha válida
+    </div> -->
+    <div class="col-md-12 mb-3">
+      <h5>Notificar a:</h5>
+        <div class="row justify-content-center d-flex">
+          
+          <div class="col-auto">
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="usersRbt" id="allRbt" value="allUsers" checked [(ngModel)]="radioButtonValue">
+              <label class="form-check-label" for="inlineRadio1">Todos los usuarios</label>
+            </div>
+    
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="usersRbt" id="onlyToRbt" value="onlyTo" [(ngModel)]="radioButtonValue" >
+              <label class="form-check-label" for="inlineRadio2">Solamente a</label>
+            </div>
+    
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="usersRbt" id="excludeRbt" value="exclude" [(ngModel)]="radioButtonValue">
+              <label class="form-check-label" for="inlineRadio2">Excluir a </label>
+            </div>
+          </div>
+          
+          <div class="col-auto mr-auto">
+            <select class="form-select" [(ngModel)]="selectValue" >
+              <option value="1" disabled>Canal de comunicación</option>
+              <option value="Email">Email</option>
+              <option value="Telegram">Telegram</option>
+              <option value="SMS">SMS</option>
+            </select>
+          </div>
+         
+          
         </div>
-      }
+        
+        
+      
     </div>
 
-    <div>
-      <table id="myTable" class="table table-striped table-bordered display" style="width:100%">
-        <thead>
-            <tr>
-                <th></th>
-                <th>First name</th>
-                <th>Last name</th>
-                <th>Position</th>
-                <th>Office</th>
-                <th>Age</th>
-                <th>Start date</th>
-                <th>Salary</th>
-                <th>Extn.</th>
-                <th>E-mail</th>
+    
+  </form>
+
+    
+      <div class="container" [ngClass]="{hidden: radioButtonValue == 'allUsers'}">
+        
+        <table id="myTable" class="table table-striped table-bordered display " style="width:100%">
+          <thead>
+              <tr>
+                  <th></th>
+                  <th>Nombre</th>
+                  <th>Apellido</th>
+                  <th>DNI</th>
+                  <th>Email</th>
+                  
+              </tr>
+          </thead>
+          <tbody>
+            @for(user of users; track $index) {
+              <tr>
+                <td>{{$index+1}}</td>
+                <td>{{user.name}}</td>
+                <td>{{user.lastname}}</td>
+                <td>{{user.dni}}</td>
+                <td>{{user.email}}</td>
+                
             </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>1</td>
-                <td>Tiger</td>
-                <td>Nixon</td>
-                <td>System Architect</td>
-                <td>Edinburgh</td>
-                <td>61</td>
-                <td>2011-04-25</td>
-                <td>$320,800</td>
-                <td>5421</td>
-                <td>t.nixondatatables.net</td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>asd</td>
-              <td>asd</td>
-              <td>asd asd</td>
-              <td>asd</td>
-              <td>61</td>
-              <td>2011-04-25</td>
-              <td>$320,800</td>
-              <td>5421</td>
-              <td>t.nixondatatables.net</td>
-          </tr>
-           
-        </tbody>
-      </table>
-    </div>
+            }
+              
+             
+             
+          </tbody>
+        </table>
+      
+      </div>
+    
+    
 
 
     <div class="col-12 d-flex justify-content-between">
-      <button class="btn btn-secondary" type="button" (click)="cancelar()">Cancelar</button>
+      <button class="btn btn-secondary" type="button" (click)="getFilteredUsers()">Cancelar</button>
       <button class="btn btn-primary" type="submit" (click)="save(form)">Guardar</button>
     </div>
-  </form>
+  
 </main>
