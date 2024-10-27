@@ -151,8 +151,8 @@
     @for (item of data2.access; track $index) {
     <div *ngIf="data2.access.length > 0" class="notification-list">
       <div class="notification-card">
-        <h5>{{ item.subject }} - {{ item.created_datetime }}</h5>
-        <p>{{ item.message }}</p>
+        <h5>{{ item.subject }} - {{ item.date }}</h5>
+        <p>{{ item.description }}</p>
         <button class="btn btn-dark" (click)="selectNotification()">
           Mostrar detalle
         </button>
@@ -180,13 +180,13 @@
             <div class="details mb-3">
               <div class="detail-item">
                 <i class="bi bi-calendar-fill"></i>
-                <span>{{ item.created_datetime }}</span>
+                <span>{{ item.date }}</span>
               </div>
               <div class="detail-item">
                 <i class="bi bi-person-fill"></i> <span>{{ "Usuario" }}</span>
               </div>
             </div>
-            <p>{{ item.message }}</p>
+            <p>{{ item.description }}</p>
           </div>
           <div class="modal-footer">
             <button
@@ -219,7 +219,7 @@
     <div *ngIf="data2.payments.length > 0" class="notification-list">
       <div class="notification-card">
         <h5>{{ item.subject }} - {{ item.date | date : "yyyy-MM-dd" }}</h5>
-        <p>{{ item.message }}</p>
+        <p>{{ item.description }}</p>
         <button class="btn btn-dark" (click)="selectNotification()">
           Mostrar detalle
         </button>
@@ -253,7 +253,7 @@
                 <i class="bi bi-person-fill"></i> <span>{{ "Usuario" }}</span>
               </div>
             </div>
-            <p>{{ item.message }}</p>
+            <p>{{ item.description }}</p>
           </div>
           <div class="modal-footer">
             <button
@@ -286,9 +286,9 @@
     <div *ngIf="data2.generals.length > 0" class="notification-list">
       <div class="notification-card">
         <h5>
-          {{ item.subject }} - {{ item.created_datetime | date : "yyyy-MM-dd" }}
+          {{ item.subject }} - {{ item.date | date : "yyyy-MM-dd" }}
         </h5>
-        <p>{{ item.message }}</p>
+        <p>{{ item.description }}</p>
         <button class="btn btn-dark" (click)="selectNotification()">
           Mostrar detalle
         </button>
@@ -316,13 +316,13 @@
             <div class="details mb-3">
               <div class="detail-item">
                 <i class="bi bi-calendar-fill"></i>
-                <span>{{ item.created_datetime | date : "yyyy-MM-dd" }}</span>
+                <span>{{ item.date | date : "yyyy-MM-dd" }}</span>
               </div>
               <div class="detail-item">
                 <i class="bi bi-person-fill"></i> <span>{{ "Usuario" }}</span>
               </div>
             </div>
-            <p>{{ item.message }}</p>
+            <p>{{ item.description }}</p>
           </div>
           <div class="modal-footer">
             <button
