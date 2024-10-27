@@ -136,6 +136,7 @@ export class UsersNavbarComponent {
     //   this.router.navigate([path]);
     // }
     this.router.navigate([path]);
+    this.setTitle("Página Principal")
   }
 
   setTitle(title: string) {
