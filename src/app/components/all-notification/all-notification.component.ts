@@ -76,16 +76,19 @@ export class AllNotificationComponent implements OnInit{
       table.row.add([notification.subject, notification.description, dateString, notification.nombre + " " + notification.apellido, notification.dni]).draw(false);
     }
     for (let notification of this.data.fines) {
-
-      table.row.add([notification.subject, notification.description, notification.date, notification.nombre + " " + notification.apellido, notification.dni]).draw(false);
+      const date = notification.date as { [key: string]: any }
+      let dateString = date[0] + "-" + date[1] + "-" + date[2] + "  " + date[3] + ":" + date[4] + ":" + date[5]
+      table.row.add([notification.subject, notification.description, dateString, notification.nombre + " " + notification.apellido, notification.dni]).draw(false);
     }
     for (let notification of this.data.payments) {
-
-      table.row.add([notification.subject, notification.description, notification.date, notification.nombre + " " + notification.apellido, notification.dni]).draw(false);
+      const date = notification.date as { [key: string]: any }
+      let dateString = date[0] + "-" + date[1] + "-" + date[2] + "  " + date[3] + ":" + date[4] + ":" + date[5]
+      table.row.add([notification.subject, notification.description, dateString, notification.nombre + " " + notification.apellido, notification.dni]).draw(false);
     }
     for (let notification of this.data.generals) {
-
-      table.row.add([notification.subject, notification.description, notification.date, notification.nombre + " " + notification.apellido, notification.dni]).draw(false);
+      const date = notification.date as { [key: string]: any }
+      let dateString = date[0] + "-" + date[1] + "-" + date[2] + "  " + date[3] + ":" + date[4] + ":" + date[5]
+      table.row.add([notification.subject, notification.description, dateString, notification.nombre + " " + notification.apellido, notification.dni]).draw(false);
     }
   }
 }
