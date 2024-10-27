@@ -39,6 +39,13 @@ export class UsersNavbarComponent {
       //   route: "home/profile",
       //   roles: ["SuperAdmin", "Admin", "Security", "Owner", "Spouse", "FamilyOld", "FamilyYoung", "Tenant"] //ver
       // },
+   /*    {
+        //botón notificaciones
+        icon: "bi bi-bell-fill",
+        title: "Notificaciones",
+        route: "home/notifications",
+        roles: ["Owner", "Admin", "SuperAdmin"]
+      }, */
       {
         //botón grupo familiar
         icon: "bi bi-house",

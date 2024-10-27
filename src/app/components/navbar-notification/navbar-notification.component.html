@@ -20,10 +20,10 @@
           <p>{{ notification.message || notification.description }}</p>
         </div>
       </div>
-      <button type="button" class="btn btn-link" (click)="showNotifications()">
+      <button type="button" class="btn btn-link" (click)="showNotifications()"  [title]="info">
         Mostrar todas
       </button>
     </div>
   </div>
-  <i class="bi bi-mailbox" (click)="toggleFormNotification()"></i>
+  <i class="bi bi-mailbox" (click)="showSendNotificationsAdmin()"></i>
 </div>

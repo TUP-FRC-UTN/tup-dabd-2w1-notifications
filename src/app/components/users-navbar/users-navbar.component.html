@@ -38,13 +38,14 @@
     <h3>{{ pageTitle }}</h3>
 
     <div class="d-flex">
-      <app-navbar-notification></app-navbar-notification>
+      <app-navbar-notification
+        [userRole]="actualRole"
+        (sendTitle)="setTitle($event)"
+      ></app-navbar-notification>
 
       <button class="btn btn-dark" (click)="redirect('home/profile')">
-        Nombre de usuario<i
-          class="bi-person"
-          style="width: 50px; height: 50px"
-        ></i>
+        Nombre de usuario
+        <i class="bi-person" style="width: 50px; height: 50px"></i>
       </button>
     </div>
   </nav>
@@ -75,7 +76,7 @@
         </button>
         <button
           class="nav-link d-flex text-light w-100 px-3 py-2"
-          (click)="redirect('login')"
+          (click)="redirect('home')"
         >
           <i class="bi-box-arrow-left"></i>
           @if (expand) {<span class="ms-2">Salir</span>}

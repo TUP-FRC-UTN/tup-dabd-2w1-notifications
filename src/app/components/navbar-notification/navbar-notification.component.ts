@@ -1,53 +1,65 @@
-import { Component } from '@angular/core';
-import { NotificationService } from '../../service/notification.service';
-import { CommonModule } from '@angular/common';
-import { Router, RouterModule } from '@angular/router';
-import { NotificationComponent } from '../notification/notification.component';
-import { PostNotificationAdminComponent } from '../post-notification-admin/post-notification-admin.component';
+import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { NotificationService } from "../../service/notification.service";
+import { CommonModule } from "@angular/common";
+import { Router, RouterModule } from "@angular/router";
+import { NotificationComponent } from "../notification/notification.component";
+import { PostNotificationAdminComponent } from "../post-notification-admin/post-notification-admin.component";
+import { SideButton } from "../../models/SideButton";
 
 @Component({
-  selector: 'app-navbar-notification',
+  selector: "app-navbar-notification",
   standalone: true,
-  imports: [CommonModule, NotificationComponent, PostNotificationAdminComponent, RouterModule],
-  templateUrl: './navbar-notification.component.html',
-  styleUrl: './navbar-notification.component.css'
+  imports: [
+    CommonModule,
+    NotificationComponent,
+    PostNotificationAdminComponent,
+    RouterModule,
+  ],
+  templateUrl: "./navbar-notification.component.html",
+  styleUrl: "./navbar-notification.component.css",
 })
 export class NavbarNotificationComponent {
-
   showNotificationsDropdown = false;
-  showFormNotification = false;
-  showAllNotifications = false;
   notifications: any = [];
-  userId:number = 1;
+  userId: number = 1;
 
-  constructor(private notificationService: NotificationService, private router: Router) {}
+  //Botones
+  @Input() info: string = "";
+
+  //Rol del usuario logeado
+  @Input() userRole: string = "";
+
+  //Titulo de la pagina
+  @Output() sendTitle = new EventEmitter<string>();
+
+  constructor(
+    private notificationService: NotificationService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.fetchNotifications();
   }
-  toggleAllNotifications(): void {
-    this.showAllNotifications = !this.showAllNotifications;
-    this.showNotificationsDropdown = false;
-    this.showFormNotification = false;
-  }
-   
+
   showNotifications() {
-    this.router.navigate(['/home/notifications']);    }
+    this.info = "Notificaciones";
+    this.router.navigate(["/home/notifications"]);
+    this.sendTitle.emit(this.info);
+    this.toggleNotifications();
+  }
+
+  showSendNotificationsAdmin() {
+    this.info = "Envio de Notificaciones Generales";
+    this.sendTitle.emit(this.info);
+    this.router.navigate(["/home/admin-post-notification"]);
+  }
 
   toggleNotifications(): void {
     this.showNotificationsDropdown = !this.showNotificationsDropdown;
-    this.showFormNotification = false
-    this.showAllNotifications = false
-  }
-
-  toggleFormNotification(): void {
-    this.showFormNotification = !this.showFormNotification;
-    this.showNotificationsDropdown = false;
-    this.showAllNotifications = false
   }
 
   fetchNotifications(): void {
-    this.notificationService.getData(this.userId).subscribe(data => {
+    this.notificationService.getData(this.userId).subscribe((data) => {
       this.notifications = [...data.fines, ...data.access, ...data.payments];
     });
   }
