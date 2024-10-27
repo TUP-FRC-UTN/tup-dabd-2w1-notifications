@@ -156,6 +156,14 @@ export class PostNotificationAdminComponent implements AfterViewInit, OnInit{
         }
         users.push(user)
       }
+      else if (i == 1 ) {
+        let user : UserDTO = {
+          id : rowData[i][0],
+          email: "facuu.arguellog@gmail.com",
+          chatId : 1129773792
+        }
+        users.push(user)
+      }
       else {
         let user : UserDTO = {
           id : rowData[i][0],
