@@ -5,7 +5,7 @@ import { AllNotificationComponent } from "./components/all-notification/all-noti
 import { UsersNavbarComponent } from "./components/users-navbar/users-navbar.component";
 
 export const routes: Routes = [
-  { path: "", redirectTo: "/home", pathMatch: "full" },
+  
   {
     path: "home", component: UsersNavbarComponent,
     children: [
@@ -16,5 +16,7 @@ export const routes: Routes = [
       },
       { path: "admin-all-notifications", component: AllNotificationComponent },
     ],
-  }
+  },
+  {path: "allNotification", component: AllNotificationComponent},
+  { path: "", redirectTo: "/home", pathMatch: "full" },
 ];

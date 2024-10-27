@@ -9,6 +9,7 @@ import { General } from '../../models/general';
 import { Notifications } from '../../models/notifications';
 import { FineService } from '../../service/fine.service';
 import { NotificationService } from '../../service/notification.service';
+import { RouterModule } from '@angular/router';
 
 
 interface Notification {
@@ -21,7 +22,7 @@ interface Notification {
 @Component({
   selector: 'app-notification',
   standalone: true,
-  imports: [CommonModule,FormsModule],
+  imports: [CommonModule,FormsModule,RouterModule],
   templateUrl: './notification.component.html',
   styleUrls: ['./notification.component.css']
 })
@@ -77,7 +78,7 @@ export class NotificationComponent implements OnInit, OnDestroy{
     this.showAlert = false; 
   }
 
-  constructor(private fineService: FineService, private notificationService:NotificationService) {
+  constructor( private notificationService:NotificationService) {
   
   }
 
