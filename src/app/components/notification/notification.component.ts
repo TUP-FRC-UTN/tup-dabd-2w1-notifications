@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { FormsModule } from '@angular/forms';
@@ -38,6 +38,16 @@ export class NotificationComponent implements OnInit, OnDestroy{
   originalGeneralsList:General[]= []
   startDate: Date = new Date();
   endDate: Date= new Date();
+
+    //Botones
+    @Input() info: string = "";
+
+    //Rol del usuario logeado
+    @Input() userRole: string = "";
+  
+    //Titulo de la pagina
+    @Output() sendTitle = new EventEmitter<string>();
+  
   data2: Notifications = {
     fines: [],
     access: [],

@@ -32,6 +32,9 @@ export class NavbarNotificationComponent {
   //Titulo de la pagina
   @Output() sendTitle = new EventEmitter<string>();
 
+  @Output() actualRole = new EventEmitter<string>();
+
+
   constructor(
     private notificationService: NotificationService,
     private router: Router
@@ -45,6 +48,7 @@ export class NavbarNotificationComponent {
     this.info = "Notificaciones";
     this.router.navigate(["/home/notifications"]);
     this.sendTitle.emit(this.info);
+    this.actualRole.emit(this.userRole);
     this.toggleNotifications();
   }
 
