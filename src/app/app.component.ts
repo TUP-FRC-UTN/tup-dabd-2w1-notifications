@@ -21,6 +21,7 @@ export class AppComponent{
   showNotificationsDropdown = false;
   showFormNotification = false;
   showAllNotifications = false;
+  showAllNotificationRegister = false;
   notifications: any = [];
   userId:number = 1;
 
@@ -56,6 +57,12 @@ export class AppComponent{
   toggleNotificationsAndFetch(): void {
     this.toggleNotifications();
     this.fetchNotifications();
+  }
+
+  toggleRegister(): void {
+    this.showAllNotificationRegister = !this.showAllNotificationRegister;
+    this.showFormNotification = false
+    this.showAllNotifications = false
   }
   // constructor(private fineService: FineService) {}
 

@@ -1,6 +1,6 @@
 export interface Access {
     subject:string;
-    message:string;
+    description:string;
     guest_name:string;
     date:Date;
     nombre: string;

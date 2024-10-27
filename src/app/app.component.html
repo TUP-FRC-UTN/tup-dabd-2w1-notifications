@@ -22,6 +22,7 @@
       
     </div>
     <i class="bi bi-mailbox" (click)="toggleFormNotification()"></i>
+    <i class="bi bi-archive" (click)="toggleRegister()"></i>
   </div>
   <!-- ACA CIERRA NOTIF -->
 </div>
@@ -30,4 +31,4 @@
 
 <app-post-notification-admin *ngIf="showFormNotification"></app-post-notification-admin>
 
-<app-all-notification></app-all-notification>
+<app-all-notification *ngIf="showAllNotificationRegister"></app-all-notification>

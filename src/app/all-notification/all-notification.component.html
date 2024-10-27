@@ -12,43 +12,7 @@
           </tr>
       </thead>
       <tbody>
-        @for (notificationFine of data.fines; track $index) {
-            <tr>
-                <td>{{notificationFine.subject}}</td>
-                <td>{{notificationFine.description}}</td>
-                <td>{{notificationFine.date}}</td>
-                <td>{{notificationFine.nombre}} {{notificationFine.apellido}}</td>
-                <td>{{notificationFine.dni}}</td>
-            </tr>
-        }
-        @for (notificationFine of data.access; track $index) {
-            <tr>
-                <td>{{notificationFine.subject}}</td>
-                <td>{{notificationFine.message}}</td>
-                <td>{{notificationFine.date}}</td>
-                <td>{{notificationFine.nombre}} {{notificationFine.apellido}}</td>
-                <td>{{notificationFine.dni}}</td>
-            </tr>
-        }
-        @for (notificationFine of data.payments; track $index) {
-            <tr>
-                <td>{{notificationFine.subject}}</td>
-                <td>{{notificationFine.description}}</td>
-                <td>{{notificationFine.date}}</td>
-                <td>{{notificationFine.nombre}} {{notificationFine.apellido}}</td>
-                <td>{{notificationFine.dni}}</td>
-            </tr>
-        }
-        @for (notificationFine of data.generals; track $index) {
-            <tr>
-                <td>{{notificationFine.subject}}</td>
-                <td>{{notificationFine.description}}</td>
-                <td>{{notificationFine.date}}</td>
-                <td>{{notificationFine.nombre}} {{notificationFine.apellido}}</td>
-                <td>{{notificationFine.dni}}</td>
-            </tr>
-        }
-         
+        
       </tbody>
     </table>
   </div>
