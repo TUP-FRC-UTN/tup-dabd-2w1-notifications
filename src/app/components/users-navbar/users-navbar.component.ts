@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
-import { SideButton } from '../Models/SideButton';
+import { Router, RouterOutlet } from '@angular/router';
 import { UsersSideButtonComponent } from '../users-side-button/users-side-button.component';
+import { NavbarNotificationComponent } from '../navbar-notification/navbar-notification.component';
+import { SideButton } from '../../models/SideButton';
 
 @Component({
   selector: 'app-users-navbar',
   standalone: true,
-  imports: [ UsersSideButtonComponent],
+  imports: [UsersSideButtonComponent, NavbarNotificationComponent, RouterOutlet],
   templateUrl: './users-navbar.component.html',
   styleUrl: './users-navbar.component.css'
 })
@@ -38,6 +39,13 @@ export class UsersNavbarComponent {
       //   route: "home/profile",
       //   roles: ["SuperAdmin", "Admin", "Security", "Owner", "Spouse", "FamilyOld", "FamilyYoung", "Tenant"] //ver
       // },
+   /*    {
+        //botón notificaciones
+        icon: "bi bi-bell-fill",
+        title: "Notificaciones",
+        route: "home/notifications",
+        roles: ["Owner", "Admin", "SuperAdmin"]
+      }, */
       {
         //botón grupo familiar
         icon: "bi bi-house",
@@ -128,6 +136,7 @@ export class UsersNavbarComponent {
     //   this.router.navigate([path]);
     // }
     this.router.navigate([path]);
+    this.setTitle("Página Principal")
   }
 
   setTitle(title: string) {
