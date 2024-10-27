@@ -15,6 +15,7 @@ import { NotificationGeneralDTO } from '../../models/DTOs/NotificationGeneralDTO
 import { UserDTO } from '../../models/DTOs/UserDTO';
 import Swal from 'sweetalert2';
 
+
 @Component({
   selector: 'app-post-notification-admin',
   standalone: true,
@@ -44,7 +45,7 @@ export class PostNotificationAdminComponent implements AfterViewInit, OnInit{
     let table = $("#myTable").DataTable();
     for (let user of this.users) {
       
-      table.row.add([user.id,user.name,user.lastname,user.dni,user.email]).draw(false);
+      table.row.add([user.name,user.lastname,user.dni,user.email]).draw(false);
     }
   }
   radioButtonValue : string = "allUsers";
@@ -57,8 +58,10 @@ export class PostNotificationAdminComponent implements AfterViewInit, OnInit{
 
   setTable(): void {
     $('#myTable').DataTable({
+
       select: {
         style: 'multi',
+        info: false
     },
       paging: true,
       searching: true,
@@ -70,16 +73,12 @@ export class PostNotificationAdminComponent implements AfterViewInit, OnInit{
         emptyTable: "No hay datos para mostrar",
         search: "Buscar",
         loadingRecords: "Cargando...",
-        paginate: {
-        first: "<<",
-        last: ">>",
-        next: ">",
-        previous: "<",
-      },
-      info:"Mostrando de _START_ a _END_ total de _TOTAL_ usuarios",
-      
-      },
-      
+        entries: {_: "usuarios"},
+        lengthMenu: "_MENU_ usuarios por pagina",
+        info:"Mostrando de _START_ a _END_ total de _TOTAL_ usuarios",
+
+      }
+
       
 
     });
@@ -137,8 +136,10 @@ export class PostNotificationAdminComponent implements AfterViewInit, OnInit{
 
 
   clearForm(form : NgForm) {
-    form.reset();
-    this.radioButtonValue = "allUsers";
+    // form.reset();
+    // this.radioButtonValue = "allUsers";
+    let table = $("#myTable").DataTable()
+    table.search((d) => d.includes('Alice')).draw();
   }
   getSelectedUsers() : UserDTO[]{
     let table = $("#myTable").DataTable();
