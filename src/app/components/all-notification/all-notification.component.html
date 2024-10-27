@@ -1,4 +1,7 @@
-<h1>Registro de todas las notificaciones</h1>
+<section class="py-5">
+    <div class="container p-3 border border-2 rounded shadow-lg">
+
+<h1 style="text-align: center;">Registro de todas las notificaciones</h1>
 
 <div>
     <table id="myTable" class="table table-striped table-bordered display" style="width:100%">
@@ -6,39 +9,16 @@
           <tr>
               <th>Asunto</th>
               <th>Descripcion</th>
-              <th>Fecha</th>
+              <th>Fecha (A-D-M-H-m-S)</th>
+              <th>Destinatario</th>
+              <th>Dni</th>
           </tr>
       </thead>
       <tbody>
-        @for (notificationFine of data.fines; track $index) {
-            <tr>
-                <td>{{notificationFine.subject}}</td>
-                <td>{{notificationFine.description}}</td>
-                <td>{{notificationFine.date}}</td>
-            </tr>
-        }
-        @for (notificationFine of data.access; track $index) {
-            <tr>
-                <td>{{notificationFine.subject}}</td>
-                <td>{{notificationFine.description}}</td>
-                <td>{{notificationFine.date}}</td>
-            </tr>
-        }
-        @for (notificationFine of data.payments; track $index) {
-            <tr>
-                <td>{{notificationFine.subject}}</td>
-                <td>{{notificationFine.description}}</td>
-                <td>{{notificationFine.date}}</td>
-            </tr>
-        }
-        @for (notificationFine of data.generals; track $index) {
-            <tr>
-                <td>{{notificationFine.subject}}</td>
-                <td>{{notificationFine.description}}</td>
-                <td>{{notificationFine.date}}</td>
-            </tr>
-        }
-         
+
       </tbody>
     </table>
   </div>
+
+  </div>
+</section>
