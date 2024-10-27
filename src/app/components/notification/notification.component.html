@@ -1,23 +1,22 @@
 <div class="container">
   <div class="container">
 
-    <div class="btn-group" style="margin-top: 10px; margin-bottom: 5px;">
-      <button type="button" class="btn btn-primary dropdown-toggle" style="margin-right: 5px;" data-bs-toggle="dropdown" aria-expanded="false">
+    <div class="btn-group" style="margin-top: 20px; padding: 10px; background-color: #f8f9fa; border-radius: 8px; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);">
+      <button type="button" class="btn btn-primary dropdown-toggle" style="margin-right: 10px; margin-top: 15px;" data-bs-toggle="dropdown" aria-expanded="false">
         Ver
       </button>
-      <ul class="dropdown-menu">
+      <ul class="dropdown-menu shadow">
         <li><a class="dropdown-item" (click)="cambiar('Multas')">Multas</a></li>
         <li><a class="dropdown-item" (click)="cambiar('Accesos')">Accesos</a></li>
         <li><a class="dropdown-item" (click)="cambiar('Pagos')">Pagos</a></li>
         <li><a class="dropdown-item" (click)="cambiar('Generales')">Generales</a></li>
-  
       </ul> 
-  
-      <input type="date" style="margin-right: 5px;" [(ngModel)]="startDate" (ngModelChange)="updatedList()">
-      <input type="date" style="margin-right: 5px;" [(ngModel)]="endDate" (ngModelChange)="updatedList()">
-      <button [routerLink]="['/allNotification']" routerLinkActive="router-link-active" >Ver registro</button>
+    
+      <input type="date" class="form-control date-input shadow-sm" [(ngModel)]="startDate" (ngModelChange)="updatedList()" style="margin-right: 10px; margin-top: 15px;">
+<input type="date" class="form-control date-input shadow-sm" [(ngModel)]="endDate" (ngModelChange)="updatedList()" style="margin-right: 10px; margin-top: 15px;">
+<button class="btn btn-outline-secondary shadow-sm" [routerLink]="['/allNotification']" routerLinkActive="router-link-active" style="margin-top: 15px;">Ver registro</button>
     </div>
-  
+    
     @if (selected == 'Generales') {
       <div>
         <h1>Notificaciones {{selected}}</h1>

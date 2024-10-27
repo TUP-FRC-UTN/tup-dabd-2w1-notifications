@@ -1,9 +1,7 @@
-
 body {
   background-color: #FFFFFF;
   font-family: Arial, sans-serif;
 }
-
 
 .header {
   background-color: #000000;
@@ -16,25 +14,14 @@ body {
 }
 
 .user-info {
-  display: flex;
-  align-items: center;
-}
-
-.user-info .bi {
-  margin-right: 8px;
-  font-size: 1.5rem;
-  color: #FFFFFF;
-}
-
-.notification-icons .bi {
   font-size: 1.5rem;
   color: #FFFFFF;
   cursor: pointer;
 }
 
-
-.notification-list {
-  margin-top: 20px;
+.notification-icons {
+  display: flex;
+  gap: 20px;
 }
 
 .notification-card {
@@ -42,7 +29,29 @@ body {
   border: 1px solid #000000;
   border-radius: 5px;
   padding: 15px;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
+  animation: fadeInUp 0.4s ease;
+}
+
+
+
+
+@keyframes fadeInUp {
+  from {
+     opacity: 0;
+     transform: translateY(20px);
+  }
+  to {
+     opacity: 1;
+     transform: translateY(0);
+  }
+}
+
+.notification-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
 .notification-card h5 {
@@ -52,7 +61,7 @@ body {
 
 .notification-card p {
   margin: 0 0 10px 0;
-  color: #000000;
+  color: #333333;
 }
 
 .notification-card .btn-dark {
@@ -112,7 +121,6 @@ body {
   border-color: #333333;
 }
 
-
 .icons {
   font-size: 1.2rem;
   color: #000000;
@@ -120,15 +128,14 @@ body {
 
 @media (max-width: 768px) {
   .header, .modal-content {
-      padding: 10px;
+    padding: 10px;
   }
 
   .user-info, .notification-icons {
-      flex-direction: column;
-      align-items: center;
+    flex-direction: column;
+    align-items: center;
   }
 }
-
 
 .empty-state {
   position: absolute;
@@ -164,4 +171,72 @@ body {
   font-size: 1.5em;
   cursor: pointer;
   color: #000000;
+}
+
+.container {
+  margin-top: 20px;
+}
+
+.card {
+  margin-bottom: 20px;
+}
+
+.card-body {
+  padding: 20px;
+}
+
+.card-title {
+  margin-bottom: 10px;
+  color: #000000;
+}
+
+.card-text {
+  color: #333333;
+}
+
+.alert {
+  margin-bottom: 20px;
+}
+
+.alert .btn-close {
+  margin-left: auto;
+}
+
+button {
+  transition: background-color 0.3s ease;
+}
+
+.btn-dark:hover {
+  background-color: #333333;
+}
+
+.modal.fade.show {
+  opacity: 1;
+  transition: opacity 0.4s ease;
+}
+.date-input {
+  max-width: 160px;
+}
+
+
+.btn-group {
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.dropdown-menu {
+  border-radius: 6px;
+  padding: 10px;
+}
+
+button, input {
+  transition: all 0.2s ease-in-out;
+}
+
+button:hover, .date-input:hover {
+  transform: translateY(-2px);
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
 }
