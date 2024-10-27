@@ -1,5 +1,8 @@
 import { AfterViewInit, Component, inject, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { FormsModule, NgForm, NgModel } from '@angular/forms';
+import { NotificationService } from '../../service/notification.service';
+import { NotificationGeneral } from '../../notificationGeneral';
+import { UserApiDTO } from '../../models/DTOs/UserApiDTO';
 import $ from 'jquery';
 import 'datatables.net'
 import 'datatables.net-bs5';
@@ -7,11 +10,10 @@ import { style } from '@angular/animations';
 import "datatables.net-select"
 import { NgClass } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { NotificationService } from '../../service/notification.service';
-import { UserApiDTO } from '../../models/DTOs/UserApiDTO';
+import { General } from '../../models/general';
 import { NotificationGeneralDTO } from '../../models/DTOs/NotificationGeneralDTO';
 import { UserDTO } from '../../models/DTOs/UserDTO';
-
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-post-notification-admin',
@@ -25,10 +27,11 @@ export class PostNotificationAdminComponent implements AfterViewInit, OnInit{
 
   httpClient : HttpClient = inject(HttpClient);
   constructor(private notificationService: NotificationService) {}
-
+  selectValue : string = "1";
   users : UserApiDTO[] = []
 
   ngOnInit(): void {
+    
       const users = this.httpClient.get<UserApiDTO[]>
       ("https://my-json-server.typicode.com/405786MoroBenjamin/users-responses/users")
       .subscribe(response =>
@@ -45,36 +48,38 @@ export class PostNotificationAdminComponent implements AfterViewInit, OnInit{
     }
   }
   radioButtonValue : string = "allUsers";
-  selectValue : string = "1"
+  
 
   ngAfterViewInit(): void {
       this.setTable();
+      this.selectValue = "1"
   }
 
   setTable(): void {
     $('#myTable').DataTable({
       select: {
-        style: 'multi'
+        style: 'multi',
     },
       paging: true,
       searching: true,
       order: [[1,"asc"]],
       lengthChange: true,
       pageLength: 10,
+      
       language: {
-        
         emptyTable: "No hay datos para mostrar",
         search: "Buscar",
         loadingRecords: "Cargando...",
         paginate: {
-        first: "Primero",
+        first: "<<",
         last: ">>",
         next: ">",
-        previous: "Anterior",
+        previous: "<",
       },
       info:"Mostrando de _START_ a _END_ total de _TOTAL_ usuarios",
       
-      }
+      },
+      
       
 
     });
@@ -90,9 +95,12 @@ export class PostNotificationAdminComponent implements AfterViewInit, OnInit{
 
   selectedUser: string = ''; 
 
-  save(form: NgForm) {
+  onSubmit(form: NgForm) {
     console.log('click: ', form.value);
-    if (form.valid) {
+    
+
+    if (form.valid && this.selectValue != "1") {
+
       if (this.radioButtonValue == "allUsers") {
         this.newNotification.users = this.mapUserApiDTOToUserDTO(this.users);
         
@@ -103,19 +111,35 @@ export class PostNotificationAdminComponent implements AfterViewInit, OnInit{
       else if (this.radioButtonValue == "exclude") {
         this.newNotification.users = this.getFilteredUsers();
       }
+
+      this.newNotification.channel = this.selectValue;
       
-      console.log(this.newNotification);
       this.notificationService.postNotification(this.newNotification).subscribe({
-        next: (response) => {
+        next: (response: any) => {
           console.log('Notificacion enviada: ', response);
+          Swal.fire({
+            title: '¡Notificación enviada!',
+            text: 'La notificacion ha sido enviada correctamente.',
+            icon: 'success',
+            timer: 1500,
+            showConfirmButton: false});
         },
         error: (error) => {
           console.error('Error al enviar la notificacion: ', error);
         }
       });
     }
+    else {
+      console.log("form invalid");
+    }
   }
 
+
+
+  clearForm(form : NgForm) {
+    form.reset();
+    this.radioButtonValue = "allUsers";
+  }
   getSelectedUsers() : UserDTO[]{
     let table = $("#myTable").DataTable();
     
