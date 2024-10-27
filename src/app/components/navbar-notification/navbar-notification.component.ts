@@ -41,9 +41,8 @@ export class NavbarNotificationComponent {
   }
 
   toggleFormNotification(): void {
-    this.showFormNotification = !this.showFormNotification;
-    this.showNotificationsDropdown = false;
-    this.showAllNotifications = false
+  
+    this.router.navigate(["/home/admin-post-notification"])
   }
 
   fetchNotifications(): void {
