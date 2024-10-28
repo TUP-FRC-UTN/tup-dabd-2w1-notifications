@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, inject, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, inject, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormsModule, NgForm, NgModel } from '@angular/forms';
 import { NotificationService } from '../../service/notification.service';
 import { NotificationGeneral } from '../../notificationGeneral';
@@ -24,6 +24,15 @@ import Swal from 'sweetalert2';
   styleUrl: './post-notification-admin.component.css'
 })
 export class PostNotificationAdminComponent implements AfterViewInit, OnInit{
+
+ //Botones
+ @Input() info: string = "";
+
+ //Rol del usuario logeado
+ @Input() userRole: string = "";
+
+ //Titulo de la pagina
+ @Output() sendTitle = new EventEmitter<string>();
 
 
   httpClient : HttpClient = inject(HttpClient);
