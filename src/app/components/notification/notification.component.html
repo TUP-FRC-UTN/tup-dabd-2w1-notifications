@@ -288,7 +288,7 @@
         <h5>
           {{ item.subject }} - {{ item.date | date : "yyyy-MM-dd" }}
         </h5>
-        <p>{{ item.message }}</p>
+        <p>{{ item.description }}</p>
         <button class="btn btn-dark" (click)="selectNotification()">
           Mostrar detalle
         </button>
@@ -322,7 +322,7 @@
                 <i class="bi bi-person-fill"></i> <span>{{ "Usuario" }}</span>
               </div>
             </div>
-            <p>{{ item.message }}</p>
+            <p>{{ item.description }}</p>
           </div>
           <div class="modal-footer">
             <button

@@ -4,6 +4,7 @@ export class SideButton{
     route? : string;
     roles : string[];
     childButtons? : SideButton[];
+    
 
     constructor(){
         this.icon = "";
@@ -11,5 +12,7 @@ export class SideButton{
         this.route = "";
         this.roles = [];
         this.childButtons = [];
+
+        
     }
 }
