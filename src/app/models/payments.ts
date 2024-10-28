@@ -6,6 +6,8 @@ export interface Payments {
     dateTo: Date;              // Fecha de finalización
     status: string;            // Estado de la deuda
     ownerId: number;           // ID del propietario
+    message:string
+    created_datetime:Date;
     amount: number;
     nombre: string;
     apellido: string;

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { FormsModule } from '@angular/forms';
@@ -9,7 +9,7 @@ import { General } from '../../models/general';
 import { Notifications } from '../../models/notifications';
 import { FineService } from '../../service/fine.service';
 import { NotificationService } from '../../service/notification.service';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 
 
 interface Notification {
@@ -43,7 +43,10 @@ export class NotificationComponent implements OnInit, OnDestroy{
     @Input() info: string = "";
 
     //Rol del usuario logeado
-    @Input() userRole: string = "";
+    rolactual:string = "";
+    @Input() set role(role:string){
+      this.rolactual=role
+    }
   
     //Titulo de la pagina
     @Output() sendTitle = new EventEmitter<string>();
@@ -59,6 +62,7 @@ export class NotificationComponent implements OnInit, OnDestroy{
   subscription:Subscription = new Subscription();
   selected:string = 'Accesos';
   
+  private readonly activatedRoute = inject(ActivatedRoute);
   
 
   ngOnInit(): void {
@@ -66,6 +70,8 @@ export class NotificationComponent implements OnInit, OnDestroy{
       this.llenarData(this.userId);
       
     }
+    this.rolactual=this.activatedRoute.snapshot.params['rol'];
+    console.log(this.rolactual)
     
 
     console.log(this.startDate)
@@ -138,7 +144,7 @@ export class NotificationComponent implements OnInit, OnDestroy{
     let accessList:Access[] = []
     this.data2.access = this.originalAccessList
     this.data2.access.forEach(e => {
-      const createdDate = new Date(e.date);
+      const createdDate = new Date(e.created_datetime);
       const startDate2 = new Date(this.startDate)
       const endDate2 = new Date(this.endDate)
       
@@ -188,7 +194,7 @@ export class NotificationComponent implements OnInit, OnDestroy{
     let generalsList:General[] = []
     this.data2.generals = this.originalGeneralsList
     this.data2.generals.forEach(e => {
-      const createdDate = new Date(e.date);
+      const createdDate = new Date(e.created_datetime);
       const startDate2 = new Date(this.startDate)
       const endDate2 = new Date(this.endDate)
       

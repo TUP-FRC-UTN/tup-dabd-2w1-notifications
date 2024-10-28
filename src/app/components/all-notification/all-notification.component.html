@@ -1,24 +1,17 @@
 <section class="py-5">
   <div class="container p-3 border border-2 rounded shadow-lg">
     <h1 style="text-align: center;">Registro de todas las notificaciones</h1>
+    <button style="margin-top: 15px" type="button" class="btn btn-dark dropdown-togglek" routerLink="/home/notifications/Admin">Volver</button>
     
-    <div class="row mb-3">
-      <div class="col-auto">
-        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-          Asistencias
-        </button>
-      </div>
-    </div>
-
     <div class="row mb-4">
       <div class="col-md-6 col-lg-8 d-flex">
         <input type="text" class="form-control me-2" placeholder="Nombre">
         <select class="form-select me-2">
-          <option value="" disabled selected>Estado</option>
-          <option value="presente">Presente</option>
-          <option value="ausente">Ausente</option>
-          <option value="justificado">Justificado</option>
-          <option value="tarde">Tarde</option>
+          <option value="" disabled selected>Tipo</option>
+          <option value="presente">Multas</option>
+          <option value="ausente">Accesos</option>
+          <option value="justificado">Inventario</option>
+          <option value="tarde">Pagos</option>
         </select>
         <input type="date" class="form-control me-2">
         <input type="date" class="form-control me-2">

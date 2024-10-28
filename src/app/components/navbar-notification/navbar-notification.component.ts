@@ -46,7 +46,7 @@ export class NavbarNotificationComponent {
 
   showNotifications() {
     this.info = "Notificaciones";
-    this.router.navigate(["/home/notifications"]);
+    this.router.navigate(["/home/notifications",this.userRole]);
     this.sendTitle.emit(this.info);
     this.actualRole.emit(this.userRole);
     this.toggleNotifications();

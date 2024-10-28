@@ -14,11 +14,12 @@ import { DatePipe } from '@angular/common';
 import * as XLSX from 'xlsx';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-all-notification',
   standalone: true,
-  imports: [DatePipe],
+  imports: [DatePipe,RouterModule],
   templateUrl: './all-notification.component.html',
   styleUrl: './all-notification.component.css'
 })
@@ -53,6 +54,7 @@ export class AllNotificationComponent implements OnInit{
     }
 
     });
+    console.log(this.data)
   }
 
   constructor(private service: NotificationRegisterService) {}
@@ -78,7 +80,6 @@ export class AllNotificationComponent implements OnInit{
         this.originalGeneralsList = [...value.generals]
 
         this.fillTable(); 
-        console.log(value)
       },
       error: ()=> {
         alert('error al cargar las notifications')

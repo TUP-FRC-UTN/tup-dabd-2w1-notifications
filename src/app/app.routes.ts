@@ -10,7 +10,7 @@ export const routes: Routes = [
   {
     path: "home", component: UsersNavbarComponent,
     children: [
-      { path: "notifications", component: NotificationComponent },
+      { path: "notifications/:rol", component: NotificationComponent },
       {
         path: "admin-post-notification",
         component: PostNotificationAdminComponent,
