@@ -27,8 +27,20 @@ interface Notification {
   styleUrls: ['./notification.component.css']
 })
 export class NotificationComponent implements OnInit, OnDestroy{
+
+  //Botones
+  @Input() info: string = "";
+
+  //Rol del usuario logeado
+  rolactual:string = "";
+
+
+  //Titulo de la pagina
+  @Output() sendTitle = new EventEmitter<string>();
+
+
+  //propiedades
   
-  selectedNotification: Fine | null = null; 
   showModal = false; 
   showAlert = true; 
   userId:number = 1;
@@ -38,19 +50,6 @@ export class NotificationComponent implements OnInit, OnDestroy{
   originalGeneralsList:General[]= []
   startDate: Date = new Date();
   endDate: Date= new Date();
-
-    //Botones
-    @Input() info: string = "";
-
-    //Rol del usuario logeado
-    rolactual:string = "";
-    @Input() set role(role:string){
-      this.rolactual=role
-    }
-  
-    //Titulo de la pagina
-    @Output() sendTitle = new EventEmitter<string>();
-  
   data2: Notifications = {
     fines: [],
     access: [],
@@ -62,16 +61,25 @@ export class NotificationComponent implements OnInit, OnDestroy{
   subscription:Subscription = new Subscription();
   selected:string = 'Accesos';
   
+  //injecciones
   private readonly activatedRoute = inject(ActivatedRoute);
+
+  constructor( private notificationService:NotificationService) {
   
+  }
+  
+
+
+  //onInit t onDestroy
 
   ngOnInit(): void {
     if (this.data2 != null) {
       this.llenarData(this.userId);
-      
     }
+    console.log("data")
+    console.log(this.data2)
     this.rolactual=this.activatedRoute.snapshot.params['rol'];
-    console.log(this.rolactual)
+    console.log("rolactual="+this.rolactual)
     
 
     console.log(this.startDate)
@@ -81,40 +89,37 @@ export class NotificationComponent implements OnInit, OnDestroy{
     this.subscription.unsubscribe();
   }
 
+  //metodos
+
   selectNotification() { 
     this.showModal = true; 
   }
 
   closeModal() {
     this.showModal = false; 
-    this.selectedNotification = null; 
   }
 
   closeAlert() {
     this.showAlert = false; 
   }
 
-  constructor( private notificationService:NotificationService) {
-  
-  }
-
 
   llenarData(userId:number) {
-     const getSubscription = this.notificationService.getData(userId).subscribe({
+    const getSubscription = this.notificationService.getData(userId).subscribe({
       next: (value:Notifications) =>{
         this.data2 = value
         this.originalAccessList = [...value.access]
         this.originalFinesList = [...value.fines]
         this.originalPaymentsList = [...value.payments]
         this.originalGeneralsList = [...value.generals]
-
+        console.log("api")
         console.log(value)
       },
       error: ()=> {
         alert('error al cargar las notifications')
       }
-     })
-     this.subscription.add(getSubscription);
+    })
+    this.subscription.add(getSubscription);
   }
 
 
@@ -147,6 +152,9 @@ export class NotificationComponent implements OnInit, OnDestroy{
       const createdDate = new Date(e.created_datetime);
       const startDate2 = new Date(this.startDate)
       const endDate2 = new Date(this.endDate)
+      console.log(createdDate)
+      console.log(startDate2)
+      console.log(endDate2)
       
 
       if(createdDate.toISOString().split('T')[0] >= startDate2.toISOString().split('T')[0] && createdDate.toISOString().split('T')[0] <= endDate2.toISOString().split('T')[0] ){

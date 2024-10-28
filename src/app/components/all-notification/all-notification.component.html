@@ -5,18 +5,35 @@
     
     <div class="row mb-4">
       <div class="col-md-6 col-lg-8 d-flex">
-        <input type="text" class="form-control me-2" placeholder="Nombre">
-        <select class="form-select me-2">
-          <option value="" disabled selected>Tipo</option>
-          <option value="presente">Multas</option>
-          <option value="ausente">Accesos</option>
-          <option value="justificado">Inventario</option>
-          <option value="tarde">Pagos</option>
-        </select>
-        <input type="date" class="form-control me-2">
-        <input type="date" class="form-control me-2">
+        <button
+        type="button"
+        class="btn btn-primary dropdown-toggle"
+        style="margin-right: 10px; margin-top: 15px"
+        data-bs-toggle="dropdown"
+        aria-expanded="false"
+      >
+        Tipo
+      </button>
+      <ul class="dropdown-menu shadow">
+        <li><a class="dropdown-item" (click)="cambiar('Todas')">Todas</a></li>
+        <li>
+        <li><a class="dropdown-item" (click)="cambiar('Multas')">Multas</a></li>
+        <li>
+          <a class="dropdown-item" (click)="cambiar('Accesos')">Accesos</a>
+        </li>
+        <li><a class="dropdown-item" (click)="cambiar('Pagos')">Pagos</a></li>
+        <li>
+          <a class="dropdown-item" (click)="cambiar('Generales')">Generales</a>
+        </li>
+      </ul>
+
+        <input type="date" class="form-control me-2"[(ngModel)]="startDate"
+        (ngModelChange)="updatedList()">
+        <input type="date" class="form-control me-2"[(ngModel)]="endDate"
+        (ngModelChange)="updatedList()">
         
-        <button class="btn" style="background-color: #007bff; color: white; border: 1px solid black;">
+        
+        <button (click)="borrar()" class="btn" style="background-color: #007bff; color: white; border: 1px solid black;">
           <i class="bi bi-trash"></i>
         </button>
       </div>
