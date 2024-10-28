@@ -11,6 +11,9 @@ import 'datatables.net-bs5';
 import { style } from '@angular/animations';
 import "datatables.net-select"
 import { DatePipe } from '@angular/common';
+import * as XLSX from 'xlsx';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 @Component({
   selector: 'app-all-notification',
@@ -33,6 +36,18 @@ export class AllNotificationComponent implements OnInit{
       lengthChange: true,
       pageLength: 10,
       
+      language: {
+        emptyTable: "No hay datos para mostrar",
+        search: "Buscar",
+        loadingRecords: "Cargando...",
+        paginate: {
+        first: "<<",
+        last: ">>",
+        next: ">",
+        previous: "<",
+      },
+      info:"Mostrando de _START_ a _END_ total de _TOTAL_ notificaciones",
+    }
 
     });
   }
@@ -91,4 +106,41 @@ export class AllNotificationComponent implements OnInit{
       table.row.add([notification.subject, notification.description, dateString, notification.nombre + " " + notification.apellido, notification.dni]).draw(false);
     }
   }
+  
+  exportarAExcel() {
+        const tabla = $('#myTable').DataTable();
+        const filteredData = tabla.rows({ search: 'applied' }).data().toArray();
+        
+        const worksheet = XLSX.utils.json_to_sheet(filteredData);
+        const workBook = XLSX.utils.book_new();
+        
+        XLSX.utils.book_append_sheet(workBook, worksheet, 'Notificaciones');
+        XLSX.writeFile(workBook, 'notificaciones.xlsx');
+  }
+
+  exportarAPDF() {
+    const tabla = $('#myTable').DataTable();
+    const filteredData = tabla.rows({ search: 'applied' }).data().toArray();
+  
+    const doc = new jsPDF();
+  
+    doc.setFontSize(18);
+    doc.text('Reporte de Notificaciones', 14, 22);
+  
+    autoTable(doc, {
+      head: [['Asunto', 'Descripción', 'Fecha', 'Nombre Destinatario', 'DNI']],
+      body: filteredData.map((item: any) => [
+        item[0] || 'N/A',
+        item[1] || 'N/A',
+        item[2] || 'N/A',
+        item[3] || 'N/A',
+        item[4] || 'N/A' 
+      ]),
+      startY: 30,
+    });
+  
+    doc.save('notificaciones.pdf');
+  }
+  
+  
 }
