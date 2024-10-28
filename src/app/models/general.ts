@@ -1,7 +1,7 @@
 export interface General {
     userId:number;
     subject:string;
-    description:string;
+    message:string;
     date:Date;
     sender_user_id:number;
     nombre: string;

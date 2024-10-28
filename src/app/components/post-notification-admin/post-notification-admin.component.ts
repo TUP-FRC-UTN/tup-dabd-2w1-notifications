@@ -151,7 +151,8 @@ export class PostNotificationAdminComponent implements AfterViewInit, OnInit{
       //hardcoded telegram chatId and email for demo
       if (i == 0 ) {
         let user : UserDTO = {
-          id : rowData[i][0],
+          //HARDCODED ID
+          id : i,
           email: "solis.luna.ignacio@gmail.com",
           chatId : 5869258860
         }
@@ -159,7 +160,7 @@ export class PostNotificationAdminComponent implements AfterViewInit, OnInit{
       }
       else if (i == 1 ) {
         let user : UserDTO = {
-          id : rowData[i][0],
+          id : i,
           email: "facuu.arguellog@gmail.com",
           chatId : 1129773792
         }
@@ -167,8 +168,8 @@ export class PostNotificationAdminComponent implements AfterViewInit, OnInit{
       }
       else {
         let user : UserDTO = {
-          id : rowData[i][0],
-          email: rowData[i][4],
+          id : i,
+          email: rowData[i][3],
           //Cambiar a chatId cuando api users tenga ese campo
           chatId: 0
           

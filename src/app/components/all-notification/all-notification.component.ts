@@ -103,7 +103,7 @@ export class AllNotificationComponent implements OnInit{
     for (let notification of this.data.generals) {
       const date = notification.date as { [key: string]: any }
       let dateString = date[0] + "-" + date[1] + "-" + date[2] + "  " + date[3] + ":" + date[4] + ":" + date[5]
-      table.row.add([notification.subject, notification.description, dateString, notification.nombre + " " + notification.apellido, notification.dni]).draw(false);
+      table.row.add([notification.subject, notification.message, dateString, notification.nombre + " " + notification.apellido, notification.dni]).draw(false);
     }
   }
   
