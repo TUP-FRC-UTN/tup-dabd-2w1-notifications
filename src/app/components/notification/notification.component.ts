@@ -1,15 +1,16 @@
 import { Component, EventEmitter, inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Fine } from '../../models/fine';
 import { Access } from '../../models/access';
 import { Payments } from '../../models/payments';
 import { General } from '../../models/general';
 import { Notifications } from '../../models/notifications';
-import { FineService } from '../../service/fine.service';
 import { NotificationService } from '../../service/notification.service';
 import { ActivatedRoute, RouterModule } from '@angular/router';
+import { DateValidator } from '../../validators/date.validators';
+import { MockUserService } from '../../service/mockUser.service';
 
 
 interface Notification {
@@ -22,11 +23,19 @@ interface Notification {
 @Component({
   selector: 'app-notification',
   standalone: true,
-  imports: [CommonModule,FormsModule,RouterModule],
+  imports: [CommonModule,RouterModule,ReactiveFormsModule],
   templateUrl: './notification.component.html',
   styleUrls: ['./notification.component.css']
 })
 export class NotificationComponent implements OnInit, OnDestroy{
+
+  form = new FormGroup({
+    startDate : new FormControl(new Date(),[Validators.required,DateValidator.greatherThanToday]),
+    endDate :new FormControl(new Date(),[Validators.required,DateValidator.greatherThanToday])
+  });
+  
+
+
 
   //Botones
   @Input() info: string = "";
@@ -48,8 +57,6 @@ export class NotificationComponent implements OnInit, OnDestroy{
   originalFinesList:Fine[] = []
   originalPaymentsList:Payments[] = []
   originalGeneralsList:General[]= []
-  startDate: Date = new Date();
-  endDate: Date= new Date();
   data2: Notifications = {
     fines: [],
     access: [],
@@ -63,6 +70,7 @@ export class NotificationComponent implements OnInit, OnDestroy{
   
   //injecciones
   private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly serviceUser = inject(MockUserService)
 
   constructor( private notificationService:NotificationService) {
   
@@ -73,6 +81,16 @@ export class NotificationComponent implements OnInit, OnDestroy{
   //onInit t onDestroy
 
   ngOnInit(): void {
+    this.form.get('startDate')?.valueChanges.subscribe(value=>{
+      this.updatedList();
+
+    })
+
+    this.form.get('endDate')?.valueChanges.subscribe(value=>{
+      this.updatedList();
+      
+    })
+
     if (this.data2 != null) {
       this.llenarData(this.userId);
     }
@@ -80,10 +98,7 @@ export class NotificationComponent implements OnInit, OnDestroy{
     console.log(this.data2)
     this.rolactual=this.activatedRoute.snapshot.params['rol'];
     console.log("rolactual="+this.rolactual)
-    
 
-    console.log(this.startDate)
-    console.log(this.endDate)
   }
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
@@ -145,13 +160,12 @@ export class NotificationComponent implements OnInit, OnDestroy{
   }
 
   updatedList(){
-
     let accessList:Access[] = []
     this.data2.access = this.originalAccessList
     this.data2.access.forEach(e => {
       const createdDate = new Date(e.created_datetime);
-      const startDate2 = new Date(this.startDate)
-      const endDate2 = new Date(this.endDate)
+      const startDate2 = new Date(this.form.get('startDate')?.value ?? new Date() )
+      const endDate2 = new Date(this.form.get('endDate')?.value ?? new Date())
       console.log(createdDate)
       console.log(startDate2)
       console.log(endDate2)
@@ -168,8 +182,8 @@ export class NotificationComponent implements OnInit, OnDestroy{
     this.data2.fines = this.originalFinesList
     this.data2.fines.forEach(e => {
       const createdDate = new Date(e.date);
-      const startDate2 = new Date(this.startDate)
-      const endDate2 = new Date(this.endDate)
+      const startDate2 = new Date(this.form.get('startDate')?.value ?? new Date() )
+      const endDate2 = new Date(this.form.get('endDate')?.value ?? new Date())
       
 
       if(createdDate.toISOString().split('T')[0] >= startDate2.toISOString().split('T')[0] && createdDate.toISOString().split('T')[0] <= endDate2.toISOString().split('T')[0] ){
@@ -183,9 +197,9 @@ export class NotificationComponent implements OnInit, OnDestroy{
     let paymentsList:Payments[] = []
     this.data2.payments = this.originalPaymentsList
     this.data2.payments.forEach(e => {
-      const createdDate = new Date(e.date);
-      const startDate2 = new Date(this.startDate)
-      const endDate2 = new Date(this.endDate)
+      const createdDate = new Date(e.created_datetime);
+      const startDate2 = new Date(this.form.get('startDate')?.value ?? new Date() )
+      const endDate2 = new Date(this.form.get('endDate')?.value ?? new Date())
       
 
       if(createdDate.toISOString().split('T')[0] >= startDate2.toISOString().split('T')[0] && createdDate.toISOString().split('T')[0] <= endDate2.toISOString().split('T')[0] ){
@@ -196,15 +210,12 @@ export class NotificationComponent implements OnInit, OnDestroy{
     this.data2.payments=paymentsList
 
 
-
-
-
     let generalsList:General[] = []
     this.data2.generals = this.originalGeneralsList
     this.data2.generals.forEach(e => {
       const createdDate = new Date(e.created_datetime);
-      const startDate2 = new Date(this.startDate)
-      const endDate2 = new Date(this.endDate)
+      const startDate2 = new Date(this.form.get('startDate')?.value ?? new Date() )
+      const endDate2 = new Date(this.form.get('endDate')?.value ?? new Date())
       
 
       if(createdDate.toISOString().split('T')[0] >= startDate2.toISOString().split('T')[0] && createdDate.toISOString().split('T')[0] <= endDate2.toISOString().split('T')[0] ){
@@ -213,6 +224,10 @@ export class NotificationComponent implements OnInit, OnDestroy{
     
     });
     this.data2.generals=generalsList
+
+    
+
+    
 
   }
 

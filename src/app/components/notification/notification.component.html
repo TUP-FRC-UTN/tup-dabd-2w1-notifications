@@ -30,21 +30,25 @@
             <a class="dropdown-item" (click)="cambiar('Generales')">Generales</a>
           </li>
         </ul>
+        <div [formGroup]="form" display="flex; gap: 10px; margin-top: 15px;">
+          <div class="row">
+            <input
+            type="date"
+            class="form-control date-input shadow-sm"
+            formControlName="startDate"
+            style="margin-right: 10px; margin-top: 15px"
+            />
+            <input
+            type="date"
+            class="form-control date-input shadow-sm"
+            style="margin-right: 10px; margin-top: 15px" 
+            formControlName="endDate"
+            />
+          </div>
+        </div>
+          
 
-        <input
-          type="date"
-          class="form-control date-input shadow-sm"
-          [(ngModel)]="startDate"
-          (ngModelChange)="updatedList()"
-          style="margin-right: 10px; margin-top: 15px"
-        />
-        <input
-          type="date"
-          class="form-control date-input shadow-sm"
-          [(ngModel)]="endDate"
-          (ngModelChange)="updatedList()"
-          style="margin-right: 10px; margin-top: 15px"
-        />
+        
 
   <!--       @if (userRole.endsWith("Admin")) {
   -->

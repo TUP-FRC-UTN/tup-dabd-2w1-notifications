@@ -1,16 +1,16 @@
 <section class="py-5">
   <div class="container p-3 border border-2 rounded shadow-lg">
-    <h1 style="text-align: center;">Registro de todas las notificaciones</h1>
-    <button style="margin-top: 15px" type="button" class="btn btn-dark dropdown-togglek" routerLink="/home/notifications/Admin">Volver</button>
+    <button style="margin-top: 15px" type="button" class="btn btn-dark dropdown-togglek" style="background-color: black;" routerLink="/home/notifications/Admin">Volver</button>
     
     <div class="row mb-4">
       <div class="col-md-6 col-lg-8 d-flex">
         <button
         type="button"
-        class="btn btn-primary dropdown-toggle"
+        class="btn btn-dark dropdown-toggle"
         style="margin-right: 10px; margin-top: 15px"
         data-bs-toggle="dropdown"
         aria-expanded="false"
+        
       >
         Tipo
       </button>
@@ -26,13 +26,13 @@
           <a class="dropdown-item" (click)="cambiar('Generales')">Generales</a>
         </li>
       </ul>
+      
+        <div [formGroup]="form" class="d-flex" style="gap: 10px; margin-top: 15px;">
+          <input type="date" class="form-control me-2" formControlName="startDate">
+          <input type="date" class="form-control me-2" formControlName="endDate">
+        </div>
+      
 
-        <input type="date" class="form-control me-2"[(ngModel)]="startDate"
-        (ngModelChange)="updatedList()">
-        <input type="date" class="form-control me-2"[(ngModel)]="endDate"
-        (ngModelChange)="updatedList()">
-        
-        
         <button (click)="borrar()" class="btn" style="background-color: #007bff; color: white; border: 1px solid black;">
           <i class="bi bi-trash"></i>
         </button>

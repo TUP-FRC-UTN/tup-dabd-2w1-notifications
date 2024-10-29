@@ -22,9 +22,8 @@ export class NavbarNotificationComponent {
   showNotificationsDropdown = false;
   notifications: any = [];
   userId: number = 1;
-
   //Botones
-  @Input() info: string = "";
+  @Input() info:string = "";
 
   //Rol del usuario logeado
   @Input() userRole: string = "";
@@ -45,17 +44,17 @@ export class NavbarNotificationComponent {
   }
 
   showNotifications() {
-    this.info = "Notificaciones";
+    this.info= "Notificaciones"
     this.router.navigate(["/home/notifications",this.userRole]);
-    this.sendTitle.emit(this.info);
+    this.sendTitle.emit(this.info)
     this.actualRole.emit(this.userRole);
     this.toggleNotifications();
   }
 
   showSendNotificationsAdmin() {
     this.info = "Envio de Notificaciones Generales";
-    this.sendTitle.emit(this.info);
-    this.router.navigate(["/home/admin-post-notification"]);
+    this.sendTitle.emit(this.info)
+    this.router.navigate(["/home/admin-post-notifications"]);
   }
 
   toggleNotifications(): void {

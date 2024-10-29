@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { UsersSideButtonComponent } from '../users-side-button/users-side-button.component';
 import { NavbarNotificationComponent } from '../navbar-notification/navbar-notification.component';
 import { SideButton } from '../../models/SideButton';
+import { MockUserService } from '../../service/mockUser.service';
 
 @Component({
   selector: 'app-users-navbar',
@@ -27,11 +28,14 @@ export class UsersNavbarComponent {
   //Lista de botones
   buttonsList: SideButton[] = [];
 
+  serviceUser= inject(MockUserService)
+
   // setName(){
   //   return this.authService.getUser().name + " " + this.authService.getUser().lastname;
   // }
 
   async ngOnInit(): Promise<void> {
+    this.serviceUser.setRol('Admin')
     this.buttonsList = [
       // {
       //   icon: "bi-person",
@@ -145,5 +149,6 @@ export class UsersNavbarComponent {
 
   selectRole(role : string){
     this.actualRole = role;
+    this.serviceUser.setRol(role)
   }
 }

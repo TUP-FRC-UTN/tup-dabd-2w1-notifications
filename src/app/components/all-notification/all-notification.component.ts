@@ -15,22 +15,28 @@ import * as XLSX from 'xlsx';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { RouterModule } from '@angular/router';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { DateValidator } from '../../validators/date.validators';
+import { MockUserService } from '../../service/mockUser.service';
 
 @Component({
   selector: 'app-all-notification',
   standalone: true,
-  imports: [DatePipe,RouterModule,FormsModule],
+  imports: [DatePipe,RouterModule,ReactiveFormsModule],
   templateUrl: './all-notification.component.html',
   styleUrl: './all-notification.component.css'
 })
 export class AllNotificationComponent implements OnInit{
+  
+  form = new FormGroup({
+    startDate : new FormControl(new Date(),[Validators.required,DateValidator.greatherThanToday]),
+    endDate :new FormControl(new Date(),[Validators.required,DateValidator.greatherThanToday])
+  });
+  
 
 
   //propiedades
   selected:string="Todas"
-  startDate: Date = new Date();
-  endDate: Date= new Date();
   originalAccessList: Access[] = []; 
   originalFinesList:Fine[] = []
   originalPaymentsList:Payments[] = []
@@ -43,6 +49,15 @@ export class AllNotificationComponent implements OnInit{
   };
   //onInit y onDestroy
   ngOnInit(): void {
+    this.form.get('startDate')?.valueChanges.subscribe(value=>{
+      this.updatedList();
+
+    })
+
+    this.form.get('endDate')?.valueChanges.subscribe(value=>{
+      this.updatedList();
+      
+    })
     this.llenarData();
     $('#myTable').DataTable({
       select: {
@@ -74,7 +89,7 @@ export class AllNotificationComponent implements OnInit{
   }
   //injecciones
 
-  constructor(private service: NotificationRegisterService) {}
+  constructor(private service: NotificationRegisterService,private serviceUser:MockUserService) {}
 
 
   //metodos
@@ -108,7 +123,8 @@ export class AllNotificationComponent implements OnInit{
             table.row.add([notification.subject, notification.description, dateString, notification.nombre + " " + notification.apellido, notification.dni]).draw(false);
           }
       }
-  
+    }
+    if(this.data.fines.length>0){
       if(this.selected=="Multas" || this.selected=="Todas" ){
         for (let notification of this.data.fines) {
           const date = notification.date as { [key: string]: any }
@@ -116,7 +132,9 @@ export class AllNotificationComponent implements OnInit{
           table.row.add([notification.subject, notification.description, dateString, notification.nombre + " " + notification.apellido, notification.dni]).draw(false);
         }
       }
-  
+    }
+
+    if(this.data.payments.length>0){
       if(this.selected=="Pagos" || this.selected=="Todas" ){
         for (let notification of this.data.payments) {
           const date = notification.date as { [key: string]: any }
@@ -124,7 +142,8 @@ export class AllNotificationComponent implements OnInit{
           table.row.add([notification.subject, notification.description, dateString, notification.nombre + " " + notification.apellido, notification.dni]).draw(false);
         }
       }
-  
+    }
+    if(this.data.generals.length>0){
       if(this.selected=="Generales" || this.selected=="Todas" ){
         for (let notification of this.data.generals) {
           const date = notification.date as { [key: string]: any }
@@ -133,6 +152,7 @@ export class AllNotificationComponent implements OnInit{
         }
       }
     }
+    
     
 
   }
@@ -218,9 +238,8 @@ export class AllNotificationComponent implements OnInit{
         apiDate.getMinutes(),
         apiDate.getSeconds()
       )
-      const startDate2 = new Date(this.startDate)
-
-      const endDate2 = new Date(this.endDate)
+      const startDate2 = new Date(this.form.get('startDate')?.value ?? new Date() )
+      const endDate2 = new Date(this.form.get('endDate')?.value ?? new Date())
       console.log(createdDate)
       console.log(startDate2)
       console.log(endDate2)
@@ -237,8 +256,8 @@ export class AllNotificationComponent implements OnInit{
     this.data.fines = this.originalFinesList
     this.data.fines.forEach(e => {
       const createdDate = new Date(e.date)
-      const startDate2 = new Date(this.startDate)
-      const endDate2 = new Date(this.endDate)
+      const startDate2 = new Date(this.form.get('startDate')?.value ?? new Date() )
+      const endDate2 = new Date(this.form.get('endDate')?.value ?? new Date())
       
 
       if(createdDate.toISOString().split('T')[0] >= startDate2.toISOString().split('T')[0] && createdDate.toISOString().split('T')[0] <= endDate2.toISOString().split('T')[0] ){
@@ -253,8 +272,8 @@ export class AllNotificationComponent implements OnInit{
     this.data.payments = this.originalPaymentsList
     this.data.payments.forEach(e => {
       const createdDate = new Date(e.date)
-      const startDate2 = new Date(this.startDate)
-      const endDate2 = new Date(this.endDate)
+      const startDate2 = new Date(this.form.get('startDate')?.value ?? new Date() )
+      const endDate2 = new Date(this.form.get('endDate')?.value ?? new Date())
       
 
       if(createdDate.toISOString().split('T')[0] >= startDate2.toISOString().split('T')[0] && createdDate.toISOString().split('T')[0] <= endDate2.toISOString().split('T')[0] ){
@@ -273,8 +292,8 @@ export class AllNotificationComponent implements OnInit{
     this.data.generals = this.originalGeneralsList
     this.data.generals.forEach(e => {
       const createdDate = new Date(e.date)
-      const startDate2 = new Date(this.startDate)
-      const endDate2 = new Date(this.endDate)
+      const startDate2 = new Date(this.form.get('startDate')?.value ?? new Date() )
+      const endDate2 = new Date(this.form.get('endDate')?.value ?? new Date())
       if(createdDate.toISOString().split('T')[0] >= startDate2.toISOString().split('T')[0] && createdDate.toISOString().split('T')[0] <= endDate2.toISOString().split('T')[0] ){
         generalsList.push(e)
       }
@@ -287,8 +306,8 @@ export class AllNotificationComponent implements OnInit{
   }
   borrar(){
     this.selected="Todas";
-    this.startDate = new Date();
-    this.endDate = new Date()
+    this.form.get('startDate')?.reset()
+    this.form.get('endDate')?.reset()
     this.fillTable()
   }
 
