@@ -46,15 +46,15 @@ export class NavbarNotificationComponent {
   showNotifications() {
     this.info= "Notificaciones"
     this.router.navigate(["/home/notifications",this.userRole]);
-    this.sendTitle.emit(this.info)
+    this.sendTitle.emit(this.info);
     this.actualRole.emit(this.userRole);
     this.toggleNotifications();
   }
 
   showSendNotificationsAdmin() {
     this.info = "Envio de Notificaciones Generales";
-    this.sendTitle.emit(this.info)
-    this.router.navigate(["/home/admin-post-notifications"]);
+    this.sendTitle.emit(this.info);
+    this.router.navigate(["/home/admin-post-notification"]);
   }
 
   toggleNotifications(): void {
