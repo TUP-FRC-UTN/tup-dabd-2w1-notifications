@@ -72,8 +72,7 @@ export class AllNotificationComponent implements OnInit{
         emptyTable: "Cargando...",
         search: "Buscar",
         loadingRecords: "Cargando...",
-        zeroRecords:"No se han encontrado registros" ,
-        infoEmpty:"",
+        zeroRecords:"No se han encontrado registros",
         lengthMenu:"_MENU_",
         paginate: {
         first: "Primero",
@@ -296,13 +295,10 @@ export class AllNotificationComponent implements OnInit{
     this.fillTable();
     console.log(this.data)
   }
-  borrar(){
+  /*borrar(){
     this.selected="Todas";
     this.form.get('startDate')?.reset()
     this.form.get('endDate')?.reset()
     this.fillTable()
-  }
-
-
-  
+  }*/
 }
