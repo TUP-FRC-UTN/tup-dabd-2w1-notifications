@@ -14,12 +14,12 @@ import { General } from '../../models/general';
 import { NotificationGeneralDTO } from '../../models/DTOs/NotificationGeneralDTO';
 import { UserDTO } from '../../models/DTOs/UserDTO';
 import Swal from 'sweetalert2';
-
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-post-notification-admin',
   standalone: true,
-  imports: [FormsModule, NgClass],
+  imports: [FormsModule, NgClass, ReactiveFormsModule],
   templateUrl: './post-notification-admin.component.html',
   styleUrl: './post-notification-admin.component.css'
 })
@@ -142,7 +142,46 @@ export class PostNotificationAdminComponent implements AfterViewInit, OnInit{
     }
   }
 
+//Adaptacion REACTIVE FORMS...
 
+// notificationForm: FormGroup;
+  
+// constructor(
+//   private notificationService: NotificationService,
+//   private fb: FormBuilder
+// ) {
+//   this.notificationForm = this.fb.group({
+//     subject: ['', [Validators.required, Validators.maxLength(20)]],
+//     description: ['', Validators.required],
+//     radioButtonValue: ['allUsers'],
+//     selectValue: ['1', Validators.required]
+//   });
+// }
+// clearForm() { 
+  //  this.notificationForm.reset({
+  //   radioButtonValue: 'allUsers',
+   //  selectValue: '1'
+   // });
+  //}
+
+  // onSubmit() {
+  //   if (this.notificationForm.valid && this.notificationForm.get('selectValue')?.value !== '1') {
+  //     this.newNotification.subject = this.notificationForm.get('subject')?.value;
+  //     this.newNotification.description = this.notificationForm.get('description')?.value;
+  //     this.newNotification.channel = this.notificationForm.get('selectValue')?.value;
+
+  //     if (this.notificationForm.get('radioButtonValue')?.value === 'allUsers') {
+  //       this.newNotification.users = this.mapUserApiDTOToUserDTO(this.users);
+  //     } else if (this.notificationForm.get('radioButtonValue')?.value === 'onlyTo') {
+  //       this.newNotification.users = this.getSelectedUsers();
+  //     } else if (this.notificationForm.get('radioButtonValue')?.value === 'exclude') {
+  //       this.newNotification.users = this.getFilteredUsers();
+  //     }
+
+  //     // Rest of your submit logic...
+  //   }
+  // }
+  
 
   clearForm(form : NgForm) {
     // form.reset();
