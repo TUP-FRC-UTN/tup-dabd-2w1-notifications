@@ -68,21 +68,20 @@ export class AllNotificationComponent implements OnInit{
       ordering: true,
       lengthChange: true,
       pageLength: 10,
-      
       language: {
         emptyTable: "Cargando...",
         search: "Buscar",
         loadingRecords: "Cargando...",
         zeroRecords:"No se han encontrado registros" ,
-        infoEmpty:"Mostrando 0 de 0 registros.",
-        lengthMenu:"Mostrando _MENU_ entradas.",
+        infoEmpty:"",
+        lengthMenu:"_MENU_",
         paginate: {
-        first: "<<",
-        last: ">>",
-        next: ">",
-        previous: "<",
+        first: "Primero",
+        last: "Ultimo",
+        next: "Siguiente",
+        previous: "Anterior",
       },
-      info:"Mostrando de _START_ a _END_ total de _TOTAL_ notificaciones",
+      info:"_START_ a _END_ total de _TOTAL_",
     }
 
     });
@@ -152,9 +151,6 @@ export class AllNotificationComponent implements OnInit{
         }
       }
     }
-    
-    
-
   }
   
   exportarAExcel() {
@@ -283,10 +279,6 @@ export class AllNotificationComponent implements OnInit{
     });
     this.data.payments=paymentsList
     
-
-
-
-
 
     let generalsList:General[] = []
     this.data.generals = this.originalGeneralsList
