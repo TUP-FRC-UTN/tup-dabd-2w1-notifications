@@ -8,14 +8,13 @@ import { General } from '../../models/general';
 import $ from 'jquery';
 import 'datatables.net'
 import 'datatables.net-bs5';
-import { style } from '@angular/animations';
 import "datatables.net-select"
 import { DatePipe } from '@angular/common';
 import * as XLSX from 'xlsx';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { RouterModule } from '@angular/router';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DateValidator } from '../../validators/date.validators';
 import { MockUserService } from '../../service/mockUser.service';
 
@@ -27,13 +26,10 @@ import { MockUserService } from '../../service/mockUser.service';
   styleUrl: './all-notification.component.css'
 })
 export class AllNotificationComponent implements OnInit{
-  
   form = new FormGroup({
     startDate : new FormControl(new Date(),[Validators.required,DateValidator.greatherThanToday]),
     endDate :new FormControl(new Date(),[Validators.required,DateValidator.greatherThanToday])
   });
-  
-
 
   //propiedades
   selected:string="Todas"
@@ -47,16 +43,14 @@ export class AllNotificationComponent implements OnInit{
     payments: [],
     generals: []
   };
+
   //onInit y onDestroy
   ngOnInit(): void {
     this.form.get('startDate')?.valueChanges.subscribe(value=>{
       this.updatedList();
-
     })
-
     this.form.get('endDate')?.valueChanges.subscribe(value=>{
       this.updatedList();
-      
     })
     this.llenarData();
     $('#myTable').DataTable({
@@ -68,33 +62,26 @@ export class AllNotificationComponent implements OnInit{
       ordering: true,
       lengthChange: true,
       pageLength: 10,
-      
       language: {
         emptyTable: "Cargando...",
         search: "Buscar",
         loadingRecords: "Cargando...",
-        zeroRecords:"No se han encontrado registros" ,
-        infoEmpty:"Mostrando 0 de 0 registros.",
-        lengthMenu:"Mostrando _MENU_ entradas.",
+        zeroRecords:"No se han encontrado registros",
+        lengthMenu:"_MENU_",
         paginate: {
-        first: "<<",
-        last: ">>",
-        next: ">",
-        previous: "<",
+        first: "Primero",
+        last: "Ultimo",
+        next: "Siguiente",
+        previous: "Anterior",
       },
-      info:"Mostrando de _START_ a _END_ total de _TOTAL_ notificaciones",
+      info:" ",
     }
-
     });
   }
   //injecciones
-
   constructor(private service: NotificationRegisterService,private serviceUser:MockUserService) {}
 
-
   //metodos
-
-
   llenarData() {
     const getSubscription = this.service.getData().subscribe({
       next: (value:Notifications) =>{
@@ -109,7 +96,7 @@ export class AllNotificationComponent implements OnInit{
       error: ()=> {
         alert('error al cargar las notifications')
       }
-     })
+    })
   }
 
   fillTable() {
@@ -152,9 +139,6 @@ export class AllNotificationComponent implements OnInit{
         }
       }
     }
-    
-    
-
   }
   
   exportarAExcel() {
@@ -238,12 +222,11 @@ export class AllNotificationComponent implements OnInit{
         apiDate.getMinutes(),
         apiDate.getSeconds()
       )
-      const startDate2 = new Date(this.form.get('startDate')?.value ?? new Date() )
+      const startDate2 = new Date(this.form.get('startDate')?.value ?? new Date())
       const endDate2 = new Date(this.form.get('endDate')?.value ?? new Date())
       console.log(createdDate)
       console.log(startDate2)
       console.log(endDate2)
-      
 
       if(createdDate.toISOString().split('T')[0] >= startDate2.toISOString().split('T')[0] && createdDate.toISOString().split('T')[0] <= endDate2.toISOString().split('T')[0] ){
         accessList.push(e)
@@ -284,10 +267,6 @@ export class AllNotificationComponent implements OnInit{
     this.data.payments=paymentsList
     
 
-
-
-
-
     let generalsList:General[] = []
     this.data.generals = this.originalGeneralsList
     this.data.generals.forEach(e => {
@@ -304,13 +283,10 @@ export class AllNotificationComponent implements OnInit{
     this.fillTable();
     console.log(this.data)
   }
-  borrar(){
+  /*borrar(){
     this.selected="Todas";
     this.form.get('startDate')?.reset()
     this.form.get('endDate')?.reset()
     this.fillTable()
-  }
-
-
-  
+  }*/
 }
