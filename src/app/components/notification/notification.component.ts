@@ -11,6 +11,12 @@ import { NotificationService } from '../../service/notification.service';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { DateValidator } from '../../validators/date.validators';
 import { MockUserService } from '../../service/mockUser.service';
+import * as XLSX from 'xlsx';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
+import $ from 'jquery';
+import 'datatables.net'
+import 'datatables.net-bs5';
 
 
 interface Notification {
@@ -27,208 +33,147 @@ interface Notification {
   templateUrl: './notification.component.html',
   styleUrls: ['./notification.component.css']
 })
-export class NotificationComponent implements OnInit, OnDestroy{
+export class NotificationComponent implements OnInit {
 
-  form = new FormGroup({
-    startDate : new FormControl(new Date(),[Validators.required,DateValidator.greatherThanToday]),
-    endDate :new FormControl(new Date(),[Validators.required,DateValidator.greatherThanToday])
-  });
-  
-
-
-
-  //Botones
-  @Input() info: string = "";
-
-  //Rol del usuario logeado
+  userId = 1;
   rolactual:string = "";
-
-
-  //Titulo de la pagina
-  @Output() sendTitle = new EventEmitter<string>();
-
-
-  //propiedades
-  
-  showModal = false; 
-  showAlert = true; 
-  userId:number = 1;
+  selected:string="Todas"
   originalAccessList: Access[] = []; 
   originalFinesList:Fine[] = []
   originalPaymentsList:Payments[] = []
   originalGeneralsList:General[]= []
-  data2: Notifications = {
+  data: Notifications = {
     fines: [],
     access: [],
     payments: [],
     generals: []
   };
-  filteredAccessList: Access[] = [];
-  isWithinRange: boolean | null = null;
-  subscription:Subscription = new Subscription();
-  selected:string = 'Accesos';
-  
-  //injecciones
-  private readonly activatedRoute = inject(ActivatedRoute);
-  private readonly serviceUser = inject(MockUserService)
+  form = new FormGroup({
+    startDate: new FormControl(new Date(), [Validators.required]),
+    endDate: new FormControl(new Date(), [Validators.required])
+  });
 
-  constructor( private notificationService:NotificationService) {
-  
-  }
-  
-
-
-  //onInit t onDestroy
+  constructor(private service: NotificationService, private serviceUser: MockUserService) {}
 
   ngOnInit(): void {
-    this.form.get('startDate')?.valueChanges.subscribe(value=>{
-      this.updatedList();
+    this.form.valueChanges.subscribe(() => this.updatedList());
+    this.llenarData(this.userId);
+    console.log(this.data)
+    $('#myTable').DataTable({
+      select: { style: 'multi' },
+      paging: true,
+      searching: true,
+      ordering: true,
+      pageLength: 10,
+      language: { emptyTable: "Cargando...", search: "Buscar" }
+    });
 
-    })
-
-    this.form.get('endDate')?.valueChanges.subscribe(value=>{
-      this.updatedList();
-      
-    })
-
-    if (this.data2 != null) {
-      this.llenarData(this.userId);
-    }
-    console.log("data")
-    console.log(this.data2)
-    this.rolactual=this.activatedRoute.snapshot.params['rol'];
-    console.log("rolactual="+this.rolactual)
-
-  }
-  ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+    $('#myTable tbody').on('click', 'tr', (event) => {
+      const data = $('#myTable').DataTable().row(event.currentTarget).data();
+      this.onRowClick(data);
+    });
   }
 
-  //metodos
+  onRowClick(data: any) {
+    console.log('Fila clicada:', data);
 
-  selectNotification() { 
-    this.showModal = true; 
   }
 
-  closeModal() {
-    this.showModal = false; 
+  cambiar(type: string) {
+    this.selected = type;
+    this.fillTable();
   }
 
-  closeAlert() {
-    this.showAlert = false; 
-  }
-
-
-  llenarData(userId:number) {
-    const getSubscription = this.notificationService.getData(userId).subscribe({
+  llenarData(userId: number) {
+    const getSubscription = this.service.getData(userId).subscribe({
       next: (value:Notifications) =>{
-        this.data2 = value
+        this.data = value
         this.originalAccessList = [...value.access]
         this.originalFinesList = [...value.fines]
         this.originalPaymentsList = [...value.payments]
         this.originalGeneralsList = [...value.generals]
-        console.log("api")
-        console.log(value)
+        console.log(this.data)
+        this.fillTable(); 
       },
       error: ()=> {
         alert('error al cargar las notifications')
       }
     })
-    this.subscription.add(getSubscription);
   }
 
+  fillTable() {
+    const table = $('#myTable').DataTable();
+    table.clear().draw();
 
-  cambiar(value:string){
-    switch (value){
-      case 'Multas':
-        this.selected = 'Multas'
-        
-        break;
+    const addRow = (notification: any) => {
+      const dateString = notification.date ?? notification.created_datetime;
+      table.row.add([notification.subject, notification.description, dateString, "Ver"]).draw(false);
+    };
 
-      case 'Accesos':
-        this.selected = 'Accesos'
-        break;
-
-      case 'Pagos':
-        this.selected = 'Pagos'
-        break;
-      case 'Generales':
-        this.selected = 'Generales'
-        break;
-    }
-    
+    if (this.selected === 'Todas' || this.selected === 'Accesos') this.data.access.forEach(addRow);
+    if (this.selected === 'Todas' || this.selected === 'Multas') this.data.fines.forEach(addRow);
+    if (this.selected === 'Todas' || this.selected === 'Pagos') this.data.payments.forEach(addRow);
+    if (this.selected === 'Todas' || this.selected === 'Generales') this.data.generals.forEach(addRow);
   }
 
-  updatedList(){
-    let accessList:Access[] = []
-    this.data2.access = this.originalAccessList
-    this.data2.access.forEach(e => {
-      const createdDate = new Date(e.created_datetime);
-      const startDate2 = new Date(this.form.get('startDate')?.value ?? new Date() )
-      const endDate2 = new Date(this.form.get('endDate')?.value ?? new Date())
-      console.log(createdDate)
-      console.log(startDate2)
-      console.log(endDate2)
-      
+  updatedList() {
+    const filterByDate = (list: any[]) => {
+      const startDate = new Date(this.form.get('startDate')?.value ?? new Date());
+      const endDate = new Date(this.form.get('endDate')?.value ?? new Date());
+      return list.filter(item => {
+        const createdDate = new Date(item.date);
+        return createdDate >= startDate && createdDate <= endDate;
+      });
+    };
 
-      if(createdDate.toISOString().split('T')[0] >= startDate2.toISOString().split('T')[0] && createdDate.toISOString().split('T')[0] <= endDate2.toISOString().split('T')[0] ){
-        accessList.push(e)
-      }
+    this.data.access = filterByDate(this.data.access);
+    this.data.fines = filterByDate(this.data.fines);
+    this.data.payments = filterByDate(this.data.payments);
+    this.data.generals = filterByDate(this.data.generals);
+    this.fillTable();
+  }
+
+  exportarAExcel() {
+    const tabla = $('#myTable').DataTable();
+    const filteredData = tabla.rows({ search: 'applied' }).data().toArray();
     
-    });
-    this.data2.access=accessList
-
-    let finesList:Fine[] = []
-    this.data2.fines = this.originalFinesList
-    this.data2.fines.forEach(e => {
-      const createdDate = new Date(e.date);
-      const startDate2 = new Date(this.form.get('startDate')?.value ?? new Date() )
-      const endDate2 = new Date(this.form.get('endDate')?.value ?? new Date())
-      
-
-      if(createdDate.toISOString().split('T')[0] >= startDate2.toISOString().split('T')[0] && createdDate.toISOString().split('T')[0] <= endDate2.toISOString().split('T')[0] ){
-        finesList.push(e)
-      }
+    const worksheet = XLSX.utils.json_to_sheet(filteredData);
+    const workBook = XLSX.utils.book_new();
     
-    });
-    this.data2.fines=finesList
+    XLSX.utils.book_append_sheet(workBook, worksheet, 'Notificaciones');
+    XLSX.writeFile(workBook, 'notificaciones.xlsx');
+  }
 
+  exportarAPDF() {
+  const tabla = $('#myTable').DataTable();
+  const filteredData = tabla.rows({ search: 'applied' }).data().toArray();
 
-    let paymentsList:Payments[] = []
-    this.data2.payments = this.originalPaymentsList
-    this.data2.payments.forEach(e => {
-      const createdDate = new Date(e.created_datetime);
-      const startDate2 = new Date(this.form.get('startDate')?.value ?? new Date() )
-      const endDate2 = new Date(this.form.get('endDate')?.value ?? new Date())
-      
+  const doc = new jsPDF();
 
-      if(createdDate.toISOString().split('T')[0] >= startDate2.toISOString().split('T')[0] && createdDate.toISOString().split('T')[0] <= endDate2.toISOString().split('T')[0] ){
-        paymentsList.push(e)
-      }
-    
-    });
-    this.data2.payments=paymentsList
+  doc.setFontSize(18);
+  doc.text('Reporte de Notificaciones', 14, 22);
 
+  autoTable(doc, {
+    head: [['Asunto', 'Descripción', 'Fecha']],
+    body: filteredData.map((item: any) => [
+      item[0] || 'N/A',
+      item[1] || 'N/A',
+      item[2] || 'N/A'
+    ]),
+    startY: 30,
+  });
 
-    let generalsList:General[] = []
-    this.data2.generals = this.originalGeneralsList
-    this.data2.generals.forEach(e => {
-      const createdDate = new Date(e.created_datetime);
-      const startDate2 = new Date(this.form.get('startDate')?.value ?? new Date() )
-      const endDate2 = new Date(this.form.get('endDate')?.value ?? new Date())
-      
+  const today = new Date();
+  const formattedDate = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`;
 
-      if(createdDate.toISOString().split('T')[0] >= startDate2.toISOString().split('T')[0] && createdDate.toISOString().split('T')[0] <= endDate2.toISOString().split('T')[0] ){
-        generalsList.push(e)
-      }
-    
-    });
-    this.data2.generals=generalsList
+  doc.save(`notificaciones_${formattedDate}.pdf`);
+}
 
-    
-
-    
-
+  borrar() {
+    this.selected="Todas";
+    this.form.get('startDate')?.reset()
+    this.form.get('endDate')?.reset()
+    this.fillTable()
   }
 
 }
