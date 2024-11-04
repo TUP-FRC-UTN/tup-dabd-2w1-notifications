@@ -89,8 +89,19 @@ export class NavbarNotificationComponent {
   }
   
   get recentNotifications(): any[] {
-    return this.unreadNotifications.slice(0, 4);
+  const sortedNotifications = [...this.notifications].sort(
+    (a, b) => new Date(b.created_datetime).getTime() - new Date(a.created_datetime).getTime()
+  );
+
+  const unread = sortedNotifications.filter(notification => !notification.markedRead);
+  const read = sortedNotifications.filter(notification => notification.markedRead);
+
+  if (unread.length >= 4) {
+    return unread.slice(0, 4);
   }
+
+  const remainingCount = 4 - unread.length;
+  return [...unread, ...read.slice(0, remainingCount)];  }
 
 
   toggleNotificationsAndFetch(): void {

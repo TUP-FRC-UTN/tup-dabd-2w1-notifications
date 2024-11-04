@@ -1,18 +1,11 @@
 import {
   Component,
-  EventEmitter,
-  inject,
-  Input,
-  OnDestroy,
   OnInit,
-  Output,
 } from "@angular/core";
 import { CommonModule, DatePipe } from "@angular/common";
-import { Subscription } from "rxjs";
 import {
   FormControl,
   FormGroup,
-  FormsModule,
   ReactiveFormsModule,
   Validators,
 } from "@angular/forms";
@@ -23,7 +16,6 @@ import { General } from "../../models/general";
 import { Notifications } from "../../models/notifications";
 import { NotificationService } from "../../service/notification.service";
 import { ActivatedRoute, RouterModule } from "@angular/router";
-import { DateValidator } from "../../validators/date.validators";
 import { MockUserService } from "../../service/mockUser.service";
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
@@ -48,6 +40,7 @@ export class NotificationComponent implements OnInit {
   originalFinesList: Fine[] = [];
   originalPaymentsList: Payments[] = [];
   originalGeneralsList: General[] = [];
+  selectedNotification: any = null;
   data: Notifications = {
     fines: [],
     access: [],
@@ -70,31 +63,57 @@ export class NotificationComponent implements OnInit {
 
   ngOnInit(): void {
     this.llenarData(this.userId);
+    
+    // Configure DataTables with search functionality
     $("#myTable").DataTable({
+      dom: '<"mb-3"t>' + '<"d-flex justify-content-between"lp>',
       select: { style: "multi" },
       paging: true,
       searching: true,
       ordering: true,
       order: [[2, "desc"]],
       pageLength: 10,
-      language: {         emptyTable: "Cargando...",
+      language: {
+        emptyTable: "Cargando...",
         search: "Buscar",
         loadingRecords: "Cargando...",
-        zeroRecords:"No se han encontrado registros",
-        lengthMenu:"_MENU_",
- },
+        zeroRecords: "No se han encontrado registros",
+        lengthMenu: "_MENU_",
+        info: "",
+      }
     });
 
-    $("#myTable tbody").on("click", "tr", (event) => {
-      const data = $("#myTable").DataTable().row(event.currentTarget).data();
-      this.onRowClick(data);
+    // Connect external search input to DataTables
+    $('#searchTerm').on('keyup', function() {
+      $('#myTable').DataTable().search($(this).val() as string).draw();
+    });
+
+    // Handle row click for modal
+    $("#myTable tbody").on("click", ".consultar-btn", (event) => {
+      event.preventDefault();
+      const row = $(event.currentTarget).closest('tr');
+      const data = $("#myTable").DataTable().row(row).data();
+      this.showDetailsModal(data);
     });
 
     this.initialzeDates();
     this.form.valueChanges.subscribe(() => this.updatedList());
     this.rolactual = this.activatedRoute.snapshot.params["rol"];
-    console.log(this.rolactual);
   }
+
+  showDetailsModal(data: any) {
+    this.selectedNotification = {
+      subject: data[0],
+      message: data[1],
+      date: data[2]
+    };
+    const modal = document.getElementById('detailsModal');
+    if (modal) {
+        // @ts-ignore
+        const bootstrapModal = new bootstrap.Modal(modal);
+        bootstrapModal.show();
+    }
+}
 
   onRowClick(data: any) {
     console.log("Fila clicada:", data);
@@ -123,6 +142,7 @@ export class NotificationComponent implements OnInit {
     });
   }
 
+  
   fillTable() {
     const table = $("#myTable").DataTable();
     table.clear().draw();
@@ -133,7 +153,18 @@ export class NotificationComponent implements OnInit {
           notification.subject,
           notification.message,
           this.formatDate(notification.created_datetime),
-          "Ver",
+          `
+              <div class="dropdown text-center">
+                <a class="btn btn-light" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"
+                  style="width: 40px; height: 40px; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; line-height: 1; padding: 0;">
+                  &#8942;
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item consultar-btn" href="#">Ver más</a></li>
+                  <li><a class="dropdown-item eliminar-btn" data-bs-toggle="modal" data-bs-target="#deleteModal" href="#">Eliminar</a></li>
+                </ul>
+              </div>
+          `,
         ])
         .draw(false);
     };
@@ -186,7 +217,7 @@ export class NotificationComponent implements OnInit {
     const workBook = XLSX.utils.book_new();
 
     XLSX.utils.book_append_sheet(workBook, worksheet, "Notificaciones");
-    XLSX.writeFile(workBook, "notificaciones.xlsx");
+    XLSX.writeFile(workBook, "notificaciones "+this.formatDate(new Date())+".xlsx");
   }
 
   exportarAPDF() {
@@ -221,8 +252,10 @@ export class NotificationComponent implements OnInit {
     this.initialzeDates();
     this.fillTable();
   }
+
   formatDate(date: Date): string {
-    return this.datePipe.transform(date, "dd/MM/yyyy hh:mm:ss") || "";
+    const formattedDate = new Date(date);
+    return this.datePipe.transform(formattedDate, 'dd/MM/yyyy HH:mm:ss') || '';
   }
 
   initialzeDates() {
@@ -347,4 +380,11 @@ export class NotificationComponent implements OnInit {
     this.form.get('endDate')?.reset()
     this.fillTable()
   }*/
+
+  leida(notification: any) {
+    // Marcar la notificación como leída
+    notification.markedRead = true;
+    // Actualizar la tabla o la lista de notificaciones
+    this.updatedList();
+  }
 }
