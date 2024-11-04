@@ -9,7 +9,7 @@
       <div *ngIf="notifications.length === 0" class="dropdown-item">
         No hay notificaciones nuevas.
       </div>
-      <div *ngFor="let notification of notifications" class="dropdown-item">
+      <div *ngFor="let notification of recentNotifications" class="dropdown-item">
         <div class="notification-item" style="display: flex; align-items: center;">
           <div style="flex-grow: 1;">
             <small>{{ notification.date || notification.created_datetime }}</small>
@@ -36,6 +36,6 @@
       </button>
     </div>
   </div>
-  @if (userRole.endsWith("Admin")) {
+<!--   @if (userRole.endsWith("Admin")) {
   <i class="bi bi-mailbox" (click)="showSendNotificationsAdmin()"></i>}
-</div>
+ --></div>
