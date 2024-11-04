@@ -19,6 +19,7 @@ import { SideButton } from "../../models/SideButton";
   styleUrl: "./navbar-notification.component.css",
 })
 export class NavbarNotificationComponent {
+
   showNotificationsDropdown = false;
   notifications: any = [];
   userId: number = 1;
@@ -63,12 +64,44 @@ export class NavbarNotificationComponent {
 
   fetchNotifications(): void {
     this.notificationService.getData(this.userId).subscribe((data) => {
-      this.notifications = [...data.fines, ...data.access, ...data.payments];
+      this.notifications = [...data.fines, ...data.access, ...data.payments,...data.generals];
     });
   }
 
   toggleNotificationsAndFetch(): void {
     this.toggleNotifications();
     this.fetchNotifications();
+  }
+  leida(noti: any) {
+    let tipoNoti = ''
+    switch (noti.subject){
+      case 'Ingreso de visitante':
+        tipoNoti = 'ACCESS'
+        break;
+
+      case 'Nueva notificacion de multa':
+        
+        tipoNoti = "FINES" 
+        break;
+
+      case 'Notificacion General':
+        tipoNoti= "GENERAL"
+        break;
+
+      case 'Notificacion de Inventario':
+        tipoNoti = "INVENTORY"
+        break;
+
+      case 'payments':
+        tipoNoti = "PAYMENTS"
+        break;
+    }
+
+    this.notificationService.putData(noti.id,tipoNoti).subscribe({
+      next:() => {
+        this.fetchNotifications()
+      }
+    })
+
   }
 }

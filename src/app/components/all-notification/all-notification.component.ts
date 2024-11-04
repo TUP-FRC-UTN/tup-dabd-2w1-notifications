@@ -17,6 +17,8 @@ import { RouterModule } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DateValidator } from '../../validators/date.validators';
 import { MockUserService } from '../../service/mockUser.service';
+import { AllNotifications } from '../../models/all-notifications';
+import { Inventory } from '../../models/inventory';
 
 @Component({
   selector: 'app-all-notification',
@@ -26,10 +28,7 @@ import { MockUserService } from '../../service/mockUser.service';
   styleUrl: './all-notification.component.css'
 })
 export class AllNotificationComponent implements OnInit{
-  form = new FormGroup({
-    startDate : new FormControl(new Date(),[Validators.required,DateValidator.greatherThanToday]),
-    endDate :new FormControl(new Date(),[Validators.required,DateValidator.greatherThanToday])
-  });
+
 
   //propiedades
   selected:string="Todas"
@@ -37,11 +36,15 @@ export class AllNotificationComponent implements OnInit{
   originalFinesList:Fine[] = []
   originalPaymentsList:Payments[] = []
   originalGeneralsList:General[]= []
-  data: Notifications = {
+  originalInventoryList:Inventory []= []
+  form: FormGroup;
+  table:any;
+  data: AllNotifications = {
     fines: [],
     access: [],
     payments: [],
-    generals: []
+    generals: [],
+    inventories: []
   };
 
   //onInit y onDestroy
@@ -52,8 +55,10 @@ export class AllNotificationComponent implements OnInit{
     this.form.get('endDate')?.valueChanges.subscribe(value=>{
       this.updatedList();
     })
+    this.initialzeDates()
     this.llenarData();
-    $('#myTable').DataTable({
+    
+    this.table=$('#myTable').DataTable({
       select: {
         style: 'multi'
     },
@@ -79,18 +84,26 @@ export class AllNotificationComponent implements OnInit{
     });
   }
   //injecciones
-  constructor(private service: NotificationRegisterService,private serviceUser:MockUserService) {}
+  constructor(private service: NotificationRegisterService,private serviceUser:MockUserService) {
+    this.form = new FormGroup({
+      startDate : new FormControl(new Date(),[Validators.required,DateValidator.greatherThanToday]),
+      endDate :new FormControl(new Date(),[Validators.required,DateValidator.greatherThanToday])
+    });
+
+  }
 
   //metodos
   llenarData() {
     const getSubscription = this.service.getData().subscribe({
-      next: (value:Notifications) =>{
+      next: (value:AllNotifications) =>{
         this.data = value
         this.originalAccessList = [...value.access]
         this.originalFinesList = [...value.fines]
         this.originalPaymentsList = [...value.payments]
         this.originalGeneralsList = [...value.generals]
+        this.originalInventoryList = [...value.inventories]
         console.log(this.data)
+        this.updatedList();
         this.fillTable(); 
       },
       error: ()=> {
@@ -100,23 +113,23 @@ export class AllNotificationComponent implements OnInit{
   }
 
   fillTable() {
-    let table = $("#myTable").DataTable();
-    table.clear().draw()
+    
+    this.table.clear().draw()
     if(this.data.access.length>0){
       if(this.selected=="Accesos" || this.selected=="Todas" ){
         for (let notification of this.data.access) {
-          const date = notification.date as { [key: string]: any }
+          const date = notification.created_datetime as { [key: string]: any }
           let dateString = date
-            table.row.add([notification.subject, notification.description, dateString, notification.nombre + " " + notification.apellido, notification.dni]).draw(false);
+            this.table.row.add([notification.subject, notification.message, dateString, notification.nombre + " " + notification.apellido, notification.dni]).draw(false);
           }
       }
     }
     if(this.data.fines.length>0){
       if(this.selected=="Multas" || this.selected=="Todas" ){
         for (let notification of this.data.fines) {
-          const date = notification.date as { [key: string]: any }
+          const date = notification.created_datetime as { [key: string]: any }
           let dateString =date
-          table.row.add([notification.subject, notification.description, dateString, notification.nombre + " " + notification.apellido, notification.dni]).draw(false);
+          this.table.row.add([notification.subject, notification.message, dateString, notification.nombre + " " + notification.apellido, notification.dni]).draw(false);
         }
       }
     }
@@ -124,25 +137,34 @@ export class AllNotificationComponent implements OnInit{
     if(this.data.payments.length>0){
       if(this.selected=="Pagos" || this.selected=="Todas" ){
         for (let notification of this.data.payments) {
-          const date = notification.date as { [key: string]: any }
+          const date = notification.created_datetime as { [key: string]: any }
           let dateString = date
-          table.row.add([notification.subject, notification.description, dateString, notification.nombre + " " + notification.apellido, notification.dni]).draw(false);
+          this.table.row.add([notification.subject, notification.message, dateString, notification.nombre + " " + notification.apellido, notification.dni]).draw(false);
         }
       }
     }
     if(this.data.generals.length>0){
       if(this.selected=="Generales" || this.selected=="Todas" ){
         for (let notification of this.data.generals) {
-          const date = notification.date as { [key: string]: any }
+          const date = notification.created_datetime as { [key: string]: any }
           let dateString = date
-          table.row.add([notification.subject, notification.description, dateString, notification.nombre + " " + notification.apellido, notification.dni]).draw(false);
+          this.table.row.add([notification.subject, notification.message, dateString, notification.nombre + " " + notification.apellido, notification.dni]).draw(false);
         }
+      }
+    }
+    if(this.data.inventories.length>0){
+      if(this.selected=="Inventory" || this.selected=="Todas" ){
+        for (let notification of this.data.inventories) {
+          const date = notification.created_datetime as { [key: string]: any }
+          let dateString = date
+            this.table.row.add([notification.subject, notification.message, dateString,'','']).draw(false);
+          }
       }
     }
   }
   
   exportarAExcel() {
-        const tabla = $('#myTable').DataTable();
+        const tabla = this.table
         const filteredData = tabla.rows({ search: 'applied' }).data().toArray();
         
         const worksheet = XLSX.utils.json_to_sheet(filteredData);
@@ -153,7 +175,7 @@ export class AllNotificationComponent implements OnInit{
   }
 
   exportarAPDF() {
-    const tabla = $('#myTable').DataTable();
+    const tabla = this.table
     const filteredData = tabla.rows({ search: 'applied' }).data().toArray();
   
     const doc = new jsPDF();
@@ -203,16 +225,21 @@ export class AllNotificationComponent implements OnInit{
         this.selected = 'Generales'
         this.fillTable(); 
         break;
+
+      case 'Inventory':
+        this.selected = 'Inventory'
+        this.fillTable(); 
+        break;
     }
   }
   //filtro por fechas
   updatedList(){
-
+    
     let accessList:Access[] = []
     this.data.access = this.originalAccessList
     this.data.access.forEach(e => {
-      console.log(e.date)
-      const apiDate = new Date(e.date)
+      console.log(e.created_datetime)
+      const apiDate = new Date(e.created_datetime)
       console.log(apiDate)  
       const createdDate = new Date(
         apiDate.getFullYear(),
@@ -238,7 +265,7 @@ export class AllNotificationComponent implements OnInit{
     let finesList:Fine[] = []
     this.data.fines = this.originalFinesList
     this.data.fines.forEach(e => {
-      const createdDate = new Date(e.date)
+      const createdDate = new Date(e.created_datetime)
       const startDate2 = new Date(this.form.get('startDate')?.value ?? new Date() )
       const endDate2 = new Date(this.form.get('endDate')?.value ?? new Date())
       
@@ -254,7 +281,7 @@ export class AllNotificationComponent implements OnInit{
     let paymentsList:Payments[] = []
     this.data.payments = this.originalPaymentsList
     this.data.payments.forEach(e => {
-      const createdDate = new Date(e.date)
+      const createdDate = new Date(e.created_datetime)
       const startDate2 = new Date(this.form.get('startDate')?.value ?? new Date() )
       const endDate2 = new Date(this.form.get('endDate')?.value ?? new Date())
       
@@ -270,7 +297,7 @@ export class AllNotificationComponent implements OnInit{
     let generalsList:General[] = []
     this.data.generals = this.originalGeneralsList
     this.data.generals.forEach(e => {
-      const createdDate = new Date(e.date)
+      const createdDate = new Date(e.created_datetime)
       const startDate2 = new Date(this.form.get('startDate')?.value ?? new Date() )
       const endDate2 = new Date(this.form.get('endDate')?.value ?? new Date())
       if(createdDate.toISOString().split('T')[0] >= startDate2.toISOString().split('T')[0] && createdDate.toISOString().split('T')[0] <= endDate2.toISOString().split('T')[0] ){
@@ -280,13 +307,41 @@ export class AllNotificationComponent implements OnInit{
     });
     this.data.generals=generalsList
 
+    let InventoryList:Inventory[] = []
+    this.data.inventories = this.originalInventoryList
+    this.data.inventories.forEach(e => {
+      const createdDate = new Date(e.created_datetime)
+      const startDate2 = new Date(this.form.get('startDate')?.value ?? new Date() )
+      const endDate2 = new Date(this.form.get('endDate')?.value ?? new Date())
+      if(createdDate.toISOString().split('T')[0] >= startDate2.toISOString().split('T')[0] && createdDate.toISOString().split('T')[0] <= endDate2.toISOString().split('T')[0] ){
+        InventoryList.push(e)
+      }
+    
+    });
+    this.data.inventories=InventoryList
+
     this.fillTable();
     console.log(this.data)
   }
-  /*borrar(){
+  initialzeDates(){
+    const today = new Date();
+    const startDate = new Date(today.getFullYear(), today.getMonth()-1,today.getDay());
+    const endDate = today
+    
+    this.form.patchValue({
+      startDate: this.formatDate2(startDate) ,
+      endDate: this.formatDate2(endDate) 
+    })
+  }
+  formatDate2(date: Date): string {
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Mes debe ser 1-12
+    const day = date.getDate().toString().padStart(2, '0'); // Día debe ser 1-31
+    return `${year}-${month}-${day}`; // Retornar en formato yyyy-MM-dd
+  }
+  borrar(){
     this.selected="Todas";
-    this.form.get('startDate')?.reset()
-    this.form.get('endDate')?.reset()
+    this.initialzeDates()
     this.fillTable()
-  }*/
+  }
 }

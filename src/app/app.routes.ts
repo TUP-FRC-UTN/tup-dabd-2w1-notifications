@@ -15,8 +15,9 @@ export const routes: Routes = [
       {
         path: "admin-post-notification",
         component: PostNotificationAdminComponent,
+        canActivate: [roleGuard]
       },
-      { path: "admin-all-notifications", component: AllNotificationComponent,canActivate: [roleGuard] },
+      { path: "admin-all-notifications", component: AllNotificationComponent,canActivate: [roleGuard]},
     ],
   },
   {path: "allNotification", component: AllNotificationComponent},

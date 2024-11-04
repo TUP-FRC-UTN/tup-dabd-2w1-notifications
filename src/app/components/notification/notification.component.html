@@ -1,16 +1,6 @@
 <section class="py-5">
     <div class="container p-3 border border-2 rounded shadow-lg">
-      @if (rolactual =="Admin") {
-        <button
-        class="btn btn-outline-secondary shadow-sm"
-        [routerLink]="['/home/admin-all-notifications']"
-        routerLinkActive="router-link-active"
-        style="margin-top: 15px"
-      >
-        Ver registro
-      </button>
-    
-      }
+
       <button style="margin-top: 15px" type="button" class="btn btn-dark dropdown-togglek" style="background-color: black;" routerLink="/home/notifications/Admin">Volver</button>
       
       <div class="row mb-4">
@@ -43,11 +33,14 @@
             <input type="date" class="form-control me-2" formControlName="endDate">
           </div>
         
-  
+
           <button (click)="borrar()" class="btn" style="background-color: #007bff; color: white; border: 1px solid black;">
             <i class="bi bi-trash"></i>
           </button>
+          
+          
         </div>
+        
   
         <div class="col-md-6 col-lg-4 d-flex justify-content-end">
           <button class="btn mx-1" style="background-color: #28a745; color: white; border: 1px solid black;">

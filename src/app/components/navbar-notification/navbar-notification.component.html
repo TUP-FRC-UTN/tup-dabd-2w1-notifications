@@ -10,14 +10,19 @@
         No hay notificaciones nuevas.
       </div>
       <div *ngFor="let notification of notifications" class="dropdown-item">
-        <div class="notification-item">
-          <small>{{
-            notification.date || notification.created_datetime
-          }}</small>
-          <h6>
-            <b> {{ notification.subject }}</b>
-          </h6>
-          <p>{{ notification.message || notification.description }}</p>
+        <div class="notification-item" style="display: flex; align-items: center;">
+          <div style="flex-grow: 1;">
+            <small>{{ notification.date || notification.created_datetime }}</small>
+            <h6><b>{{ notification.subject }}</b></h6>
+            <p>{{ notification.message || notification.description }}</p>
+          </div>
+          @if(!notification.markedRead){
+            <i class="bi bi-eye" style="color: black; margin-left: 8px;"(click)="leida(notification)"></i>
+          }@else{
+            <i class="bi bi-check" style="color: black; margin-left: 8px;"></i>
+          }
+          
+
         </div>
       </div>
       <button
