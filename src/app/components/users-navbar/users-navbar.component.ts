@@ -123,19 +123,19 @@ export class UsersNavbarComponent {
         ]
       },
       {
-        icon: "bi bi-bell-fill",
+        icon: "bi bi-bell",
         title: "Notificaciones",
         roles: ["SuperAdmin", "Admin"],
         childButtons: [
           {
             icon: "bi bi-mailbox",
-            title: "Envio",
+            title: "Envío de",
             route: "home/admin-post-notification",
             roles: ["SuperAdmin", "Admin"]
           },
           {
             icon: "bi bi-clipboard",
-            title: "Registro",
+            title: "Registro de",
             route: "home/admin-all-notifications",
             roles: ["SuperAdmin", "Admin"]
           }

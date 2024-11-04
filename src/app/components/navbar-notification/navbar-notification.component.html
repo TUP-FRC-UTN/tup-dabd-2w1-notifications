@@ -12,7 +12,7 @@
       <div *ngFor="let notification of recentNotifications" class="dropdown-item">
         <div class="notification-item" style="display: flex; align-items: center;">
           <div style="flex-grow: 1;">
-            <small>{{ notification.date || notification.created_datetime }}</small>
+            <small>{{ notification.created_datetime | date:'dd/MM/yyyy HH:mm:ss' }}</small>
             <h6><b>{{ notification.subject }}</b></h6>
             <p>{{ notification.message || notification.description }}</p>
           </div>

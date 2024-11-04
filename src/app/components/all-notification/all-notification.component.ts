@@ -68,6 +68,7 @@ export class AllNotificationComponent implements OnInit{
       ordering: true,
       lengthChange: true,
       pageLength: 10,
+      order: [[2, 'desc']],
       language: {
         emptyTable: "Cargando...",
         search: "Buscar",
@@ -81,6 +82,7 @@ export class AllNotificationComponent implements OnInit{
         previous: "Anterior",
       },
       info:" ",
+      
     }
     });
   }

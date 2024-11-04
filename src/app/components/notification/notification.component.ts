@@ -75,7 +75,7 @@ export class NotificationComponent implements OnInit {
       paging: true,
       searching: true,
       ordering: true,
-      
+      order: [[2, "desc"]],
       pageLength: 10,
       language: {         emptyTable: "Cargando...",
         search: "Buscar",

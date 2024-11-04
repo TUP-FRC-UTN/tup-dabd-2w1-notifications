@@ -1,11 +1,11 @@
 body {
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   font-family: Arial, sans-serif;
 }
 
 .header {
   background-color: #000000;
-  color: #FFFFFF;
+  color: #ffffff;
   padding: 15px;
   display: flex;
   justify-content: space-between;
@@ -15,7 +15,7 @@ body {
 
 .user-info {
   font-size: 1.5rem;
-  color: #FFFFFF;
+  color: #ffffff;
   cursor: pointer;
 }
 
@@ -25,7 +25,7 @@ body {
 }
 
 .notification-card {
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   border: 1px solid #000000;
   border-radius: 5px;
   padding: 15px;
@@ -35,17 +35,14 @@ body {
   animation: fadeInUp 0.4s ease;
 }
 
-
-
-
 @keyframes fadeInUp {
   from {
-     opacity: 0;
-     transform: translateY(20px);
+    opacity: 0;
+    transform: translateY(20px);
   }
   to {
-     opacity: 1;
-     transform: translateY(0);
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -66,27 +63,27 @@ body {
 
 .notification-card .btn-dark {
   background-color: #000000;
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 .modal-content {
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   border-radius: 5px;
 }
 
 .modal-header {
   background-color: #000000;
-  color: #FFFFFF;
+  color: #ffffff;
   border-bottom: none;
 }
 
 .modal-title {
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 .modal-body {
   padding: 20px;
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   color: #000000;
 }
 
@@ -97,7 +94,7 @@ body {
 }
 
 .modal-footer {
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   border-top: none;
 }
 
@@ -127,11 +124,13 @@ body {
 }
 
 @media (max-width: 768px) {
-  .header, .modal-content {
+  .header,
+  .modal-content {
     padding: 10px;
   }
 
-  .user-info, .notification-icons {
+  .user-info,
+  .notification-icons {
     flex-direction: column;
     align-items: center;
   }
@@ -145,7 +144,7 @@ body {
 }
 
 .custom-alert {
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   border: 1px solid #000000;
   border-radius: 5px;
   padding: 10px 20px;
@@ -162,7 +161,7 @@ body {
 
 .btn-dark {
   background-color: #000000;
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 .btn-close {
@@ -218,7 +217,6 @@ button {
   max-width: 160px;
 }
 
-
 .btn-group {
   margin-top: 20px;
   padding: 10px;
@@ -232,11 +230,49 @@ button {
   padding: 10px;
 }
 
-button, input {
+button,
+input {
   transition: all 0.2s ease-in-out;
 }
 
-button:hover, .date-input:hover {
+button:hover,
+.date-input:hover {
   transform: translateY(-2px);
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.table {
+  margin-top: 20px;
+  border-collapse: separate;
+  border-spacing: 0;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+
+  border: 1px solid rgba(51, 47, 47, 0.12);
+
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.table thead th {
+  background-color: #ffffff;
+  color: #000000;
+  padding: 12px;
+  text-align: center;
+}
+
+.table tbody tr {
+  background-color: #ffffff;
+}
+
+.table tbody tr:nth-child(even) {
+  background-color: #f8f9fa;
+}
+
+.table tbody tr:hover {
+  background-color: #e9ecef;
+}
+
+.table td,
+.table th {
+  padding: 12px;
+  text-align: center;
 }

@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { Component, EventEmitter, Input, Output, Pipe } from "@angular/core";
 import { NotificationService } from "../../service/notification.service";
-import { CommonModule } from "@angular/common";
+import { CommonModule, DatePipe } from "@angular/common";
 import { Router, RouterModule } from "@angular/router";
 import { NotificationComponent } from "../notification/notification.component";
 import { PostNotificationAdminComponent } from "../post-notification-admin/post-notification-admin.component";
@@ -12,8 +12,10 @@ import { SideButton } from "../../models/SideButton";
   imports: [
     CommonModule,
     NotificationComponent,
+    DatePipe,
     PostNotificationAdminComponent,
     RouterModule,
+    
   ],
   templateUrl: "./navbar-notification.component.html",
   styleUrl: "./navbar-notification.component.css",
@@ -69,6 +71,8 @@ export class NavbarNotificationComponent {
         ...data.payments,
         ...data.generals,
       ];
+      this.notifications.datePipe.transform(this.notifications.date, 'dd/MM/yyyy');
+      
       this.notifications.sort(
         (
           a: { created_datetime: string | number | Date },
@@ -93,7 +97,7 @@ export class NavbarNotificationComponent {
     this.toggleNotifications();
     this.fetchNotifications();
   }
-  
+
   leida(noti: any) {
     let tipoNoti = "";
     switch (noti.subject) {
