@@ -114,7 +114,7 @@ export class NotificationComponent implements OnInit {
     table.clear().draw();
 
     const addRow = (notification: any) => {
-      table.row.add([notification.subject, notification.message, notification.created_datetime, "Ver"]).draw(false);
+      table.row.add([notification.subject, notification.message, this.formatDate(notification.created_datetime), "Ver"]).draw(false);
     };
 
     if (this.selected === 'Todas' || this.selected === 'Accesos') this.data.access.forEach(addRow);
@@ -197,7 +197,7 @@ export class NotificationComponent implements OnInit {
     this.fillTable()
   }
   formatDate(date:Date):string {
-    return this.datePipe.transform(date, 'dd/MM/yyyy') || ''
+    return this.datePipe.transform(date, 'dd/MM/yyyy hh:mm:ss') || ''
   }
 
   initialzeDates(){

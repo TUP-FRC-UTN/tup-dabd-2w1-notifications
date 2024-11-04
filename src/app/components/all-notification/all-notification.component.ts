@@ -24,6 +24,7 @@ import { Inventory } from '../../models/inventory';
   selector: 'app-all-notification',
   standalone: true,
   imports: [DatePipe,RouterModule,ReactiveFormsModule],
+  providers: [DatePipe],
   templateUrl: './all-notification.component.html',
   styleUrl: './all-notification.component.css'
 })
@@ -84,7 +85,7 @@ export class AllNotificationComponent implements OnInit{
     });
   }
   //injecciones
-  constructor(private service: NotificationRegisterService,private serviceUser:MockUserService) {
+  constructor(private service: NotificationRegisterService,private serviceUser:MockUserService,private datePipe: DatePipe) {
     this.form = new FormGroup({
       startDate : new FormControl(new Date(),[Validators.required,DateValidator.greatherThanToday]),
       endDate :new FormControl(new Date(),[Validators.required,DateValidator.greatherThanToday])
@@ -111,6 +112,9 @@ export class AllNotificationComponent implements OnInit{
       }
     })
   }
+  formatDate(date:Date):string {
+    return this.datePipe.transform(date, 'dd/MM/yyyy hh:mm:ss') || ''
+  }
 
   fillTable() {
     
@@ -119,7 +123,7 @@ export class AllNotificationComponent implements OnInit{
       if(this.selected=="Accesos" || this.selected=="Todas" ){
         for (let notification of this.data.access) {
           const date = notification.created_datetime as { [key: string]: any }
-          let dateString = date
+          let dateString = this.formatDate(notification.created_datetime)
             this.table.row.add([notification.subject, notification.message, dateString, notification.nombre + " " + notification.apellido, notification.dni]).draw(false);
           }
       }
@@ -128,7 +132,7 @@ export class AllNotificationComponent implements OnInit{
       if(this.selected=="Multas" || this.selected=="Todas" ){
         for (let notification of this.data.fines) {
           const date = notification.created_datetime as { [key: string]: any }
-          let dateString =date
+          let dateString = this.formatDate(notification.created_datetime)
           this.table.row.add([notification.subject, notification.message, dateString, notification.nombre + " " + notification.apellido, notification.dni]).draw(false);
         }
       }
@@ -138,7 +142,7 @@ export class AllNotificationComponent implements OnInit{
       if(this.selected=="Pagos" || this.selected=="Todas" ){
         for (let notification of this.data.payments) {
           const date = notification.created_datetime as { [key: string]: any }
-          let dateString = date
+          let dateString = this.formatDate(notification.created_datetime)
           this.table.row.add([notification.subject, notification.message, dateString, notification.nombre + " " + notification.apellido, notification.dni]).draw(false);
         }
       }
@@ -147,7 +151,7 @@ export class AllNotificationComponent implements OnInit{
       if(this.selected=="Generales" || this.selected=="Todas" ){
         for (let notification of this.data.generals) {
           const date = notification.created_datetime as { [key: string]: any }
-          let dateString = date
+          let dateString = this.formatDate(notification.created_datetime)
           this.table.row.add([notification.subject, notification.message, dateString, notification.nombre + " " + notification.apellido, notification.dni]).draw(false);
         }
       }
@@ -156,7 +160,7 @@ export class AllNotificationComponent implements OnInit{
       if(this.selected=="Inventory" || this.selected=="Todas" ){
         for (let notification of this.data.inventories) {
           const date = notification.created_datetime as { [key: string]: any }
-          let dateString = date
+          let dateString = this.formatDate(notification.created_datetime)
             this.table.row.add([notification.subject, notification.message, dateString,'','']).draw(false);
           }
       }
