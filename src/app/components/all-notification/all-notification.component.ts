@@ -136,12 +136,12 @@ export class AllNotificationComponent implements OnInit {
   fillTable() {
     this.table.clear().draw();
     if (this.data.access.length > 0) {
-      if (this.selected == "Accesos" || this.selected == "Todas") {
         for (let notification of this.data.access) {
           const date = notification.created_datetime as { [key: string]: any };
           let dateString = this.formatDate(notification.created_datetime);
           this.table.row
             .add([
+              "Acceso",
               notification.subject,
               notification.message,
               dateString,
@@ -149,16 +149,15 @@ export class AllNotificationComponent implements OnInit {
               notification.dni,
             ])
             .draw(false);
-        }
       }
     }
     if (this.data.fines.length > 0) {
-      if (this.selected == "Multas" || this.selected == "Todas") {
         for (let notification of this.data.fines) {
           const date = notification.created_datetime as { [key: string]: any };
           let dateString = this.formatDate(notification.created_datetime);
           this.table.row
             .add([
+              "Multa",
               notification.subject,
               notification.message,
               dateString,
@@ -166,17 +165,16 @@ export class AllNotificationComponent implements OnInit {
               notification.dni,
             ])
             .draw(false);
-        }
       }
     }
 
     if (this.data.payments.length > 0) {
-      if (this.selected == "Pagos" || this.selected == "Todas") {
         for (let notification of this.data.payments) {
           const date = notification.created_datetime as { [key: string]: any };
           let dateString = this.formatDate(notification.created_datetime);
           this.table.row
             .add([
+              "Pago",
               notification.subject,
               notification.message,
               dateString,
@@ -184,16 +182,16 @@ export class AllNotificationComponent implements OnInit {
               notification.dni,
             ])
             .draw(false);
-        }
+        
       }
     }
     if (this.data.generals.length > 0) {
-      if (this.selected == "Generales" || this.selected == "Todas") {
         for (let notification of this.data.generals) {
           const date = notification.created_datetime as { [key: string]: any };
           let dateString = this.formatDate(notification.created_datetime);
           this.table.row
             .add([
+              "General",
               notification.subject,
               notification.message,
               dateString,
@@ -201,16 +199,15 @@ export class AllNotificationComponent implements OnInit {
               notification.dni,
             ])
             .draw(false);
-        }
       }
     }
     if (this.data.inventories.length > 0) {
-      if (this.selected == "Inventory" || this.selected == "Todas") {
         for (let notification of this.data.inventories) {
           const date = notification.created_datetime as { [key: string]: any };
           let dateString = this.formatDate(notification.created_datetime);
           this.table.row
             .add([
+              "Inventario",
               notification.subject,
               notification.message,
               dateString,
@@ -218,7 +215,6 @@ export class AllNotificationComponent implements OnInit {
               "",
             ])
             .draw(false);
-        }
       }
     }
   }

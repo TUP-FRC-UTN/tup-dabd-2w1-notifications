@@ -147,9 +147,10 @@ export class NotificationComponent implements OnInit {
     const table = $("#myTable").DataTable();
     table.clear().draw();
 
-    const addRow = (notification: any) => {
+    const addRow = (notification: any, tipo: string) => {
       table.row
         .add([
+          tipo,
           notification.subject,
           notification.message,
           this.formatDate(notification.created_datetime),
@@ -169,14 +170,19 @@ export class NotificationComponent implements OnInit {
         .draw(false);
     };
 
-    if (this.selected === "Todas" || this.selected === "Accesos")
-      this.data.access.forEach(addRow);
-    if (this.selected === "Todas" || this.selected === "Multas")
-      this.data.fines.forEach(addRow);
-    if (this.selected === "Todas" || this.selected === "Pagos")
-      this.data.payments.forEach(addRow);
-    if (this.selected === "Todas" || this.selected === "Generales")
-      this.data.generals.forEach(addRow);
+    
+    if (this.selected === "Todas" || this.selected === "Accesos") {
+      this.data.access.forEach(notification => addRow(notification, 'Acceso'));
+    }
+    if (this.selected === "Todas" || this.selected === "Multas") {
+      this.data.fines.forEach(notification => addRow(notification, 'Multa'));
+    }
+    if (this.selected === "Todas" || this.selected === "Pagos") {
+      this.data.payments.forEach(notification => addRow(notification, 'Pago'));
+    }
+    if (this.selected === "Todas" || this.selected === "Generales") {
+      this.data.generals.forEach(notification => addRow(notification, 'General'));
+    }
   }
 
   // updatedList() {
