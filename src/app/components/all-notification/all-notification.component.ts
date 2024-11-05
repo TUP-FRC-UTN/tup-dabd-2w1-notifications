@@ -251,7 +251,7 @@ export class AllNotificationComponent implements OnInit {
       startY: 30,
     });
 
-    doc.save("notificaciones.pdf");
+    doc.save("notificaciones "+this.formatDate(new Date())+".pdf");
   }
 
   //filtro de tipo de notificacion
