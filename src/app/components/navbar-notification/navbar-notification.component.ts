@@ -71,7 +71,7 @@ export class NavbarNotificationComponent {
         ...data.payments,
         ...data.generals,
       ];
-      this.notifications.datePipe.transform(this.notifications.date, 'dd/MM/yyyy');
+      
       
       this.notifications.sort(
         (
