@@ -2,33 +2,52 @@
   <div class="container p-3 border border-2 rounded shadow-lg">
     <div class="row mb-2">
       <div class="d-flex">
-        <button
-          type="button"
-          class="btn btn-dark dropdown-toggle"
-          style="margin-right: 10px; margin-top: 15px"
-          data-bs-toggle="dropdown"
-          aria-expanded="false"
-        >
-          Ver
-        </button>
-        <ul class="dropdown-menu shadow">
-          <li><a class="dropdown-item" (click)="cambiar('Todas')">Todas</a></li>
-          <li></li>
-          <li>
-            <a class="dropdown-item" (click)="cambiar('Multas')">Multas</a>
-          </li>
-          <li>
-            <a class="dropdown-item" (click)="cambiar('Accesos')">Accesos</a>
-          </li>
-          <li><a class="dropdown-item" (click)="cambiar('Pagos')">Pagos</a></li>
-          <li>
-            <a class="dropdown-item" (click)="cambiar('Generales')"
-              >Generales</a
-            >
-          </li>
-        </ul>
-
-        
+        <!-- dropdown -->
+        <div class="col-md-2">
+          <div class="dropdown" style="margin-top: 15px; margin-right: 10px;">
+              <button class="btn btn-secondary dropdown-toggle form-control" 
+                      type="button" 
+                      id="dropdownCountries" 
+                      data-bs-toggle="dropdown" 
+                      aria-expanded="false">
+                  Seleccionar Tipo
+                  <span class="selected-count"></span>
+              </button>
+              <ul class="dropdown-menu w-100" aria-labelledby="dropdownCountries" [formGroup]="form">
+                <li>
+                  <label class="dropdown-item">
+                    <input type="checkbox" class="form-check-input me-2" formControlName="all"> 
+                    Todas
+                  </label>
+                </li>
+                <li>
+                    <label class="dropdown-item">
+                        <input type="checkbox" class="form-check-input me-2" formControlName="fines"> 
+                        Multas
+                    </label>
+                </li>
+                <li>
+                    <label class="dropdown-item">
+                        <input type="checkbox" class="form-check-input me-2" formControlName="access">
+                        Accesos
+                    </label>
+                </li>
+                <li>
+                    <label class="dropdown-item">
+                        <input type="checkbox" class="form-check-input me-2" formControlName="payments">
+                        Pagos
+                    </label>
+                </li>
+                <li>
+                    <label class="dropdown-item">
+                        <input type="checkbox" class="form-check-input me-2" formControlName="generals">
+                        Generales
+                    </label>
+                </li>
+              </ul>
+          </div>
+        </div>
+        <!-- filtro buscar -->
         <div class="col-4">
           <input
             type="text"
@@ -38,32 +57,33 @@
             aria-label="Search"
             style="margin-top: 15px;  "
           />
+        </div>
+      <!-- filtro fecha -->
+      <div
+        [formGroup]="form"
+        class="col-2 ms-2"
+        style="gap: 10px; margin-top: 15px"
+      >
+        <input
+          type="date"
+          class="form-control me-2"
+          formControlName="startDate"
+        />
       </div>
-
-        <div
-          [formGroup]="form"
-          class="col-2 ms-2"
-          style="gap: 10px; margin-top: 15px"
-        >
-          <input
-            type="date"
-            class="form-control me-2"
-            formControlName="startDate"
-          />
+      <div
+        [formGroup]="form"
+        class="col-2 ms-2"
+        style="gap: 10px; margin-top: 15px"
+      >
+        <input
+          type="date"
+          class="form-control me-2"
+          formControlName="endDate"
+        />
         </div>
-        <div
-          [formGroup]="form"
-          class="col-2 ms-2"
-          style="gap: 10px; margin-top: 15px"
-        >
-          <input
-            type="date"
-            class="form-control me-2"
-            formControlName="endDate"
-          />
-        </div>
-
-        <div class="col text-end" style="margin-top: 15px">
+        <!-- botones -->
+          
+        <div class="col-2 text-end" style="margin-top: 15px">
           <button
             (click)="borrar()"
             class="btn"
@@ -75,7 +95,6 @@
           >
             <i class="bi bi-trash"></i>
           </button>
-
           <button
             class="btn mx-1"
             style="
@@ -97,6 +116,7 @@
             <i class="bi bi-file-earmark-pdf"></i>
           </button>
         </div>
+        
       </div>
     </div>
 
@@ -152,4 +172,7 @@
   </div>
   
 </section>
+
+
+
   

@@ -13,10 +13,12 @@ body {
   flex-wrap: wrap;
 }
 
+
 .user-info {
   font-size: 1.5rem;
   color: #ffffff;
   cursor: pointer;
+  
 }
 
 .notification-icons {

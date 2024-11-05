@@ -23,6 +23,7 @@ import autoTable from "jspdf-autotable";
 import $ from "jquery";
 import "datatables.net";
 import "datatables.net-bs5";
+import { AllNotificationComponent } from "../all-notification/all-notification.component";
 
 @Component({
   selector: "app-notification",
@@ -58,6 +59,11 @@ export class NotificationComponent implements OnInit {
     this.form = new FormGroup({
       startDate: new FormControl(new Date(), [Validators.required]),
       endDate: new FormControl(new Date(), [Validators.required]),
+      all: new FormControl(true),
+      fines: new FormControl(false),
+      access: new FormControl(false),
+      payments: new FormControl(false),
+      generals: new FormControl(false),
     });
   }
 
@@ -66,6 +72,16 @@ export class NotificationComponent implements OnInit {
     
     // Configure DataTables with search functionality
     $("#myTable").DataTable({
+      columnDefs: [
+        {
+          targets: 2,  // Índice de la columna "Fecha"
+          className: 'text-center', // Añadir clase para centrar
+        },
+        {
+          targets: 3,  // Índice de la columna "Fecha"
+          className: 'align-items: center;', // Añadir clase para centrar
+        },
+      ],
       dom: '<"mb-3"t>' + '<"d-flex justify-content-between"lp>',
       select: { style: "multi" },
       paging: true,
@@ -97,7 +113,10 @@ export class NotificationComponent implements OnInit {
     });
 
     this.initialzeDates();
-    this.form.valueChanges.subscribe(() => this.updatedList());
+    this.form.valueChanges.subscribe(() => { 
+      this.updatedList()
+      this.cambiar()
+    });
     this.rolactual = this.activatedRoute.snapshot.params["rol"];
   }
 
@@ -119,8 +138,7 @@ export class NotificationComponent implements OnInit {
     console.log("Fila clicada:", data);
   }
 
-  cambiar(type: string) {
-    this.selected = type;
+  cambiar() {
     this.fillTable();
   }
 
@@ -154,28 +172,28 @@ export class NotificationComponent implements OnInit {
           notification.message,
           this.formatDate(notification.created_datetime),
           `
-              <div class="dropdown text-center">
-                <a class="btn btn-light" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"
-                  style="width: 40px; height: 40px; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; line-height: 1; padding: 0;">
-                  &#8942;
-                </a>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item consultar-btn" href="#">Ver más</a></li>
-                  <li><a class="dropdown-item eliminar-btn" data-bs-toggle="modal" data-bs-target="#deleteModal" href="#">Eliminar</a></li>
-                </ul>
-              </div>
+                  <a class="btn btn-light" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"
+                    style="width: 40px; height: 40px; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; line-height: 1; padding: 0;">
+                    &#8942;
+                  </a>
+                  <ul class="dropdown-menu">
+                    <li><a class="dropdown-item consultar-btn" href="#">Ver más</a></li>
+                    <li><a class="dropdown-item eliminar-btn" data-bs-toggle="modal" data-bs-target="#deleteModal" href="#">Eliminar</a></li>
+                  </ul>
+
           `,
         ])
         .draw(false);
     };
+    
 
-    if (this.selected === "Todas" || this.selected === "Accesos")
+    if (this.form.get('all')?.value === true || this.form.get('access')?.value === true )
       this.data.access.forEach(addRow);
-    if (this.selected === "Todas" || this.selected === "Multas")
+    if (this.form.get('all')?.value === true || this.form.get('fines')?.value === true)
       this.data.fines.forEach(addRow);
-    if (this.selected === "Todas" || this.selected === "Pagos")
+    if (this.form.get('all')?.value === true || this.form.get('payments')?.value === true)
       this.data.payments.forEach(addRow);
-    if (this.selected === "Todas" || this.selected === "Generales")
+    if (this.form.get('all')?.value === true  || this.form.get('generals')?.value === true)
       this.data.generals.forEach(addRow);
   }
 
