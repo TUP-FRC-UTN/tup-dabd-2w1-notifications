@@ -68,7 +68,10 @@ body {
   color: #ffffff;
 }
 
-.modal-content {
+/***
+MODAL VIEJO, BORRAR?
+**/
+/* .modal-content {
   background-color: #ffffff;
   border-radius: 5px;
 }
@@ -98,7 +101,7 @@ body {
 .modal-footer {
   background-color: #ffffff;
   border-top: none;
-}
+} */
 
 .btn-primary {
   background-color: #000000;
@@ -110,10 +113,10 @@ body {
   border-color: #333333;
 }
 
-.btn-secondary {
+/* .btn-secondary {
   background-color: #000000;
   border-color: #000000;
-}
+} */
 
 .btn-secondary:hover {
   background-color: #333333;

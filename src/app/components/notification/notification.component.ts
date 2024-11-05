@@ -73,14 +73,22 @@ export class NotificationComponent implements OnInit {
     // Configure DataTables with search functionality
     $("#myTable").DataTable({
       columnDefs: [
+        {targets:0,
+          className: "text-center"
+        },
+        {targets: 1,
+          className: "text-center"
+        },
         {
           targets: 2,  // Índice de la columna "Fecha"
           className: 'text-center', // Añadir clase para centrar
         },
         {
           targets: 3,  // Índice de la columna "Fecha"
-          className: 'align-items: center;', // Añadir clase para centrar
+          className: 'text-center align-middle'
+           // Añadir clase para centrar
         },
+        {targets: 4, className: "text-center"}
       ],
       dom: '<"mb-3"t>' + '<"d-flex justify-content-between"lp>',
       select: { style: "multi" },
@@ -105,12 +113,12 @@ export class NotificationComponent implements OnInit {
     });
 
     // Handle row click for modal
-    $("#myTable tbody").on("click", ".consultar-btn", (event) => {
-      event.preventDefault();
-      const row = $(event.currentTarget).closest('tr');
-      const data = $("#myTable").DataTable().row(row).data();
-      this.showDetailsModal(data);
-    });
+    // $("#myTable tbody").on("click", ".consultar-btn", (event) => {
+    //   event.preventDefault();
+    //   const row = $(event.currentTarget).closest('tr');
+    //   const data = $("#myTable").DataTable().row(row).data();
+      
+    // });
 
     this.initialzeDates();
     this.form.valueChanges.subscribe(() => { 
@@ -122,16 +130,17 @@ export class NotificationComponent implements OnInit {
 
   showDetailsModal(data: any) {
     this.selectedNotification = {
-      subject: data[0],
-      message: data[1],
-      date: data[2]
+      subject: data[1],
+      message: data[2],
+      date: data[3]
     };
-    const modal = document.getElementById('detailsModal');
-    if (modal) {
-        // @ts-ignore
-        const bootstrapModal = new bootstrap.Modal(modal);
-        bootstrapModal.show();
-    }
+    // const modal = document.getElementById('detailsModal');
+    // if (modal) {
+    //     // @ts-ignore
+    //     const bootstrapModal = new bootstrap.Modal(modal);
+    //     bootstrapModal.show();
+    // }
+
 }
 
   onRowClick(data: any) {
@@ -149,8 +158,7 @@ export class NotificationComponent implements OnInit {
         this.originalAccessList = [...value.access];
         this.originalFinesList = [...value.fines];
         this.originalPaymentsList = [...value.payments];
-        this.originalGeneralsList = [...value.generals];
-        console.log(this.data);
+        this.originalGeneralsList = [...value.generals];  
         this.updatedList();
         this.fillTable();
       },
@@ -171,15 +179,18 @@ export class NotificationComponent implements OnInit {
           tipo,
           notification.subject,
           notification.message,
-          this.formatDate(notification.created_datetime),
+          this.getTodayDateFormatted(notification.created_datetime),
           `
-                  <a class="btn btn-light" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"
-                    style="width: 40px; height: 40px; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; line-height: 1; padding: 0;">
-                    &#8942;
-                  </a>
+              
+                <a class="btn btn-light align-items-center" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"
+                 style="width:40px; height:40px; font-size:1.2rem; padding-top:0.2rem;">
+                &#8942;
+              </a>
+              
                   <ul class="dropdown-menu">
-                    <li><a class="dropdown-item consultar-btn" href="#">Ver más</a></li>
-                    <li><a class="dropdown-item eliminar-btn" data-bs-toggle="modal" data-bs-target="#deleteModal" href="#">Eliminar</a></li>
+                    <li><a class="dropdown-item consultar-btn" href="#" data-bs-toggle="modal"
+                    data-bs-target="#idMODAL">Ver más</a></li>
+                    
                   </ul>
 
           `,
@@ -191,13 +202,13 @@ export class NotificationComponent implements OnInit {
 
 
     if (this.form.get('all')?.value === true || this.form.get('access')?.value === true )
-      this.data.access.forEach(notification => addRow(notification, 'Access'));
+      this.data.access.forEach(notification => addRow(notification, 'Accesos'));
     if (this.form.get('all')?.value === true || this.form.get('fines')?.value === true)
-      this.data.fines.forEach(notification => addRow(notification, 'Fines'));
+      this.data.fines.forEach(notification => addRow(notification, 'Multas'));
     if (this.form.get('all')?.value === true || this.form.get('payments')?.value === true)
-      this.data.payments.forEach(notification => addRow(notification, 'Payments'));
+      this.data.payments.forEach(notification => addRow(notification, 'Pagos'));
     if (this.form.get('all')?.value === true  || this.form.get('generals')?.value === true)
-      this.data.generals.forEach(notification => addRow(notification, 'General'));
+      this.data.generals.forEach(notification => addRow(notification, 'Generales'));
 
   }
 
@@ -239,24 +250,28 @@ export class NotificationComponent implements OnInit {
     const workBook = XLSX.utils.book_new();
 
     XLSX.utils.book_append_sheet(workBook, worksheet, "Notificaciones");
-    XLSX.writeFile(workBook, "notificaciones "+this.formatDate(new Date())+".xlsx");
+    XLSX.writeFile(workBook, "notificaciones "+this.getTodayDateFormatted(new Date())+".xlsx");
   }
 
   exportarAPDF() {
     const tabla = $("#myTable").DataTable();
     const filteredData = tabla.rows({ search: "applied" }).data().toArray();
+    const dateFrom = this.formatDateFromString(this.form.controls["startDate"].value)
+    const dateTo = this.formatDateFromString(this.form.controls["endDate"].value)
 
     const doc = new jsPDF();
 
     doc.setFontSize(18);
-    doc.text("Reporte de Notificaciones", 14, 22);
+    doc.text("Reporte de Notificaciones (" + dateFrom + " / " + dateTo+ ")", 14, 22);
 
     autoTable(doc, {
-      head: [["Asunto", "Descripción", "Fecha"]],
+      head: [["Tipo","Asunto", "Descripción", "Fecha"]],
       body: filteredData.map((item: any) => [
+
         item[0] || "N/A",
         item[1] || "N/A",
         item[2] || "N/A",
+        item[3] || "N/A",
       ]),
       startY: 30,
     });
@@ -275,7 +290,7 @@ export class NotificationComponent implements OnInit {
     this.fillTable();
   }
 
-  formatDate(date: Date): string {
+  getTodayDateFormatted(date: Date): string {
     const formattedDate = new Date(date);
     return this.datePipe.transform(formattedDate, 'dd/MM/yyyy HH:mm:ss') || '';
   }
@@ -290,11 +305,11 @@ export class NotificationComponent implements OnInit {
     const endDate = today;
 
     this.form.patchValue({
-      startDate: this.formatDate2(startDate),
-      endDate: this.formatDate2(endDate),
+      startDate: this.formatDate(startDate),
+      endDate: this.formatDate(endDate),
     });
   }
-  formatDate2(date: Date): string {
+  formatDate(date: Date): string {
     const year = date.getFullYear();
     const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Mes debe ser 1-12
     const day = date.getDate().toString().padStart(2, "0"); // Día debe ser 1-31
@@ -304,9 +319,9 @@ export class NotificationComponent implements OnInit {
     let accessList: Access[] = [];
     this.data.access = this.originalAccessList;
     this.data.access.forEach((e) => {
-      console.log(e.created_datetime);
+      
       const apiDate = new Date(e.created_datetime);
-      console.log(apiDate);
+      
       const createdDate = new Date(
         apiDate.getFullYear(),
         apiDate.getMonth(),
@@ -319,9 +334,8 @@ export class NotificationComponent implements OnInit {
         this.form.get("startDate")?.value ?? new Date()
       );
       const endDate2 = new Date(this.form.get("endDate")?.value ?? new Date());
-      console.log(createdDate);
-      console.log(startDate2);
-      console.log(endDate2);
+      
+
 
       if (
         createdDate.toISOString().split("T")[0] >=
@@ -408,5 +422,10 @@ export class NotificationComponent implements OnInit {
     notification.markedRead = true;
     // Actualizar la tabla o la lista de notificaciones
     this.updatedList();
+  }
+
+  formatDateFromString(date : string) {
+    const [year, month, day] = date.split("-");
+    return `${day}-${month}-${year}`;
   }
 }
