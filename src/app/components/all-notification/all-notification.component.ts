@@ -425,6 +425,11 @@ export class AllNotificationComponent implements OnInit {
     return `${year}-${month}-${day}`; // Retornar en formato yyyy-MM-dd
   }
   borrar() {
+    this.form.reset();
+    const searchInput = document.getElementById('searchTerm') as HTMLInputElement;
+    if (searchInput) {
+      searchInput.value = '';
+    }
     this.selected = "Todas";
     this.initialzeDates();
     this.fillTable();
