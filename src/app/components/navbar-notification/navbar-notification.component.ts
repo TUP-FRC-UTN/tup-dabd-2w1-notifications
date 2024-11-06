@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, Pipe } from "@angular/core";
+import { Component, ElementRef, Renderer2, EventEmitter, Input, Output, Pipe } from "@angular/core";
 import { NotificationService } from "../../service/notification.service";
 import { CommonModule, DatePipe } from "@angular/common";
 import { Router, RouterModule } from "@angular/router";
@@ -35,10 +35,18 @@ export class NavbarNotificationComponent {
 
   @Output() actualRole = new EventEmitter<string>();
 
+  private clickListener: () => void;
+
   constructor(
     private notificationService: NotificationService,
-    private router: Router
-  ) {}
+    private router: Router,
+    private elementRef: ElementRef,
+    private renderer: Renderer2
+  ) {
+    this.clickListener = this.renderer.listen("document", "click", (event) => {
+      this.onDocumentClick(event);
+    });
+  }
 
   ngOnInit(): void {
     this.fetchNotifications();
@@ -50,6 +58,18 @@ export class NavbarNotificationComponent {
     this.sendTitle.emit(this.info);
     this.actualRole.emit(this.userRole);
     this.toggleNotifications();
+  }
+
+  private onDocumentClick(event: MouseEvent): void {
+    if (this.showNotificationsDropdown && !this.elementRef.nativeElement.contains(event.target)) {
+      this.showNotificationsDropdown = false;
+    }
+    } 
+
+  ngOnDestroy(): void {
+    if (this.clickListener) {
+      this.clickListener();
+    }
   }
 
   showSendNotificationsAdmin() {
