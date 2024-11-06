@@ -1,11 +1,11 @@
 <section class="py-5">
-  <ng-select class="" [items]="notificationTypes" [(ngModel)]="selectedNotificationType"></ng-select>
+  
   <div class="container p-3 border border-2 rounded shadow-lg">
     <div class="row mb-2">
       <div class="d-flex">
         <!-- dropdown -->
         <div class="col-md-3">
-          
+          <ng-select class="mt-3 mr-3" [items]="notificationTypes" [(ngModel)]="selectedNotificationType"></ng-select>
         </div>
         <!-- filtro buscar -->
         <div class="col-4">
@@ -21,7 +21,7 @@
       <!-- filtro fecha -->
        <form [formGroup]="dateFilterForm">
         <div
-          class="col-12 ms-2"
+          class="col-3 ms-2"
           style="gap: 10px; margin-top: 15px"
         >
           <input
@@ -32,7 +32,7 @@
         </div>
         <div
           
-          class="col-12 ms-2"
+          class="col-3 ms-2"
           style="gap: 10px; margin-top: 15px"
         >
           <input
@@ -94,34 +94,36 @@
     </div>
   </div>
   
-  
-    <div class="modal fade" id="idMODAL" role="dialog" aria-labelledby="modal" style="width: 100%;" aria-hidden="">
-      <div class="modal-dialog" style="width: 100%;">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Detalle de notificación</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <div class="mb-3">
-              <h6>Asunto:</h6>
-              <p>{{ selectedNotification.subject }}</p>
+    
+      <div class="modal fade" id="idMODAL" role="dialog" aria-labelledby="modal" style="width: 100%;" aria-hidden="">
+        <div class="modal-dialog" style="width: 100%;">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Detalle de notificación</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="mb-3">
-              <h6>Descripción:</h6>
-              <p>{{ selectedNotification.message }}</p>
+            <div class="modal-body">
+              <div class="mb-3">
+                <h6>Asunto:</h6>
+                <p>{{ selectedNotification.subject }}</p>
+              </div>
+              <div class="mb-3">
+                <h6>Descripción:</h6>
+                <p>{{ selectedNotification.message }}</p>
+              </div>
+              <div class="mb-3">
+                <h6>Fecha:</h6>
+                <p>{{ selectedNotification.date }}</p>
+              </div>
             </div>
-            <div class="mb-3">
-              <h6>Fecha:</h6>
-              <p>{{ selectedNotification.date }}</p>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Aceptar</button>
             </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Aceptar</button>
           </div>
         </div>
-      </div>
-    </div> 
+      </div> 
+    
+    
   
 
 
