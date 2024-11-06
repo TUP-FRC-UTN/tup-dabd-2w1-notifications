@@ -1,20 +1,16 @@
-import { AfterViewInit, Component, EventEmitter, inject, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
-import { FormsModule, NgForm, NgModel } from '@angular/forms';
+import { AfterViewInit, Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
 import { NotificationService } from '../../service/notification.service';
-import { NotificationGeneral } from '../../notificationGeneral';
 import { UserApiDTO } from '../../models/DTOs/UserApiDTO';
 import $ from 'jquery';
 import 'datatables.net'
 import 'datatables.net-bs5';
-import { style } from '@angular/animations';
 import "datatables.net-select"
 import { NgClass } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { General } from '../../models/general';
 import { NotificationGeneralDTO } from '../../models/DTOs/NotificationGeneralDTO';
 import { UserDTO } from '../../models/DTOs/UserDTO';
 import Swal from 'sweetalert2';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule, NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-post-notification-admin',

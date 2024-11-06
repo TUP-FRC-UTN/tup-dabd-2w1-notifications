@@ -4,6 +4,7 @@ import { PostNotificationAdminComponent } from "./components/post-notification-a
 import { AllNotificationComponent } from "./components/all-notification/all-notification.component";
 import { UsersNavbarComponent } from "./components/users-navbar/users-navbar.component";
 import { roleGuard } from "./guard";
+import { ChartComponent } from "./components/chart/chart.component";
 
 export const routes: Routes = [
   { path: "", redirectTo: "/home", pathMatch: "full" },
@@ -11,6 +12,7 @@ export const routes: Routes = [
   {
     path: "home", component: UsersNavbarComponent,
     children: [
+      { path: "chart", component: ChartComponent },
       { path: "notifications/:rol", component: NotificationComponent },
       {
         path: "admin-post-notification",

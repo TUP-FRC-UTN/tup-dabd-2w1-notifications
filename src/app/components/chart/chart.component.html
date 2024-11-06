@@ -1,0 +1,126 @@
+<div id="char1" class="row position-relative min-vh-75">
+  <!-- Gráfico 1: Notificaciones Enviadas por Día -->
+  <div *ngIf="status === 1" class="col-12">
+    <div class="card border-0 shadow rounded-4 h-100 w-100">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <div class="back-arrow" (click)="makeBig(0)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="gray" class="bi bi-arrow-left-circle-fill" viewBox="0 0 16 16">
+              <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0m3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z"/>
+            </svg>
+          </div>
+          <div [formGroup]="form" class="col-2 ms-2" style="gap: 10px; margin-top: 15px">
+            <label>Periodo Desde</label>
+            <input type="date" class="form-control me-2" formControlName="startDate"/>
+          </div>
+          <div [formGroup]="form" class="col-2 ms-2" style="gap: 10px; margin-top: 15px">
+            <label>Periodo Hasta</label>
+            <input type="date" class="form-control me-2" formControlName="endDate"/>
+          </div>
+          <h5 class="card-title text-secondary mb-1">Notificaciones Enviadas por Día</h5>
+          <small class="text-secondary">Estadísticas semanales</small>
+        </div>
+        <google-chart [type]="c3ChartType" [data]="columnChartData" [options]="columnChartOptions" class="w-100 expanded-chart-content"></google-chart>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gráfico 2: Notificaciones Enviadas por Canal -->
+  <div *ngIf="status === 2" class="col-12">
+    <div class="card border-0 shadow rounded-4 h-100 w-100">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <div class="back-arrow" (click)="makeBig(0)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="gray" class="bi bi-arrow-left-circle-fill" viewBox="0 0 16 16">
+              <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0m3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z"/>
+            </svg>
+          </div>
+          <div [formGroup]="form" class="col-2 ms-2" style="gap: 10px; margin-top: 15px">
+            <label>Periodo Desde</label>
+            <input type="date" class="form-control me-2" formControlName="startDate"/>
+          </div>
+          <div [formGroup]="form" class="col-2 ms-2" style="gap: 10px; margin-top: 15px">
+            <label>Periodo Hasta</label>
+            <input type="date" class="form-control me-2" formControlName="endDate"/>
+          </div>
+          <h5 class="card-title text-secondary mb-1">Notificaciones Enviadas por Canal</h5>
+          <small class="text-secondary">Estadísticas semanales</small>
+        </div>
+        <google-chart [type]="columnChartType" [data]="columnChartData2" [options]="columnChartOptions2" class="w-100 expanded-chart-content"></google-chart>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gráfico 3: Notificaciones Enviadas por Día y Tipo de Canal -->
+  <div *ngIf="status === 3" class="col-12">
+    <div class="card border-0 shadow rounded-4 h-100 w-100">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <div class="back-arrow" (click)="makeBig(0)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="gray" class="bi bi-arrow-left-circle-fill" viewBox="0 0 16 16">
+              <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0m3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z"/>
+            </svg>
+          </div>
+          <div [formGroup]="form" class="col-2 ms-2" style="gap: 10px; margin-top: 15px">
+            <label>Periodo Desde</label>
+            <input type="date" class="form-control me-2" formControlName="startDate"/>
+          </div>
+          <div [formGroup]="form" class="col-2 ms-2" style="gap: 10px; margin-top: 15px">
+            <label>Periodo Hasta</label>
+            <input type="date" class="form-control me-2" formControlName="endDate"/>
+          </div>
+          <h5 class="card-title text-secondary mb-1">Notificaciones Enviadas por Día y Tipo de Canal</h5>
+          <small class="text-secondary">Estadísticas semanales</small>
+        </div>
+
+        <div class="d-flex justify-content-start align-items-center mb-3">
+          <div class="legend-item d-flex align-items-center me-3">
+            <div class="legend-color bg-primary me-1" style="width: 15px; height: 15px; border-radius: 3px; margin-left: 125px;"></div>
+            <small class="text-secondary">Telegram</small>
+          </div>
+          <div class="legend-item d-flex align-items-center me-3">
+            <div class="legend-color bg-success me-1" style="width: 15px; height: 15px; border-radius: 3px;"></div>
+            <small class="text-secondary">Email</small>
+          </div>
+          <div class="legend-item d-flex align-items-center">
+            <div class="legend-color bg-warning me-1" style="width: 15px; height: 15px; border-radius: 3px;"></div>
+            <small class="text-secondary">Web</small>
+          </div>
+        </div>
+
+        <google-chart [type]="cChartType" [data]="columnChartData3" [options]="columnChartOptions3" class="w-100 expanded-chart-content"></google-chart>
+      </div>
+    </div>
+  </div>
+
+  <!-- Vista principal con gráficos en tamaño normal -->
+  <div class="col-6 col-md-4 mb-4" *ngIf="status === 0">
+    <!-- Gráfico 1 -->
+    <div class="card border-0 shadow-lg rounded-4 h-100 transition-all hover-scale" (click)="makeBig(1)">
+      <div class="card-body">
+        <h5 class="card-title text-secondary mb-1">Notificaciones Enviadas por Día</h5>
+        <google-chart [type]="c3ChartType" [data]="columnChartData" [options]="columnChartOptions" class="w-100"></google-chart>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-6 col-md-4 mb-4" *ngIf="status === 0">
+    <!-- Gráfico 2 -->
+    <div class="card border-0 shadow-lg rounded-4 h-100 transition-all hover-scale" (click)="makeBig(2)">
+      <div class="card-body">
+        <h5 class="card-title text-secondary mb-1">Notificaciones Enviadas por Canal</h5>
+        <google-chart [type]="columnChartType" [data]="columnChartData2" [options]="columnChartOptions2" class="w-100"></google-chart>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-6 col-md-4 mb-4" *ngIf="status === 0">
+    <!-- Gráfico 3 -->
+    <div class="card border-0 shadow-lg rounded-4 h-100 transition-all hover-scale" (click)="makeBig(3)">
+      <div class="card-body">
+        <h5 class="card-title text-secondary mb-1">Notificaciones Enviadas por Día y Tipo de Canal</h5>
+        <google-chart [type]="cChartType" [data]="columnChartData3" [options]="columnChartOptions3" class="w-100"></google-chart>
+      </div>
+    </div>
+  </div>
+</div>

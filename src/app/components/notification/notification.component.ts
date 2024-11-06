@@ -1,6 +1,5 @@
 import {
   Component,
-  NgModule,
   OnInit,
 } from "@angular/core";
 import { CommonModule, DatePipe, JsonPipe } from "@angular/common";
@@ -26,18 +25,13 @@ import autoTable from "jspdf-autotable";
 import $ from "jquery";
 import "datatables.net";
 import "datatables.net-bs5";
-import { AllNotificationComponent } from "../all-notification/all-notification.component";
-import { NgLabelTemplateDirective, NgOptionTemplateDirective, NgSelectComponent } from "@ng-select/ng-select";
-import { JsonpInterceptor } from "@angular/common/http";
 import { Inventory } from "../../models/inventory";
+import { NgSelectComponent } from "@ng-select/ng-select";
 
 @Component({
   selector: "app-notification",
   standalone: true,
-  imports: [CommonModule, RouterModule, ReactiveFormsModule, DatePipe,FormsModule, NgLabelTemplateDirective,
-    NgOptionTemplateDirective,
-    NgSelectComponent,
-    JsonPipe],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, DatePipe, FormsModule, JsonPipe, NgSelectComponent],
   providers: [DatePipe],
   templateUrl: "./notification.component.html",
   styleUrls: ["./notification.component.css"],
