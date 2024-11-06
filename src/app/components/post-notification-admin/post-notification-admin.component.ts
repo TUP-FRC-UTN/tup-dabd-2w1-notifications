@@ -53,8 +53,8 @@ export class PostNotificationAdminComponent implements AfterViewInit, OnInit{
   fillTable() {
     let table = $("#myTable").DataTable();
     for (let user of this.users) {
-      
-      table.row.add([user.name,user.lastname,user.dni,user.email]).draw(false);
+
+      table.row.add([user.name,user.lastname,user.dni,user.email, '<input type="checkbox" class="userCheckbox" />']).draw(false);
     }
   }
   radioButtonValue : string = "allUsers";
@@ -66,30 +66,47 @@ export class PostNotificationAdminComponent implements AfterViewInit, OnInit{
   }
 
   setTable(): void {
-    $('#myTable').DataTable({
+    $("#myTable").DataTable({
+      dom: '<"mb-3"t>' + '<"d-flex justify-content-between"lp>',
+      
+      columnDefs: [
+        {
+          targets: 0,
+          orderable: false,
+          className: 'select-checkbox',
+        }
+      ],
 
       select: {
-        style: 'multi',
-        info: false
-    },
+        style: "multi",
+        selector: 'td:first-child input[type="checkbox"]'
+      },
       paging: true,
       searching: true,
-      order: [[1,"asc"]],
+      ordering: true,
       lengthChange: true,
       pageLength: 10,
-      
+      order: [[2, "desc"]],
       language: {
-        emptyTable: "No hay datos para mostrar",
+        emptyTable: "Cargando...",
         search: "Buscar",
         loadingRecords: "Cargando...",
-        entries: {_: "usuarios"},
-        lengthMenu: "_MENU_ usuarios por pagina",
-        info:"Mostrando de _START_ a _END_ total de _TOTAL_ usuarios",
+        zeroRecords: "No se han encontrado registros",
+        lengthMenu: "_MENU_",
+        info: " ",
+      },
+    });
 
-      }
+    $("#searchTerm").on("keyup", function () {
+      $("#myTable")
+        .DataTable()
+        .search($(this).val() as string)
+        .draw();
+    });
 
-      
-
+    $('#selectAll').on('click', function() {
+      const isChecked = $(this).prop('checked');
+      $('input[type="checkbox"].userCheckbox').prop('checked', isChecked);
     });
   }
 
@@ -129,8 +146,9 @@ export class PostNotificationAdminComponent implements AfterViewInit, OnInit{
             title: '¡Notificación enviada!',
             text: 'La notificacion ha sido enviada correctamente.',
             icon: 'success',
-            timer: 1500,
-            showConfirmButton: false});
+            showConfirmButton: true,
+            confirmButtonText: 'Aceptar'
+          });
         },
         error: (error) => {
           console.error('Error al enviar la notificacion: ', error);
@@ -193,40 +211,24 @@ export class PostNotificationAdminComponent implements AfterViewInit, OnInit{
     let table = $("#myTable").DataTable();
     
     let users : UserDTO[] = []
-    const amountOfUsers = table.rows({selected:true}).count();
-    let rowData = table.rows({ selected: true }).data() as { [key: string]: any };
-    for (let i = 0; i < amountOfUsers; i++) {
-      //hardcoded telegram chatId and email for demo
-      if (i == 0 ) {
-        let user : UserDTO = {
-          //HARDCODED ID
-          id : i,
+    
+    $("#myTable tbody tr").each(function () {
+      const checkbox = $(this).find("input.userCheckbox");
+      if (checkbox.is(":checked")) {
+
+        const rowData = $("#myTable").DataTable().row(this).data();
+        
+        let user: UserDTO = {
+          id: rowData.id,
           email: "solis.luna.ignacio@gmail.com",
-          chatId : 5869258860
-        }
-        users.push(user)
+          telegramChatId: 5869258860
+        };
+        users.push(user);
       }
-      else if (i == 1 ) {
-        let user : UserDTO = {
-          id : i,
-          email: "facuu.arguellog@gmail.com",
-          chatId : 1129773792
-        }
-        users.push(user)
-      }
-      else {
-        let user : UserDTO = {
-          id : i,
-          email: rowData[i][3],
-          //Cambiar a chatId cuando api users tenga ese campo
-          chatId: 0
-          
-        }
-        users.push(user)
-      }
-      
-    }
+    }); 
+
     return users;
+    console.log(users)
   }
 
   mapUserApiDTOToUserDTO(userApiArr : UserApiDTO[]) : UserDTO[]{
@@ -236,7 +238,7 @@ export class PostNotificationAdminComponent implements AfterViewInit, OnInit{
       let userDTO : UserDTO = {
         id: user.id,
         email: user.email,
-        chatId : 0
+        telegramChatId : 0
       }
       userDTOArray.push(userDTO);
     }
@@ -252,7 +254,7 @@ export class PostNotificationAdminComponent implements AfterViewInit, OnInit{
     
     let filteredUserDTOArray = this.mapUserApiDTOToUserDTO(filteredUsers);
     
-    filteredUserDTOArray[0].chatId = 5869258860;
+    filteredUserDTOArray[0].telegramChatId = 5869258860;
     filteredUserDTOArray[0].email = "solis.luna.ignacio@gmail.com"
     return filteredUserDTOArray;
     
