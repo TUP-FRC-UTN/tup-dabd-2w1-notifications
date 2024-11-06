@@ -1,11 +1,14 @@
 import {
   Component,
+  NgModule,
   OnInit,
 } from "@angular/core";
-import { CommonModule, DatePipe } from "@angular/common";
+import { CommonModule, DatePipe, JsonPipe } from "@angular/common";
 import {
   FormControl,
   FormGroup,
+  FormsModule,
+  NgModel,
   ReactiveFormsModule,
   Validators,
 } from "@angular/forms";
@@ -24,11 +27,17 @@ import $ from "jquery";
 import "datatables.net";
 import "datatables.net-bs5";
 import { AllNotificationComponent } from "../all-notification/all-notification.component";
+import { NgLabelTemplateDirective, NgOptionTemplateDirective, NgSelectComponent } from "@ng-select/ng-select";
+import { JsonpInterceptor } from "@angular/common/http";
+import { Inventory } from "../../models/inventory";
 
 @Component({
   selector: "app-notification",
   standalone: true,
-  imports: [CommonModule, RouterModule, ReactiveFormsModule, DatePipe],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, DatePipe,FormsModule, NgLabelTemplateDirective,
+    NgOptionTemplateDirective,
+    NgSelectComponent,
+    JsonPipe],
   providers: [DatePipe],
   templateUrl: "./notification.component.html",
   styleUrls: ["./notification.component.css"],
@@ -37,18 +46,39 @@ export class NotificationComponent implements OnInit {
   userId = 1;
   rolactual: string = "";
   selected: string = "Todas";
-  originalAccessList: Access[] = [];
-  originalFinesList: Fine[] = [];
-  originalPaymentsList: Payments[] = [];
-  originalGeneralsList: General[] = [];
-  selectedNotification: any = null;
-  data: Notifications = {
+  accessList: Access[] = [];
+  finesList: Fine[] = [];
+  paymentsList: Payments[] = [];
+  generalsList: General[] = [];
+  inventoryList: Inventory[] = [];
+  selectedNotification: any = {
+    subject: "placeholder",
+    message: "placeholder",
+    date: "placeholder"
+  }
+  selectedNotificationObject : any
+
+  allNotifications: Notifications = {
     fines: [],
     access: [],
     payments: [],
     generals: [],
+    inventories: []
   };
-  form: FormGroup;
+  allNotificationsArray : any[] = [];
+
+
+
+  dateFilterForm: FormGroup;
+  notificationTypes : string[] = 
+  ["Todas",
+    "Multas",
+    "Accesos",
+    "Pagos",
+    "Generales",
+    "Inventario"
+  ]
+  selectedNotificationType : string = "Todas";
 
   constructor(
     private service: NotificationService,
@@ -56,19 +86,24 @@ export class NotificationComponent implements OnInit {
     private datePipe: DatePipe,
     private activatedRoute: ActivatedRoute
   ) {
-    this.form = new FormGroup({
+    this.dateFilterForm = new FormGroup({
       startDate: new FormControl(new Date(), [Validators.required]),
       endDate: new FormControl(new Date(), [Validators.required]),
-      all: new FormControl(true),
-      fines: new FormControl(false),
-      access: new FormControl(false),
-      payments: new FormControl(false),
-      generals: new FormControl(false),
+      // all: new FormControl(true),
+      // fines: new FormControl(false),
+      // access: new FormControl(false),
+      // payments: new FormControl(false),
+      // generals: new FormControl(false),
     });
   }
 
   ngOnInit(): void {
     this.llenarData(this.userId);
+    $(document).on('click', '.mark-read-btn', (event) => {
+      console.log("CLICK EN MARCAR LEIDA")
+      console.log(this.selectedNotificationObject);
+      
+    });
     
     // Configure DataTables with search functionality
     $("#myTable").DataTable({
@@ -91,7 +126,7 @@ export class NotificationComponent implements OnInit {
         {targets: 4, className: "text-center"}
       ],
       dom: '<"mb-3"t>' + '<"d-flex justify-content-between"lp>',
-      select: { style: "multi" },
+      select: {style: "single"},
       paging: true,
       searching: true,
       ordering: true,
@@ -107,71 +142,63 @@ export class NotificationComponent implements OnInit {
       }
     });
 
+
+
     // Connect external search input to DataTables
     $('#searchTerm').on('keyup', function() {
       $('#myTable').DataTable().search($(this).val() as string).draw();
     });
 
-    // Handle row click for modal
-    // $("#myTable tbody").on("click", ".consultar-btn", (event) => {
-    //   event.preventDefault();
-    //   const row = $(event.currentTarget).closest('tr');
-    //   const data = $("#myTable").DataTable().row(row).data();
-      
-    // });
 
     this.initialzeDates();
-    this.form.valueChanges.subscribe(() => { 
-      this.updatedList()
-      this.cambiar()
+    this.dateFilterForm.valueChanges.subscribe(() => { 
+      this.filterListByDate();
     });
+
     this.rolactual = this.activatedRoute.snapshot.params["rol"];
   }
 
-  showDetailsModal(data: any) {
+  setNotification(data: any) {
     this.selectedNotification = {
       subject: data[1],
       message: data[2],
       date: data[3]
     };
-    // const modal = document.getElementById('detailsModal');
-    // if (modal) {
-    //     // @ts-ignore
-    //     const bootstrapModal = new bootstrap.Modal(modal);
-    //     bootstrapModal.show();
-    // }
-
-}
-
-  onRowClick(data: any) {
-    console.log("Fila clicada:", data);
-  }
-
-  cambiar() {
-    this.fillTable();
   }
 
   llenarData(userId: number) {
-    const getSubscription = this.service.getData(userId).subscribe({
+    this.service.getData(userId).subscribe({
       next: (value: Notifications) => {
-        this.data = value;
-        this.originalAccessList = [...value.access];
-        this.originalFinesList = [...value.fines];
-        this.originalPaymentsList = [...value.payments];
-        this.originalGeneralsList = [...value.generals];  
-        this.updatedList();
+        console.log("API RESPONSE: ");
+        console.log(value);
+        this.allNotifications = value;
+        this.accessList = [...value.access];
+        this.finesList = [...value.fines];
+        this.paymentsList = [...value.payments];
+        this.generalsList = [...value.generals];  
+        this.inventoryList = [...value.inventories]
         this.fillTable();
       },
       error: () => {
-        alert("error al cargar las notifications");
+        alert("Error al obtener las notificaciones del back-end");
       },
     });
   }
 
-  
+
+
   fillTable() {
     const table = $("#myTable").DataTable();
     table.clear().draw();
+    
+    table.on('select', (e, dt, type, indexes) => {
+      if (type === 'row') {
+        const rowData = table.row(indexes[0]).data();
+        let rowIndex = indexes[0]
+        this.selectedNotificationObject = this.allNotificationsArray[rowIndex]
+        this.setNotification(rowData)
+      }
+    });
 
     const addRow = (notification: any, tipo: string) => {
       table.row
@@ -183,64 +210,61 @@ export class NotificationComponent implements OnInit {
           `
               
                 <a class="btn btn-light align-items-center" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"
+                
                  style="width:40px; height:40px; font-size:1.2rem; padding-top:0.2rem;">
                 &#8942;
               </a>
               
                   <ul class="dropdown-menu">
                     <li><a class="dropdown-item consultar-btn" href="#" data-bs-toggle="modal"
-                    data-bs-target="#idMODAL">Ver más</a></li>
-                    
+                    data-bs-target="#idMODAL"">Ver más</a></li>
+                    <li><a class="dropdown-item consultar-btn mark-read-btn" 
+                    >Marcar como leida</a></li>
                   </ul>
 
           `,
         ])
-        .draw(false);
+        .draw()
     };
     
+    
+    //por cada array dentro del objeto allNotifications insertar lineas
+    this.allNotificationsArray = []
+    for (const [key,value] of Object.entries(this.allNotifications)){
+      const notificationArray = value;
+      let notificationType : string = "";
+      switch (key) {
+        case "generals":
+          notificationType = "Generales"
+          break
+        
+        case "access" : 
+          notificationType = "Accesos"
+          break
+        
+        case "fines" : 
+          notificationType = "Multas"
+          break
+        
+        case "payments" : 
+          notificationType = "Pagos"
+          break
+        
+        case "inventories": 
+          notificationType = "Inventario"
+          break
+        
 
-
-
-    if (this.form.get('all')?.value === true || this.form.get('access')?.value === true )
-      this.data.access.forEach(notification => addRow(notification, 'Accesos'));
-    if (this.form.get('all')?.value === true || this.form.get('fines')?.value === true)
-      this.data.fines.forEach(notification => addRow(notification, 'Multas'));
-    if (this.form.get('all')?.value === true || this.form.get('payments')?.value === true)
-      this.data.payments.forEach(notification => addRow(notification, 'Pagos'));
-    if (this.form.get('all')?.value === true  || this.form.get('generals')?.value === true)
-      this.data.generals.forEach(notification => addRow(notification, 'Generales'));
-
+      }
+      
+      notificationArray.forEach((notification : any)=>{
+        addRow(notification,notificationType)
+        this.allNotificationsArray.push(notification)
+      })
+    }
+    
   }
 
-  // updatedList() {
-  //     this.data.access=this.originalAccessList
-  //     this.data.fines=this.originalFinesList
-  //     this.data.payments=this.originalPaymentsList
-  //     this.data.generals=this.originalGeneralsList
-  //     console.log(this.data);
-
-  //   const filterByDate = (list: any[]) => {
-  //     const startDate = new Date(this.form.get('startDate')?.value ?? new Date());
-  //     const endDate = new Date(this.form.get('endDate')?.value ?? new Date());
-  //     console.log(startDate)
-  //     console.log(endDate)
-  //     console.log('caca')
-
-  //     const normalizedStartDate = this.normalizeDate(startDate);
-  //     const normalizedEndDate = this.normalizeDate(endDate);
-  //     return list.filter(item => {
-  //       const createdDate = new Date(item.created_datetime);
-  //       const normalizedCreatedDate = this.normalizeDate(createdDate);
-  //       return normalizedCreatedDate >= normalizedStartDate && normalizedCreatedDate <= normalizedEndDate;
-  //     });
-  //   };
-
-  //   this.data.access = filterByDate(this.data.access);
-  //   this.data.fines = filterByDate(this.data.fines);
-  //   this.data.payments = filterByDate(this.data.payments);
-  //   this.data.generals = filterByDate(this.data.generals);
-  //   this.fillTable();
-  // }
 
   exportarAExcel() {
     const tabla = $("#myTable").DataTable();
@@ -256,8 +280,8 @@ export class NotificationComponent implements OnInit {
   exportarAPDF() {
     const tabla = $("#myTable").DataTable();
     const filteredData = tabla.rows({ search: "applied" }).data().toArray();
-    const dateFrom = this.formatDateFromString(this.form.controls["startDate"].value)
-    const dateTo = this.formatDateFromString(this.form.controls["endDate"].value)
+    const dateFrom = this.formatDateFromString(this.dateFilterForm.controls["startDate"].value)
+    const dateTo = this.formatDateFromString(this.dateFilterForm.controls["endDate"].value)
 
     const doc = new jsPDF();
 
@@ -287,7 +311,6 @@ export class NotificationComponent implements OnInit {
   borrar() {
     this.selected = "Todas";
     this.initialzeDates();
-    this.fillTable();
   }
 
   getTodayDateFormatted(date: Date): string {
@@ -304,7 +327,7 @@ export class NotificationComponent implements OnInit {
     );
     const endDate = today;
 
-    this.form.patchValue({
+    this.dateFilterForm.patchValue({
       startDate: this.formatDate(startDate),
       endDate: this.formatDate(endDate),
     });
@@ -315,10 +338,13 @@ export class NotificationComponent implements OnInit {
     const day = date.getDate().toString().padStart(2, "0"); // Día debe ser 1-31
     return `${year}-${month}-${day}`; // Retornar en formato yyyy-MM-dd
   }
-  updatedList() {
+
+
+
+  filterListByDate() {
     let accessList: Access[] = [];
-    this.data.access = this.originalAccessList;
-    this.data.access.forEach((e) => {
+    this.allNotifications.access = this.accessList;
+    this.allNotifications.access.forEach((e) => {
       
       const apiDate = new Date(e.created_datetime);
       
@@ -331,9 +357,9 @@ export class NotificationComponent implements OnInit {
         apiDate.getSeconds()
       );
       const startDate2 = new Date(
-        this.form.get("startDate")?.value ?? new Date()
+        this.dateFilterForm.get("startDate")?.value ?? new Date()
       );
-      const endDate2 = new Date(this.form.get("endDate")?.value ?? new Date());
+      const endDate2 = new Date(this.dateFilterForm.get("endDate")?.value ?? new Date());
       
 
 
@@ -346,16 +372,16 @@ export class NotificationComponent implements OnInit {
         accessList.push(e);
       }
     });
-    this.data.access = accessList;
+    this.allNotifications.access = accessList;
 
     let finesList: Fine[] = [];
-    this.data.fines = this.originalFinesList;
-    this.data.fines.forEach((e) => {
+    this.allNotifications.fines = this.finesList;
+    this.allNotifications.fines.forEach((e) => {
       const createdDate = new Date(e.created_datetime);
       const startDate2 = new Date(
-        this.form.get("startDate")?.value ?? new Date()
+        this.dateFilterForm.get("startDate")?.value ?? new Date()
       );
-      const endDate2 = new Date(this.form.get("endDate")?.value ?? new Date());
+      const endDate2 = new Date(this.dateFilterForm.get("endDate")?.value ?? new Date());
 
       if (
         createdDate.toISOString().split("T")[0] >=
@@ -366,16 +392,16 @@ export class NotificationComponent implements OnInit {
         finesList.push(e);
       }
     });
-    this.data.fines = finesList;
+    this.allNotifications.fines = finesList;
 
     let paymentsList: Payments[] = [];
-    this.data.payments = this.originalPaymentsList;
-    this.data.payments.forEach((e) => {
+    this.allNotifications.payments = this.paymentsList;
+    this.allNotifications.payments.forEach((e) => {
       const createdDate = new Date(e.created_datetime);
       const startDate2 = new Date(
-        this.form.get("startDate")?.value ?? new Date()
+        this.dateFilterForm.get("startDate")?.value ?? new Date()
       );
-      const endDate2 = new Date(this.form.get("endDate")?.value ?? new Date());
+      const endDate2 = new Date(this.dateFilterForm.get("endDate")?.value ?? new Date());
 
       if (
         createdDate.toISOString().split("T")[0] >=
@@ -386,16 +412,16 @@ export class NotificationComponent implements OnInit {
         paymentsList.push(e);
       }
     });
-    this.data.payments = paymentsList;
+    this.allNotifications.payments = paymentsList;
 
     let generalsList: General[] = [];
-    this.data.generals = this.originalGeneralsList;
-    this.data.generals.forEach((e) => {
+    this.allNotifications.generals = this.generalsList;
+    this.allNotifications.generals.forEach((e) => {
       const createdDate = new Date(e.created_datetime);
       const startDate2 = new Date(
-        this.form.get("startDate")?.value ?? new Date()
+        this.dateFilterForm.get("startDate")?.value ?? new Date()
       );
-      const endDate2 = new Date(this.form.get("endDate")?.value ?? new Date());
+      const endDate2 = new Date(this.dateFilterForm.get("endDate")?.value ?? new Date());
       if (
         createdDate.toISOString().split("T")[0] >=
           startDate2.toISOString().split("T")[0] &&
@@ -405,10 +431,10 @@ export class NotificationComponent implements OnInit {
         generalsList.push(e);
       }
     });
-    this.data.generals = generalsList;
+    this.allNotifications.generals = generalsList;
 
+   
     this.fillTable();
-    console.log(this.data);
   }
   /*borrar(){
     this.selected="Todas";
@@ -421,7 +447,7 @@ export class NotificationComponent implements OnInit {
     // Marcar la notificación como leída
     notification.markedRead = true;
     // Actualizar la tabla o la lista de notificaciones
-    this.updatedList();
+    //this.updatedList();
   }
 
   formatDateFromString(date : string) {

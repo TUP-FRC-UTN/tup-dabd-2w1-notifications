@@ -128,7 +128,7 @@ MODAL VIEJO, BORRAR?
   color: #000000;
 }
 
-@media (max-width: 768px) {
+/* @media (max-width: 768px) {
   .header,
   .modal-content {
     padding: 10px;
@@ -139,9 +139,9 @@ MODAL VIEJO, BORRAR?
     flex-direction: column;
     align-items: center;
   }
-}
+} */
 
-.empty-state {
+/* .empty-state {
   position: absolute;
   top: 50px;
   right: 20px;
@@ -175,7 +175,7 @@ MODAL VIEJO, BORRAR?
   font-size: 1.5em;
   cursor: pointer;
   color: #000000;
-}
+} */
 
 .container {
   margin-top: 20px;
