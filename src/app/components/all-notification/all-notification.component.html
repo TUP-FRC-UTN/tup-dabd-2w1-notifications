@@ -1,78 +1,56 @@
 <section class="py-5">
-  <div class="container p-3 border border-2 rounded shadow-lg">
+  <div class="container p-3 border border-2 rounded shadow-lg" style="background-color: #ffffff; border: 2px solid #000000; border-radius: 8px; padding: 20px; box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);">
+ 
     <div class="row mb-2">
-      <div class="  d-flex">
-
+      <div class="d-flex">
         <div class="col-4">
-            <input
-              type="text"
-              id="searchTerm"
-              placeholder="Buscar..."
-              class="form-control"
-              aria-label="Search"
-              style="margin-top: 15px;  "
-            />
+          <input type="text" id="searchTerm" placeholder="Buscar..." class="form-control" aria-label="Search" 
+            style="margin-top: 15px; border: 1px solid #ddd; border-radius: 5px;" />
         </div>
 
-        <div
-          [formGroup]="form"
-          class="col-2 ms-2"
-          style="gap: 10px; margin-top: 15px"
-        >
-          <input
-            type="date"
-            class="form-control me-2"
-            formControlName="startDate"
-          />
+     
+        <div [formGroup]="form" class="col-2 ms-2">
+          <input type="date" class="form-control me-2" formControlName="startDate" 
+            style="margin-top: 15px; border: 1px solid #ddd; border-radius: 5px;" />
         </div>
 
-        <div
-          [formGroup]="form"
-          class="col-2 ms-2"
-          style="gap: 10px; margin-top: 15px"
-        >
-          <input
-            type="date"
-            class="form-control me-2"
-            formControlName="endDate"
-          />
+        <div [formGroup]="form" class="col-2 ms-2">
+          <input type="date" class="form-control me-2" formControlName="endDate" 
+            style="margin-top: 15px; border: 1px solid #ddd; border-radius: 5px;" />
         </div>
 
-        <div class="col-4 text-end" style="margin-top: 15px; ">
-          <button
-            (click)="borrar()"
-            class="btn mx-1 btn-secondary"
-          >
+     
+        <div class="col-4 text-end" style="margin-top: 15px;">
+          <button (click)="borrar()" class="btn mx-1 btn-secondary" 
+            style="transition: all 0.3s;">
             <i class="bi bi-trash"></i>
           </button>
 
-          <button
-            class="btn mx-1 btn-success"
-            (click)="exportarAExcel()"
-          >
+          <button class="btn mx-1 btn-success" (click)="exportarAExcel()" 
+            style="transition: all 0.3s;">
             <i class="bi bi-file-earmark-excel"></i>
           </button>
 
-          <button
-            class="btn mx-1 btn-danger me-4"
-            (click)="exportarAPDF()"
-          >
+          <button class="btn mx-1 btn-danger me-4" (click)="exportarAPDF()" 
+            style="transition: all 0.3s;">
             <i class="bi bi-file-earmark-pdf"></i>
           </button>
         </div>
       </div>
     </div>
 
+
     <div class="table-responsive">
-      <table id="myTable" class="table table-striped table-hover align-middle">
-        <thead class="table">
-          <tr>
-            <th>Fecha</th>
-            <th>Destinatario</th>
-            <th>DNI</th>
-            <th>Tipo</th>
-            <th>Asunto</th>
-            <th>Descripción</th>
+      <table id="myTable" class="table table-striped table-hover align-middle" 
+        style="margin-top: 20px; border-collapse: separate; border-spacing: 0; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border: 1px solid rgba(51,47,47,0.12);">
+        <thead>
+          <tr style="background-color: #FFFFFF;">
+            <th style="background-color: #FFFFFF; color: #000000; padding: 12px; text-align: center;">Fecha</th>
+            <th style="background-color: #FFFFFF; color: #000000; padding: 12px; text-align: center;">Destinatario</th>
+            <th style="background-color: #FFFFFF; color: #000000; padding: 12px; text-align: center;">DNI</th>
+            <th style="background-color: #FFFFFF; color: #000000; padding: 12px; text-align: center;">Tipo</th>
+            <th style="background-color: #FFFFFF; color: #000000; padding: 12px; text-align: center;">Asunto</th>
+            <th style="background-color: #FFFFFF; color: #000000; padding: 12px; text-align: center;">Descripción</th>
           </tr>
         </thead>
         <tbody></tbody>
@@ -80,3 +58,28 @@
     </div>
   </div>
 </section>
+
+
+<style>
+  .btn:hover {
+    background-color: #333333 !important;
+    transform: translateY(-2px);
+  }
+  
+  .table tbody tr:hover {
+    background-color: #e9ecef;
+  }
+  
+  .form-control:focus, .form-select:focus {
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  }
+  
+  @media (max-width: 768px) {
+    .form-control, .form-select {
+      margin-bottom: 10px;
+    }
+    table, th, td {
+      font-size: 0.8rem;
+    }
+  }
+</style>
