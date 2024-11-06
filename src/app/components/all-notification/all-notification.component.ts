@@ -64,6 +64,7 @@ export class AllNotificationComponent implements OnInit {
 
     this.table = $("#myTable").DataTable({
       dom: '<"mb-3"t>' + '<"d-flex justify-content-between"lp>',
+      columns: [{ width: '13%' }, { width: '20%' }, { width: '7%' }, { width: '10%' }, { width: '20%' }, { width: '30%' }],
 
       select: {
         style: "multi",
@@ -73,7 +74,7 @@ export class AllNotificationComponent implements OnInit {
       ordering: true,
       lengthChange: true,
       pageLength: 10,
-      order: [[2, "desc"]],
+      order: [[0, "desc"]],
       language: {
         emptyTable: "Cargando...",
         search: "Buscar",
@@ -82,6 +83,7 @@ export class AllNotificationComponent implements OnInit {
         lengthMenu: "_MENU_",
         info: " ",
       },
+      
     });
 
     // Connect external search input to DataTables
@@ -141,12 +143,13 @@ export class AllNotificationComponent implements OnInit {
           let dateString = this.formatDate(notification.created_datetime);
           this.table.row
             .add([
-              "Acceso",
-              notification.subject,
-              notification.message,
               dateString,
               notification.nombre + " " + notification.apellido,
               notification.dni,
+              "Acceso",
+              notification.subject,
+              notification.message,
+              
             ])
             .draw(false);
       }
@@ -157,12 +160,13 @@ export class AllNotificationComponent implements OnInit {
           let dateString = this.formatDate(notification.created_datetime);
           this.table.row
             .add([
-              "Multa",
-              notification.subject,
-              notification.message,
               dateString,
               notification.nombre + " " + notification.apellido,
               notification.dni,
+              "Multa",
+              notification.subject,
+              notification.message,
+
             ])
             .draw(false);
       }
@@ -174,12 +178,13 @@ export class AllNotificationComponent implements OnInit {
           let dateString = this.formatDate(notification.created_datetime);
           this.table.row
             .add([
-              "Pago",
-              notification.subject,
-              notification.message,
               dateString,
               notification.nombre + " " + notification.apellido,
               notification.dni,
+              "Pago",
+              notification.subject,
+              notification.message,
+
             ])
             .draw(false);
         
@@ -191,12 +196,13 @@ export class AllNotificationComponent implements OnInit {
           let dateString = this.formatDate(notification.created_datetime);
           this.table.row
             .add([
-              "General",
-              notification.subject,
-              notification.message,
               dateString,
               notification.nombre + " " + notification.apellido,
               notification.dni,
+              "General",
+              notification.subject,
+              notification.message,
+
             ])
             .draw(false);
       }
@@ -207,12 +213,13 @@ export class AllNotificationComponent implements OnInit {
           let dateString = this.formatDate(notification.created_datetime);
           this.table.row
             .add([
+              dateString,
+              "Administración",
+              "",
               "Inventario",
               notification.subject,
               notification.message,
-              dateString,
-              "",
-              "",
+
             ])
             .draw(false);
       }

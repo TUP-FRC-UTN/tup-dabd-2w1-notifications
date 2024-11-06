@@ -101,22 +101,10 @@ export class NotificationComponent implements OnInit {
     
     // Configure DataTables with search functionality
     $("#myTable").DataTable({
+      columns: [{ width: '13%' }, { width: '15%' }, { width: '25%' }, { width: '40%' }, { width: '8%' }],
+
       columnDefs: [
-        {targets:0,
-          className: "text-center"
-        },
-        {targets: 1,
-          className: "text-center"
-        },
-        {
-          targets: 2,  // Índice de la columna "Fecha"
-          className: 'text-center', // Añadir clase para centrar
-        },
-        {
-          targets: 3,  // Índice de la columna "Fecha"
-          className: 'text-center align-middle'
-           // Añadir clase para centrar
-        },
+        {targets: 0, className: 'text-center align-middle' },
         {targets: 4, className: "text-center"}
       ],
       dom: '<"mb-3"t>' + '<"d-flex justify-content-between"lp>',
@@ -124,7 +112,7 @@ export class NotificationComponent implements OnInit {
       paging: true,
       searching: true,
       ordering: true,
-      order: [[2, "desc"]],
+      order: [[0, "desc"]],
       pageLength: 10,
       language: {
         emptyTable: "Cargando...",
@@ -197,10 +185,11 @@ export class NotificationComponent implements OnInit {
     const addRow = (notification: any, tipo: string) => {
       table.row
         .add([
+          this.getTodayDateFormatted(notification.created_datetime),
+
           tipo,
           notification.subject,
           notification.message,
-          this.getTodayDateFormatted(notification.created_datetime),
           `
               
                 <a class="btn btn-light align-items-center" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"
@@ -229,19 +218,19 @@ export class NotificationComponent implements OnInit {
       let notificationType : string = "";
       switch (key) {
         case "generals":
-          notificationType = "Generales"
+          notificationType = "General"
           break
         
         case "access" : 
-          notificationType = "Accesos"
+          notificationType = "Acceso"
           break
         
         case "fines" : 
-          notificationType = "Multas"
+          notificationType = "Multa"
           break
         
         case "payments" : 
-          notificationType = "Pagos"
+          notificationType = "Pago"
           break
         
         case "inventories": 
