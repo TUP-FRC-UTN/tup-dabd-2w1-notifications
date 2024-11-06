@@ -38,38 +38,23 @@
           />
         </div>
 
-        <div class="col text-end" style="margin-top: 15px">
+        <div class="col-4 text-end" style="margin-top: 15px; ">
           <button
             (click)="borrar()"
-            class="btn mx-1"
-            style="
-              background-color: gray;
-              color: white;
-              border: 1px solid black;
-            "
+            class="btn mx-1 btn-secondary"
           >
             <i class="bi bi-trash"></i>
           </button>
 
           <button
-            class="btn mx-1"
-            style="
-              background-color: #28a745;
-              color: white;
-              border: 1px solid black;
-            "
+            class="btn mx-1 btn-success"
             (click)="exportarAExcel()"
           >
             <i class="bi bi-file-earmark-excel"></i>
           </button>
 
           <button
-            class="btn mx-1"
-            style="
-              background-color: #dc3545;
-              color: white;
-              border: 1px solid black;
-            "
+            class="btn mx-1 btn-danger me-4"
             (click)="exportarAPDF()"
           >
             <i class="bi bi-file-earmark-pdf"></i>

@@ -83,37 +83,24 @@
         </div>
         <!-- botones -->
           
-        <div class="col-2 text-end" style="margin-top: 15px">
+        <div class="col-2 text-center " style="margin-top: 15px">
           <button
             (click)="borrar()"
-            class="btn"
-            style="
-              background-color: gray;
-              color: white;
-              
-            "
+            class="btn mx-1 btn-secondary"
+            
           >
             <i class="bi bi-trash"></i>
           </button>
 
           
           <button (click)="exportarAExcel()"
-            class="btn mx-1"
-            style="
-              background-color: #28a745;
-              color: white;
-              
-            "
+            class="btn mx-1 btn-success"
+            
           >
             <i class="bi bi-file-earmark-excel"></i>
           </button>
           <button (click)="exportarAPDF()"
-            class="btn mx-1"
-            style="
-              background-color: #dc3545;
-              color: white;
-              
-            "
+            class="btn mx-1 btn-danger"
           >
             <i class="bi bi-file-earmark-pdf"></i>
           </button>
