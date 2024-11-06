@@ -1,8 +1,8 @@
-
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { GoogleChartsModule, ChartType } from 'angular-google-charts';
+import { ChartService } from '../../service/chart.service';
 
 @Component({
   selector: 'app-chart',
@@ -11,15 +11,18 @@ import { GoogleChartsModule, ChartType } from 'angular-google-charts';
   templateUrl: './chart.component.html',
   styleUrls: ['./chart.component.css']
 })
-export class ChartComponent {
+export class ChartComponent implements OnInit {
   columnChartType: ChartType = ChartType.ColumnChart;
   c2ChartType: ChartType = ChartType.Gauge;
   c3ChartType: ChartType = ChartType.PieChart;
   cChartType: ChartType = ChartType.AreaChart;
   form: FormGroup;
   status: number = 0;
+  /*columnChartData: any[] = []; //COMENTADO, NECESARIO PARA TRAER COSAS DE LA API
+  columnChartData2: any[] = [];
+  columnChartData3: any[] = [];*/
 
-  constructor() {
+  constructor(private chartDataService: ChartService) {
     this.form = new FormGroup({
       startDate: new FormControl(new Date()),
       endDate: new FormControl(new Date()),
@@ -74,6 +77,25 @@ export class ChartComponent {
     chartArea: { width: '80%', height: '70%' },
     colors: ['#4285F4', '#34A853', '#FBBC05']
   };
+
+  ngOnInit(): void {
+    //this.loadChartData(); //COMENTADO, NECESARIO PARA TRAER COSAS DE LA API
+  }
+
+  /*loadChartData(): void { //COMENTADO, NECESARIO PARA TRAER COSAS DE LA API
+    this.chartDataService.getChartData().subscribe(
+      (data) => {
+        console.log('Chart Data:', data);
+        //Agregar los datos que se van a mostrar
+        this.columnChartData = data.chartData1;
+        this.columnChartData2 = data.chartData2;
+        this.columnChartData3 = data.chartData3;
+      },
+      (error) => {
+        console.error('Error al cargar los datos del gráfico:', error);
+      }
+    );
+  }*/
 
   makeBig(status: number) {
     this.status = status;
