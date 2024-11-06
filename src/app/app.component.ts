@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { AllNotificationComponent } from "./components/all-notification/all-notification.component";
+import { NgModel } from '@angular/forms';
 //import {components} from './components'
 @Component({
   selector: 'app-root',

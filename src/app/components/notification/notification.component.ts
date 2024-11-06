@@ -1,11 +1,14 @@
 import {
   Component,
+  NgModule,
   OnInit,
 } from "@angular/core";
 import { CommonModule, DatePipe } from "@angular/common";
 import {
   FormControl,
   FormGroup,
+  FormsModule,
+  NgModel,
   ReactiveFormsModule,
   Validators,
 } from "@angular/forms";
@@ -24,11 +27,12 @@ import $ from "jquery";
 import "datatables.net";
 import "datatables.net-bs5";
 import { AllNotificationComponent } from "../all-notification/all-notification.component";
+import { NgLabelTemplateDirective, NgOptionTemplateDirective, NgSelectComponent } from "@ng-select/ng-select";
 
 @Component({
   selector: "app-notification",
   standalone: true,
-  imports: [CommonModule, RouterModule, ReactiveFormsModule, DatePipe],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, DatePipe, NgSelectComponent, FormsModule, NgLabelTemplateDirective, NgOptionTemplateDirective],
   providers: [DatePipe],
   templateUrl: "./notification.component.html",
   styleUrls: ["./notification.component.css"],
@@ -37,18 +41,27 @@ export class NotificationComponent implements OnInit {
   userId = 1;
   rolactual: string = "";
   selected: string = "Todas";
-  originalAccessList: Access[] = [];
-  originalFinesList: Fine[] = [];
-  originalPaymentsList: Payments[] = [];
-  originalGeneralsList: General[] = [];
+  accessList: Access[] = [];
+  finesList: Fine[] = [];
+  paymentsList: Payments[] = [];
+  generalsList: General[] = [];
   selectedNotification: any = null;
-  data: Notifications = {
+  allNotifications: Notifications = {
     fines: [],
     access: [],
     payments: [],
     generals: [],
   };
-  form: FormGroup;
+
+  dateFilterForm: FormGroup;
+  notificationTypes : string[] = 
+  ["Todas",
+    "Multas",
+    "Accesos",
+    "Pagos",
+    "Generales"
+  ]
+  selectedNotificationType : string = "";
 
   constructor(
     private service: NotificationService,
@@ -56,14 +69,14 @@ export class NotificationComponent implements OnInit {
     private datePipe: DatePipe,
     private activatedRoute: ActivatedRoute
   ) {
-    this.form = new FormGroup({
+    this.dateFilterForm = new FormGroup({
       startDate: new FormControl(new Date(), [Validators.required]),
       endDate: new FormControl(new Date(), [Validators.required]),
-      all: new FormControl(true),
-      fines: new FormControl(false),
-      access: new FormControl(false),
-      payments: new FormControl(false),
-      generals: new FormControl(false),
+      // all: new FormControl(true),
+      // fines: new FormControl(false),
+      // access: new FormControl(false),
+      // payments: new FormControl(false),
+      // generals: new FormControl(false),
     });
   }
 
@@ -112,16 +125,9 @@ export class NotificationComponent implements OnInit {
       $('#myTable').DataTable().search($(this).val() as string).draw();
     });
 
-    // Handle row click for modal
-    // $("#myTable tbody").on("click", ".consultar-btn", (event) => {
-    //   event.preventDefault();
-    //   const row = $(event.currentTarget).closest('tr');
-    //   const data = $("#myTable").DataTable().row(row).data();
-      
-    // });
 
     this.initialzeDates();
-    this.form.valueChanges.subscribe(() => { 
+    this.dateFilterForm.valueChanges.subscribe(() => { 
       this.updatedList()
       this.cambiar()
     });
@@ -152,18 +158,18 @@ export class NotificationComponent implements OnInit {
   }
 
   llenarData(userId: number) {
-    const getSubscription = this.service.getData(userId).subscribe({
+    this.service.getData(userId).subscribe({
       next: (value: Notifications) => {
-        this.data = value;
-        this.originalAccessList = [...value.access];
-        this.originalFinesList = [...value.fines];
-        this.originalPaymentsList = [...value.payments];
-        this.originalGeneralsList = [...value.generals];  
-        this.updatedList();
+        this.allNotifications = value;
+        this.accessList = [...value.access];
+        this.finesList = [...value.fines];
+        this.paymentsList = [...value.payments];
+        this.generalsList = [...value.generals];  
+        //this.updatedList();
         this.fillTable();
       },
       error: () => {
-        alert("error al cargar las notifications");
+        alert("Error al obtener las notificaciones del back-end");
       },
     });
   }
@@ -197,18 +203,10 @@ export class NotificationComponent implements OnInit {
         ])
         .draw(false);
     };
-    
-
-
-
-    if (this.form.get('all')?.value === true || this.form.get('access')?.value === true )
-      this.data.access.forEach(notification => addRow(notification, 'Accesos'));
-    if (this.form.get('all')?.value === true || this.form.get('fines')?.value === true)
-      this.data.fines.forEach(notification => addRow(notification, 'Multas'));
-    if (this.form.get('all')?.value === true || this.form.get('payments')?.value === true)
-      this.data.payments.forEach(notification => addRow(notification, 'Pagos'));
-    if (this.form.get('all')?.value === true  || this.form.get('generals')?.value === true)
-      this.data.generals.forEach(notification => addRow(notification, 'Generales'));
+    //por cada array dentro del objeto allNotifications insertar lineas
+    for (const [key,value] of Object.entries(this.allNotifications)){
+      console.log(key+" val: "+ value);
+    }
 
   }
 
@@ -256,8 +254,8 @@ export class NotificationComponent implements OnInit {
   exportarAPDF() {
     const tabla = $("#myTable").DataTable();
     const filteredData = tabla.rows({ search: "applied" }).data().toArray();
-    const dateFrom = this.formatDateFromString(this.form.controls["startDate"].value)
-    const dateTo = this.formatDateFromString(this.form.controls["endDate"].value)
+    const dateFrom = this.formatDateFromString(this.dateFilterForm.controls["startDate"].value)
+    const dateTo = this.formatDateFromString(this.dateFilterForm.controls["endDate"].value)
 
     const doc = new jsPDF();
 
@@ -304,7 +302,7 @@ export class NotificationComponent implements OnInit {
     );
     const endDate = today;
 
-    this.form.patchValue({
+    this.dateFilterForm.patchValue({
       startDate: this.formatDate(startDate),
       endDate: this.formatDate(endDate),
     });
@@ -315,10 +313,16 @@ export class NotificationComponent implements OnInit {
     const day = date.getDate().toString().padStart(2, "0"); // Día debe ser 1-31
     return `${year}-${month}-${day}`; // Retornar en formato yyyy-MM-dd
   }
+
+
+  filterTable() {
+
+  }
+
   updatedList() {
     let accessList: Access[] = [];
-    this.data.access = this.originalAccessList;
-    this.data.access.forEach((e) => {
+    this.allNotifications.access = this.accessList;
+    this.allNotifications.access.forEach((e) => {
       
       const apiDate = new Date(e.created_datetime);
       
@@ -331,9 +335,9 @@ export class NotificationComponent implements OnInit {
         apiDate.getSeconds()
       );
       const startDate2 = new Date(
-        this.form.get("startDate")?.value ?? new Date()
+        this.dateFilterForm.get("startDate")?.value ?? new Date()
       );
-      const endDate2 = new Date(this.form.get("endDate")?.value ?? new Date());
+      const endDate2 = new Date(this.dateFilterForm.get("endDate")?.value ?? new Date());
       
 
 
@@ -346,16 +350,16 @@ export class NotificationComponent implements OnInit {
         accessList.push(e);
       }
     });
-    this.data.access = accessList;
-
+    this.allNotifications.access = accessList;
+///////////////////////
     let finesList: Fine[] = [];
-    this.data.fines = this.originalFinesList;
-    this.data.fines.forEach((e) => {
+    this.allNotifications.fines = this.finesList;
+    this.allNotifications.fines.forEach((e) => {
       const createdDate = new Date(e.created_datetime);
       const startDate2 = new Date(
-        this.form.get("startDate")?.value ?? new Date()
+        this.dateFilterForm.get("startDate")?.value ?? new Date()
       );
-      const endDate2 = new Date(this.form.get("endDate")?.value ?? new Date());
+      const endDate2 = new Date(this.dateFilterForm.get("endDate")?.value ?? new Date());
 
       if (
         createdDate.toISOString().split("T")[0] >=
@@ -366,16 +370,16 @@ export class NotificationComponent implements OnInit {
         finesList.push(e);
       }
     });
-    this.data.fines = finesList;
+    this.allNotifications.fines = finesList;
 
     let paymentsList: Payments[] = [];
-    this.data.payments = this.originalPaymentsList;
-    this.data.payments.forEach((e) => {
+    this.allNotifications.payments = this.paymentsList;
+    this.allNotifications.payments.forEach((e) => {
       const createdDate = new Date(e.created_datetime);
       const startDate2 = new Date(
-        this.form.get("startDate")?.value ?? new Date()
+        this.dateFilterForm.get("startDate")?.value ?? new Date()
       );
-      const endDate2 = new Date(this.form.get("endDate")?.value ?? new Date());
+      const endDate2 = new Date(this.dateFilterForm.get("endDate")?.value ?? new Date());
 
       if (
         createdDate.toISOString().split("T")[0] >=
@@ -386,16 +390,16 @@ export class NotificationComponent implements OnInit {
         paymentsList.push(e);
       }
     });
-    this.data.payments = paymentsList;
+    this.allNotifications.payments = paymentsList;
 
     let generalsList: General[] = [];
-    this.data.generals = this.originalGeneralsList;
-    this.data.generals.forEach((e) => {
+    this.allNotifications.generals = this.generalsList;
+    this.allNotifications.generals.forEach((e) => {
       const createdDate = new Date(e.created_datetime);
       const startDate2 = new Date(
-        this.form.get("startDate")?.value ?? new Date()
+        this.dateFilterForm.get("startDate")?.value ?? new Date()
       );
-      const endDate2 = new Date(this.form.get("endDate")?.value ?? new Date());
+      const endDate2 = new Date(this.dateFilterForm.get("endDate")?.value ?? new Date());
       if (
         createdDate.toISOString().split("T")[0] >=
           startDate2.toISOString().split("T")[0] &&
@@ -405,10 +409,10 @@ export class NotificationComponent implements OnInit {
         generalsList.push(e);
       }
     });
-    this.data.generals = generalsList;
+    this.allNotifications.generals = generalsList;
 
     this.fillTable();
-    console.log(this.data);
+    console.log(this.allNotifications);
   }
   /*borrar(){
     this.selected="Todas";

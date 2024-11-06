@@ -1,51 +1,11 @@
 <section class="py-5">
+  <ng-select class="" [items]="notificationTypes" [(ngModel)]="selectedNotificationType"></ng-select>
   <div class="container p-3 border border-2 rounded shadow-lg">
     <div class="row mb-2">
       <div class="d-flex">
         <!-- dropdown -->
-        <div class="col-md-2">
-          <div class="dropdown" style="margin-top: 15px; margin-right: 10px;">
-              <button class="btn btn-secondary dropdown-toggle form-control" 
-                      type="button" 
-                      id="dropdownCountries" 
-                      data-bs-toggle="dropdown" 
-                      aria-expanded="false">
-                  Seleccionar Tipo
-                  <span class="selected-count"></span>
-              </button>
-              <ul class="dropdown-menu w-100" aria-labelledby="dropdownCountries" [formGroup]="form">
-                <li>
-                  <label class="dropdown-item">
-                    <input type="checkbox" class="form-check-input me-2" formControlName="all"> 
-                    Todas
-                  </label>
-                </li>
-                <li>
-                    <label class="dropdown-item">
-                        <input type="checkbox" class="form-check-input me-2" formControlName="fines"> 
-                        Multas
-                    </label>
-                </li>
-                <li>
-                    <label class="dropdown-item">
-                        <input type="checkbox" class="form-check-input me-2" formControlName="access">
-                        Accesos
-                    </label>
-                </li>
-                <li>
-                    <label class="dropdown-item">
-                        <input type="checkbox" class="form-check-input me-2" formControlName="payments">
-                        Pagos
-                    </label>
-                </li>
-                <li>
-                    <label class="dropdown-item">
-                        <input type="checkbox" class="form-check-input me-2" formControlName="generals">
-                        Generales
-                    </label>
-                </li>
-              </ul>
-          </div>
+        <div class="col-md-3">
+          
         </div>
         <!-- filtro buscar -->
         <div class="col-4">
@@ -59,28 +19,29 @@
           />
         </div>
       <!-- filtro fecha -->
-      <div
-        [formGroup]="form"
-        class="col-2 ms-2"
-        style="gap: 10px; margin-top: 15px"
-      >
-        <input
-          type="date"
-          class="form-control me-2"
-          formControlName="startDate"
-        />
-      </div>
-      <div
-        [formGroup]="form"
-        class="col-2 ms-2"
-        style="gap: 10px; margin-top: 15px"
-      >
-        <input
-          type="date"
-          class="form-control me-2"
-          formControlName="endDate"
-        />
+       <form [formGroup]="dateFilterForm">
+        <div
+          class="col-12 ms-2"
+          style="gap: 10px; margin-top: 15px"
+        >
+          <input
+            type="date"
+            class="form-control me-2"
+            formControlName="startDate"
+          />
         </div>
+        <div
+          
+          class="col-12 ms-2"
+          style="gap: 10px; margin-top: 15px"
+        >
+          <input
+            type="date"
+            class="form-control me-2"
+            formControlName="endDate"
+          />
+          </div>
+      </form>
         <!-- botones -->
           
         <div class="col-2 text-center " style="margin-top: 15px">
