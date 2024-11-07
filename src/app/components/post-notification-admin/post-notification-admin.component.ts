@@ -67,9 +67,8 @@ export class PostNotificationAdminComponent implements AfterViewInit, OnInit{
       
       columnDefs: [
         {
-          targets: 0,
-          orderable: false,
-          className: 'select-checkbox',
+          targets: 4,
+          className: 'text-center align-middle',
         }
       ],
 
@@ -82,7 +81,7 @@ export class PostNotificationAdminComponent implements AfterViewInit, OnInit{
       ordering: true,
       lengthChange: true,
       pageLength: 10,
-      order: [[2, "desc"]],
+      order: [[1, "asc"]],
       language: {
         emptyTable: "Cargando...",
         search: "Buscar",
