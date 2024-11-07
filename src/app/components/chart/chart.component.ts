@@ -13,10 +13,9 @@ import { AllNotifications } from '../../models/all-notifications';
   styleUrls: ['./chart.component.css']
 })
 export class ChartComponent implements OnInit {
-  columnChartType: ChartType = ChartType.ColumnChart;
-  c2ChartType: ChartType = ChartType.Gauge;
-  c3ChartType: ChartType = ChartType.PieChart;
-  cChartType: ChartType = ChartType.AreaChart;
+  columnChartType: ChartType = ChartType.PieChart;
+  columnChartType2: ChartType = ChartType.ColumnChart;
+  columnChartType3: ChartType = ChartType.AreaChart;
   form: FormGroup;
   status: number = 0;
   columnChartData: any[] = []; 
@@ -36,7 +35,7 @@ export class ChartComponent implements OnInit {
     vAxis: { title: 'Cantidad de Notificaciones Enviadas' },
     legend: { position: 'none' },
     chartArea: { width: '80%', height: '70%' },
-    colors: ['#4285F4']
+    colors: ['#800080']
   };
 
   columnChartOptions2 = {
@@ -45,7 +44,7 @@ export class ChartComponent implements OnInit {
     vAxis: { title: 'Cantidad de Notificaciones' },
     legend: { position: 'none' },
     chartArea: { width: '80%', height: '70%' },
-    colors: ['#34A853']
+    colors: ['#8B4513']
   };
 
   columnChartOptions3 = {
