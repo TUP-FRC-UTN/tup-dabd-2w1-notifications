@@ -40,7 +40,7 @@ export class ChartComponent implements OnInit {
   };
 
   columnChartOptions2 = {
-    title: 'Notificaciones Enviadas por Tipo (Access, Payment, Fine)',
+    title: 'Notificaciones Enviadas por Tipo (Access, Payment, Fine, Inventory)',
     hAxis: { title: 'Tipo de Notificación' },
     vAxis: { title: 'Cantidad de Notificaciones' },
     legend: { position: 'none' },
@@ -54,7 +54,7 @@ export class ChartComponent implements OnInit {
     vAxis: { title: 'Cantidad de Notificaciones' },
     legend: { position: 'top' },
     chartArea: { width: '80%', height: '70%' },
-    colors: ['#4285F4', '#34A853', '#FBBC05']
+    colors: ['#4285F4', '#34A853', '#FBBC05', '#FF0000']
   };
 
   ngOnInit(): void {
@@ -81,11 +81,16 @@ export class ChartComponent implements OnInit {
         });
   
         data.payments.forEach(p => {
-          const dayOfWeek = getDayOfWeek(new Date(p.dateFrom));
+          const dayOfWeek = getDayOfWeek(new Date(p.created_datetime));
           notificationsPerDay[dayOfWeek] += 1;
         });
   
         data.fines.forEach(f => {
+          const dayOfWeek = getDayOfWeek(new Date(f.created_datetime));
+          notificationsPerDay[dayOfWeek] += 1;
+        });
+
+        data.inventories.forEach(f => {
           const dayOfWeek = getDayOfWeek(new Date(f.created_datetime));
           notificationsPerDay[dayOfWeek] += 1;
         });
@@ -97,15 +102,17 @@ export class ChartComponent implements OnInit {
         this.columnChartData2 = [
           ['Access', data.access.length],
           ['Payment', data.payments.length],
-          ['Fine', data.fines.length]
+          ['Fine', data.fines.length],
+          ['Inventory', data.inventories.length]
         ];
   
         // Datos para el tercer gráfico: Notificaciones por Día y Tipo de Notificación
         this.columnChartData3 = daysOfWeek.map(day => [
           day,
           data.access.filter(a => getDayOfWeek(new Date(a.created_datetime)) === day).length,
-          data.payments.filter(p => getDayOfWeek(new Date(p.dateFrom)) === day).length,
-          data.fines.filter(f => getDayOfWeek(new Date(f.created_datetime)) === day).length
+          data.payments.filter(p => getDayOfWeek(new Date(p.created_datetime)) === day).length,
+          data.fines.filter(f => getDayOfWeek(new Date(f.created_datetime)) === day).length,
+          data.inventories.filter(f => getDayOfWeek(new Date(f.created_datetime)) === day).length
         ]);
       },
       (error) => {
