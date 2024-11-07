@@ -27,11 +27,12 @@ import "datatables.net";
 import "datatables.net-bs5";
 import { Inventory } from "../../models/inventory";
 import { NgSelectComponent } from "@ng-select/ng-select";
+import { SelectMultipleComponent } from "../select-multiple/select-multiple.component";
 
 @Component({
   selector: "app-notification",
   standalone: true,
-  imports: [CommonModule, RouterModule, ReactiveFormsModule, DatePipe, FormsModule, JsonPipe, NgSelectComponent],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, DatePipe, FormsModule, JsonPipe, NgSelectComponent, SelectMultipleComponent],
   providers: [DatePipe],
   templateUrl: "./notification.component.html",
   styleUrls: ["./notification.component.css"],
@@ -64,16 +65,23 @@ export class NotificationComponent implements OnInit {
 
 
   dateFilterForm: FormGroup;
-  notificationTypes : string[] = 
-  ["Todas",
-    "Multas",
-    "Accesos",
-    "Pagos",
-    "Generales",
-    "Inventario"
-  ]
-  selectedNotificationType : string = "Todas";
+  notificationTypes : any[] = 
+  [ {value:"Todas",name:"Todas"},
+    {value:"Multas",name:"Multas"},
+    {value:"Accesos",name:"Accesos"},
+    {value:"Pagos",name:"Pagos"},
+    {value:"Generales",name:"Generales"},
 
+  ]
+  selectedNotificationType : string[] = ["Todas"];
+
+  dropdownSeleccionadas: any[] = ["Todas"];
+
+  recibirSeleccionadas(node:any){
+    this.dropdownSeleccionadas = node;
+    this.fillTable()
+    console.log(node)
+  }
   constructor(
     private service: NotificationService,
     private serviceUser: MockUserService,
@@ -154,9 +162,9 @@ export class NotificationComponent implements OnInit {
 
   setNotification(data: any) {
     this.selectedNotification = {
-      subject: data[1],
-      message: data[2],
-      date: data[3]
+      subject: data[2],
+      message: data[3],
+      date: data[0]
     };
   }
 
@@ -170,7 +178,7 @@ export class NotificationComponent implements OnInit {
         this.finesList = [...value.fines];
         this.paymentsList = [...value.payments];
         this.generalsList = [...value.generals];  
-        this.inventoryList = [...value.inventories]
+        this.inventoryList = [...value.inventories];
         this.fillTable();
       },
       error: () => {
@@ -197,10 +205,10 @@ export class NotificationComponent implements OnInit {
     const addRow = (notification: any, tipo: string) => {
       table.row
         .add([
+          this.getTodayDateFormatted(notification.created_datetime),
           tipo,
           notification.subject,
           notification.message,
-          this.getTodayDateFormatted(notification.created_datetime),
           `
               
                 <a class="btn btn-light align-items-center" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"
@@ -221,42 +229,25 @@ export class NotificationComponent implements OnInit {
         .draw()
     };
     
-    
-    //por cada array dentro del objeto allNotifications insertar lineas
-    this.allNotificationsArray = []
-    for (const [key,value] of Object.entries(this.allNotifications)){
-      const notificationArray = value;
-      let notificationType : string = "";
-      switch (key) {
-        case "generals":
-          notificationType = "Generales"
-          break
-        
-        case "access" : 
-          notificationType = "Accesos"
-          break
-        
-        case "fines" : 
-          notificationType = "Multas"
-          break
-        
-        case "payments" : 
-          notificationType = "Pagos"
-          break
-        
-        case "inventories": 
-          notificationType = "Inventario"
-          break
-        
+      this.allNotificationsArray = []
+      if(this.dropdownSeleccionadas.includes("Todas")){
+        this.allNotifications.access.forEach(notification => {addRow(notification, 'Accesos'),this.allNotificationsArray.push(notification)});
+        this.allNotifications.fines.forEach(notification =>{ addRow(notification, 'Multas'),this.allNotificationsArray.push(notification)});
+        this.allNotifications.payments.forEach(notification => {addRow(notification, 'Pagos'),this.allNotificationsArray.push(notification)});
+        this.allNotifications.generals.forEach(notification => {addRow(notification, 'Generales'),this.allNotificationsArray.push(notification)});
+      }else {
+        this.dropdownSeleccionadas.forEach(e => {
+          if (e === "Accesos" )
+            this.allNotifications.access.forEach(notification => {addRow(notification, 'Accesos'),this.allNotificationsArray.push(notification)});
+          if (e === "Multas")
+            this.allNotifications.fines.forEach(notification =>{ addRow(notification, 'Multas'),this.allNotificationsArray.push(notification)});
+          if (e  === "Pagos")
+            this.allNotifications.payments.forEach(notification => {addRow(notification, 'Pagos'),this.allNotificationsArray.push(notification)});
+          if (e === "Generales")
+            this.allNotifications.generals.forEach(notification => {addRow(notification, 'Generales'),this.allNotificationsArray.push(notification)});
+        })
 
       }
-      
-      notificationArray.forEach((notification : any)=>{
-        addRow(notification,notificationType)
-        this.allNotificationsArray.push(notification)
-      })
-    }
-    
   }
 
 
@@ -304,6 +295,11 @@ export class NotificationComponent implements OnInit {
 
   borrar() {
     this.selected = "Todas";
+    const searchInput = document.getElementById('searchTerm') as HTMLInputElement;
+    if (searchInput) {
+      searchInput.value = '';
+    }
+    console.log(this.allNotifications)
     this.initialzeDates();
   }
 
