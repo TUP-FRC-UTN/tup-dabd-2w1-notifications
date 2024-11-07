@@ -6,3 +6,7 @@
   transform: translateY(-2px);
 
 } 
+
+table.dataTable tbody tr.selected {
+  background-color: transparent !important;
+}

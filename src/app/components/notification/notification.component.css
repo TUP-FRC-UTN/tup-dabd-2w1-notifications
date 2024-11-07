@@ -197,3 +197,10 @@ button:hover,
   padding: 12px;
   text-align: center;
 }
+
+
+
+table.dataTable tbody tr.selected {
+  background-color: transparent !important;
+}
+

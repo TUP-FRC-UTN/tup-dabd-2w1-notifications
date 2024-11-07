@@ -6,6 +6,7 @@
     bindValue="value"
     [closeOnSelect]="!multiple"
     [(ngModel)]="selectedOptions"
+    [clearable]="false"
     (ngModelChange)="send()">
     @if(multiple){
         <ng-template ng-multi-label-tmp let-items="items">
