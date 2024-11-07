@@ -15,7 +15,7 @@
           </div>
         } 
     
-        <div class="col-md-12" style="display: flex; gap: 60px;">
+        <div class="col-md-12" style="display: flex; gap: 50px;">
           <label for="inputDescription" class="form-label">Mensaje</label>
           <!-- <input type="text" class="form-control" id="inputDescription" name="description" required #description="ngModel" [(ngModel)]="notification.description"> -->
            <textarea class="form-control" id="inputDescription" name="description" 
@@ -32,7 +32,7 @@
     
         
         <div class="col-md-12 mb-3">
-          <h5>Notificar a:</h5>
+          <h6>Notificar a:</h6>
             <div class="row justify-content-center d-flex">
               
               <div class="col-auto mt-2">
@@ -90,7 +90,7 @@
                     <th>Apellido</th>
                     <th>DNI</th>
                     <th>Email</th>
-                    <th>Acciones</th>
+                    <th>Seleccionar</th>
                 </tr>
             </thead>
             <tbody>
@@ -105,9 +105,9 @@
         </div>
 
 
-        <div class="col-12 d-flex justify-content-between g-4">
-          <button class="btn btn-secondary" type="button" style="width: 150px;" (click)="clearForm(form)">Cancelar</button>
-          <button class="btn btn-success" type="submit" style="width: 150px;">Enviar</button>
+        <div class="col-12 d-flex justify-content-end g-4">
+          <button class="btn btn-secondary" type="button" style="width: 5.5em;margin-right:2em" (click)="clearForm(form)">Cancelar</button>
+          <button class="btn btn-success" type="submit" style="width: 5.5em;">Enviar</button>
         </div>
         
       </form>
