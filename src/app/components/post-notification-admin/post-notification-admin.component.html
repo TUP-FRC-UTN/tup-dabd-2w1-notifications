@@ -58,7 +58,6 @@
                   <option value="1"selected disabled>Canal de comunicación</option>
                   <option value="EMAIL">Email</option>
                   <option value="TELEGRAM">Telegram</option>
-                  <option value="SMS">SMS</option>
                 </select>
                 @if(form.submitted && selectValue=="1") {
                   <div class="alert alert-danger mt-3">
@@ -124,75 +123,3 @@
 </section>
 
 
-
-<!-- FORM REACTIVE; CHARLAR EN DAILY :D-->
-
-<!-- <form [formGroup]="notificationForm" (ngSubmit)="onSubmit()">
-  <div class="col-md-12">
-    <label for="inputSubject" class="form-label">Asunto</label>
-    <input type="text" class="form-control" id="inputSubject" formControlName="subject">
-    @if (notificationForm.get('subject')?.errors?.['required'] && notificationForm.get('subject')?.touched) {
-      <div class="alert alert-danger mt-3">
-        El asunto es requerido y debe tener máximo 20 caracteres.
-      </div>
-    }
-  </div>
-
-  <div class="col-md-12">
-    <label for="inputDescription" class="form-label">Mensaje</label>
-    <textarea class="form-control" id="inputDescription" formControlName="description"
-              style="resize: none;height: 6em;">
-    </textarea>
-    @if (notificationForm.get('description')?.errors?.['required'] && notificationForm.get('description')?.touched) {
-      <div class="alert alert-danger mt-3">
-        La descripcion no debe estar vacia
-      </div>
-    }
-  </div>
-
-  <div class="col-md-12 mb-3">
-    <h5>Notificar a:</h5>
-    <div class="row justify-content-center d-flex">
-      <div class="col-auto mt-2">
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" formControlName="radioButtonValue" 
-                 id="allRbt" value="allUsers">
-          <label class="form-check-label" for="allRbt">Todos los usuarios</label>
-        </div>
-
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" formControlName="radioButtonValue" 
-                 id="onlyToRbt" value="onlyTo">
-          <label class="form-check-label" for="onlyToRbt">Solamente a</label>
-        </div>
-
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" formControlName="radioButtonValue" 
-                 id="excludeRbt" value="exclude">
-          <label class="form-check-label" for="excludeRbt">Excluir a</label>
-        </div>
-      </div>
-
-      <div class="col-5">
-        <select formControlName="selectValue" class="form-select">
-          <option value="1" disabled>Canal de comunicación</option>
-          <option value="EMAIL">Email</option>
-          <option value="TELEGRAM">Telegram</option>
-          <option value="SMS">SMS</option>
-        </select>
-        @if (notificationForm.get('selectValue')?.value === '1' && notificationForm.get('selectValue')?.touched) {
-          <div class="alert alert-danger mt-3">
-            Debe elegir un canal de comunicación
-          </div>
-        }
-      </div>
-    </div>
-  </div> --> 
-
-  <!-- Rest of your template... -->
-
-  <!-- <div class="col-12 d-flex justify-content-between g-4">
-    <button class="btn btn-secondary" type="button" (click)="clearForm()">Cancelar</button>
-    <button class="btn btn-success" type="submit">Enviar</button>
-  </div>
-</form> -->

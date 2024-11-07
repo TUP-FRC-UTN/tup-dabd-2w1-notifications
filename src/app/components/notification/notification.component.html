@@ -48,7 +48,7 @@
         <div class="col-2 text-center " style="margin-top: 15px">
           <button
             (click)="borrar()"
-            class="btn mx-1 btn-secondary"
+            class="btn mx-1 btn-secondary filterbutton"
             
           >
             <i class="bi bi-trash"></i>
@@ -56,13 +56,13 @@
 
           
           <button (click)="exportarAExcel()"
-            class="btn mx-1 btn-success"
+            class="btn mx-1 btn-success filterbutton"
             
           >
             <i class="bi bi-file-earmark-excel"></i>
           </button>
           <button (click)="exportarAPDF()"
-            class="btn mx-1 btn-danger"
+            class="btn mx-1 btn-danger filterbutton"
           >
             <i class="bi bi-file-earmark-pdf"></i>
           </button>
@@ -73,7 +73,7 @@
 
     <div class="table-responsive">
       <table id="myTable" class="table table-striped table-hover align-middle">
-        <thead class="table-dark">
+        <thead class="table">
           <tr>
             <th>Fecha</th>
             <th>Tipo</th>
@@ -118,7 +118,7 @@
               </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Aceptar</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
             </div>
           </div>
         </div>
