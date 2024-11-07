@@ -25,6 +25,7 @@ import "datatables.net-bs5";
 import { Inventory } from "../../models/inventory";
 import { NgSelectComponent } from "@ng-select/ng-select";
 import { SelectMultipleComponent } from "../select-multiple/select-multiple.component";
+import { single } from "rxjs";
 
 @Component({
   selector: "app-notification",
@@ -124,12 +125,13 @@ export class NotificationComponent implements OnInit {
         { targets: 4, className: "text-center" },
       ],
       dom: '<"mb-3"t>' + '<"d-flex justify-content-between"lp>',
-  
+      select: {style: "single"},
       paging: true,
       searching: true,
       ordering: true,
       order: [[0, "desc"]],
-      pageLength: 10,
+      pageLength: 5,
+      lengthMenu: [5, 10, 25, 50],
       language: {
         emptyTable: "Cargando...",
         search: "Buscar",

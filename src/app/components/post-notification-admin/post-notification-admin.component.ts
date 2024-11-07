@@ -17,6 +17,7 @@ import { ReactiveFormsModule, FormsModule, NgForm } from '@angular/forms';
   standalone: true,
   imports: [FormsModule, NgClass, ReactiveFormsModule],
   templateUrl: './post-notification-admin.component.html',
+  styles: ['.hidden {display:none;}'],
   styleUrl: './post-notification-admin.component.css'
 })
 export class PostNotificationAdminComponent implements AfterViewInit, OnInit{
@@ -59,6 +60,7 @@ export class PostNotificationAdminComponent implements AfterViewInit, OnInit{
   ngAfterViewInit(): void {
       this.setTable();
       this.selectValue = "1"
+      
   }
 
   setTable(): void {
@@ -80,7 +82,8 @@ export class PostNotificationAdminComponent implements AfterViewInit, OnInit{
       searching: true,
       ordering: true,
       lengthChange: true,
-      pageLength: 10,
+      pageLength: 5,
+      lengthMenu: [5, 10, 25, 50],
       order: [[1, "asc"]],
       language: {
         emptyTable: "Cargando...",
