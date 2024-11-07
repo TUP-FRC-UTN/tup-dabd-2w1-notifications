@@ -191,8 +191,6 @@ export class PostNotificationAdminComponent implements AfterViewInit, OnInit{
   //     } else if (this.notificationForm.get('radioButtonValue')?.value === 'exclude') {
   //       this.newNotification.users = this.getFilteredUsers();
   //     }
-
-  //     // Rest of your submit logic...
   //   }
   // }
   
