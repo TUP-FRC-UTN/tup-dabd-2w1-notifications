@@ -2,7 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { GoogleChartsModule, ChartType } from 'angular-google-charts';
-import { ChartService } from '../../service/chart.service';
+import { NotificationRegisterService } from '../../service/notification-register.service';
+import { AllNotifications } from '../../models/all-notifications';
 
 @Component({
   selector: 'app-chart',
@@ -18,25 +19,17 @@ export class ChartComponent implements OnInit {
   cChartType: ChartType = ChartType.AreaChart;
   form: FormGroup;
   status: number = 0;
-  /*columnChartData: any[] = []; //COMENTADO, NECESARIO PARA TRAER COSAS DE LA API
+  columnChartData: any[] = []; 
   columnChartData2: any[] = [];
-  columnChartData3: any[] = [];*/
+  columnChartData3: any[] = [];
 
-  constructor(private chartDataService: ChartService) {
+  constructor(private chartDataService: NotificationRegisterService) {
     this.form = new FormGroup({
       startDate: new FormControl(new Date()),
       endDate: new FormControl(new Date()),
     });
   }
 
-  // Data and options for "Notificaciones Enviadas por Día"
-  columnChartData = [
-    ['Lunes', 45],
-    ['Martes', 30],
-    ['Miércoles', 55],
-    ['Jueves', 40],
-    ['Viernes', 50]
-  ];
   columnChartOptions = {
     title: 'Notificaciones Enviadas por Día',
     hAxis: { title: 'Días' },
@@ -46,31 +39,17 @@ export class ChartComponent implements OnInit {
     colors: ['#4285F4']
   };
 
-  // Data and options for "Notificaciones Enviadas por Canal"
-  columnChartData2 = [
-    ['Email', 23],
-    ['Telegram', 34],
-    ['Web', 19]
-  ];
   columnChartOptions2 = {
-    title: 'Notificaciones Enviadas por Canal',
-    hAxis: { title: 'Canal' },
+    title: 'Notificaciones Enviadas por Tipo (Access, Payment, Fine)',
+    hAxis: { title: 'Tipo de Notificación' },
     vAxis: { title: 'Cantidad de Notificaciones' },
     legend: { position: 'none' },
     chartArea: { width: '80%', height: '70%' },
     colors: ['#34A853']
   };
 
-  // Data and options for "Notificaciones Enviadas por Día y Tipo de Canal"
-  columnChartData3 = [
-    ['Lunes', 7, 11, 5],
-    ['Martes', 20, 8, 10],
-    ['Miércoles', 30, 22, 26],
-    ['Jueves', 25, 12, 3],
-    ['Viernes', 10, 2, 7]
-  ];
   columnChartOptions3 = {
-    title: 'Notificaciones Enviadas por Día y Tipo de Canal',
+    title: 'Notificaciones Enviadas por Día y Tipo de Notificación',
     hAxis: { title: 'Días' },
     vAxis: { title: 'Cantidad de Notificaciones' },
     legend: { position: 'top' },
@@ -79,23 +58,65 @@ export class ChartComponent implements OnInit {
   };
 
   ngOnInit(): void {
-    //this.loadChartData(); //COMENTADO, NECESARIO PARA TRAER COSAS DE LA API
+    this.loadChartData()
   }
 
-  /*loadChartData(): void { //COMENTADO, NECESARIO PARA TRAER COSAS DE LA API
-    this.chartDataService.getChartData().subscribe(
-      (data) => {
+  loadChartData(): void {
+    const daysOfWeek = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'];
+    const getDayOfWeek = (date: Date) => daysOfWeek[date.getDay() - 1]; // Ajuste del día de la semana (domingo es 0)
+  
+    this.chartDataService.getData().subscribe(
+      (data: AllNotifications) => {
         console.log('Chart Data:', data);
-        //Agregar los datos que se van a mostrar
-        this.columnChartData = data.chartData1;
-        this.columnChartData2 = data.chartData2;
-        this.columnChartData3 = data.chartData3;
+  
+        // Inicializamos las variables para cada día de la semana
+        const notificationsPerDay: { [key: string]: number } = {
+          'Lunes': 0, 'Martes': 0, 'Miércoles': 0, 'Jueves': 0, 'Viernes': 0
+        };
+  
+        // Contamos las notificaciones por tipo
+        data.access.forEach(a => {
+          const dayOfWeek = getDayOfWeek(new Date(a.created_datetime));
+          notificationsPerDay[dayOfWeek] += 1;
+        });
+  
+        data.payments.forEach(p => {
+          const dayOfWeek = getDayOfWeek(new Date(p.dateFrom));
+          notificationsPerDay[dayOfWeek] += 1;
+        });
+  
+        data.fines.forEach(f => {
+          const dayOfWeek = getDayOfWeek(new Date(f.created_datetime));
+          notificationsPerDay[dayOfWeek] += 1;
+        });
+  
+        // Actualizamos el columnChartData sumando todas las notificaciones por día
+        this.columnChartData = daysOfWeek.map(day => [day, notificationsPerDay[day]]);
+  
+        // Datos para el segundo gráfico: Notificaciones por Tipo (Access, Payment, Fine)
+        this.columnChartData2 = [
+          ['Access', data.access.length],
+          ['Payment', data.payments.length],
+          ['Fine', data.fines.length]
+        ];
+  
+        // Datos para el tercer gráfico: Notificaciones por Día y Tipo de Notificación
+        this.columnChartData3 = daysOfWeek.map(day => [
+          day,
+          data.access.filter(a => getDayOfWeek(new Date(a.created_datetime)) === day).length,
+          data.payments.filter(p => getDayOfWeek(new Date(p.dateFrom)) === day).length,
+          data.fines.filter(f => getDayOfWeek(new Date(f.created_datetime)) === day).length
+        ]);
       },
       (error) => {
         console.error('Error al cargar los datos del gráfico:', error);
       }
     );
-  }*/
+  }
+
+  formatDate(date: Date): string {
+    return new Date(date).toLocaleDateString();
+  }
 
   makeBig(status: number) {
     this.status = status;
