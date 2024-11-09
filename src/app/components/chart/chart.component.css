@@ -40,14 +40,12 @@ google-chart {
 }
 
 .col-md-6 {
-    padding: 15px; /* Añade un pequeño relleno para evitar bordes apretados */
+    padding: 15px;
 }
 
 .google-chart {
-    /*width: 100%;*/
     width: 100% !important;
     max-width: 800px;
-    /*height: auto;*/
     height: 75vh !important;
     margin-bottom: 20px;
     transition: all 0.4s ease;

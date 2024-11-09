@@ -86,8 +86,8 @@
             <div class="legend-color bg-warning me-1" style="width: 15px; height: 15px; border-radius: 3px;"></div>
             <small class="text-secondary">Fine</small>
           </div>
-          <div class="legend-item d-flex align-items-center">
-            <div class="legend-color bg-warning me-1" style="width: 15px; height: 15px; border-radius: 3px;"></div>
+          <div class="legend-item d-flex align-items-center" style="padding-left: 10px;">
+            <div class="legend-color bg-danger me-1" style="width: 15px; height: 15px; border-radius: 3px;"></div>
             <small class="text-secondary">Inventory</small>
           </div>
         </div>
@@ -157,8 +157,8 @@
             <div class="legend-color bg-warning me-1" style="width: 15px; height: 15px; border-radius: 3px;"></div>
             <small class="text-secondary">Fine</small>
           </div>
-          <div class="legend-item d-flex align-items-center">
-            <div class="legend-color bg-warning me-1" style="width: 15px; height: 15px; border-radius: 3px;"></div>
+          <div class="legend-item d-flex align-items-center" style="padding-left: 10px;">
+            <div class="legend-color bg-danger me-1" style=" width: 15px; height: 15px; border-radius: 3px;"></div>
             <small class="text-secondary">Inventory</small>
           </div>
         </div>
@@ -202,8 +202,8 @@
             <div class="legend-color bg-warning me-1" style="width: 15px; height: 15px; border-radius: 3px;"></div>
             <small class="text-secondary">Fine</small>
           </div>
-          <div class="legend-item d-flex align-items-center">
-            <div class="legend-color bg-warning me-1" style="width: 15px; height: 15px; border-radius: 3px;"></div>
+          <div class="legend-item d-flex align-items-center" style="padding-left: 10px;">
+            <div class="legend-color bg-danger me-1" style="width: 15px; height: 15px; border-radius: 3px;"></div>
             <small class="text-secondary">Inventory</small>
           </div>
         </div>
@@ -271,5 +271,27 @@
         <google-chart [type]="c4ChartType" [data]="columnChartData6" [options]="columnChartOptions6" class="w-100"></google-chart>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- Modal de info -->
+<div class="modal fade" id="infoModal" role="dialog">
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Información del Dashboard</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+              <p>Bienvenido al Dashboard de Notificaciones. Este panel te permite:</p>
+              <ul>
+                  <li>Visualizar estadísticas de las notificaciones en tiempo real.
+                  <li>Tambien visualizarlo de manera gráfica y/o tablas detalladas.</li>
+              </ul>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+          </div>
+      </div>
   </div>
 </div>

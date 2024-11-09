@@ -17,7 +17,7 @@ export class ChartComponent implements OnInit {
   c2ChartType: ChartType = ChartType.Gauge;
   c3ChartType: ChartType = ChartType.PieChart;
   cChartType: ChartType = ChartType.AreaChart;
-  c4ChartType: ChartType = ChartType.ScatterChart; //es correcto?
+  c4ChartType: ChartType = ChartType.ScatterChart;
   form: FormGroup;
   status: number = 0;
   columnChartData: any[] = []; 
@@ -97,8 +97,11 @@ export class ChartComponent implements OnInit {
   loadChartData(): void {
     const daysOfWeek = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'];
     const monthsOfYear = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
+    const hoursOfDay = ['01:00', '02:00', '03:00', '04:00', '05:00', '06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00',
+                        '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00']
     const getDayOfWeek = (date: Date) => daysOfWeek[date.getDay() - 1]; // Ajuste del día de la semana (domingo es 0)
     const getMonthOfYear = (date: Date) => monthsOfYear[date.getMonth() - 1]; // Ajuste del mes del año (diciembre es 0)
+    const getHourOfDay = (date: Date) => hoursOfDay[date.getHours() - 1]; // Ajuste de la hora del dia (las 12 es 0)
   
     this.chartDataService.getData().subscribe(
       (data: AllNotifications) => {
@@ -113,8 +116,18 @@ export class ChartComponent implements OnInit {
         const notificationsPerMonth: { [key: string]: number } = {
           'Enero': 0, 'Febrero': 0, 'Marzo': 0, 'Abril': 0, 'Mayo': 0, 'Junio': 0, 'Julio': 0, 'Agosto': 0, 'Septiembre': 0, 'Octubre': 0, 'Noviembre': 0, 'Diciembre': 0
         };
+
+        const notificationsPerHour: { [key: string]: number } = {
+          '01:00': 0, '02:00': 0, '03:00': 0, '04:00': 0, '05:00': 0, '06:00': 0, '07:00': 0, '08:00': 0, '09:00': 0, '10:00': 0, '11:00': 0, '12:00': 0, '13:00': 0, '14:00': 0, '15:00': 0, '16:00': 0,
+          '17:00': 0, '18:00': 0, '19:00': 0, '20:00': 0, '21:00': 0, '22:00': 0, '23:00': 0, '00:00':0
+        };
   
         // Contamos las notificaciones por tipo por dia
+        data.access.forEach(a => {
+          const dayOfWeek = getDayOfWeek(new Date(a.created_datetime));
+          notificationsPerDay[dayOfWeek] += 1;
+        });
+
         data.access.forEach(a => {
           const dayOfWeek = getDayOfWeek(new Date(a.created_datetime));
           notificationsPerDay[dayOfWeek] += 1;
@@ -155,6 +168,27 @@ export class ChartComponent implements OnInit {
           const monthsOfYear = getMonthOfYear(new Date(f.created_datetime));
           notificationsPerMonth[monthsOfYear] += 1;
         });
+
+        // Contamos las notificaciones por hora del dia
+        data.access.forEach(a => {
+          const hoursOfDay = getHourOfDay(new Date(a.created_datetime));
+          notificationsPerHour[hoursOfDay] += 1;
+        });
+  
+        data.payments.forEach(p => {
+          const hoursOfDay = getHourOfDay(new Date(p.created_datetime));
+          notificationsPerHour[hoursOfDay] += 1;
+        });
+  
+        data.fines.forEach(f => {
+          const hoursOfDay = getHourOfDay(new Date(f.created_datetime));
+          notificationsPerHour[hoursOfDay] += 1;
+        });
+
+        data.inventories.forEach(f => {
+        const hoursOfDay = getHourOfDay(new Date(f.created_datetime));
+        notificationsPerHour[hoursOfDay] += 1;
+        });
   
         // Actualizamos el columnChartData sumando todas las notificaciones por día
         this.columnChartData = daysOfWeek.map(day => [day, notificationsPerDay[day]]);
@@ -180,7 +214,7 @@ export class ChartComponent implements OnInit {
         ]);
 
         // Datos para el cuarto gráfico
-        this.columnChartData4 = daysOfWeek.map(day => [day, notificationsPerDay[day]]);
+        this.columnChartData4 = hoursOfDay.map(hour => [hour, notificationsPerHour[hour]]);
 
         // Datos para el quinto gráfico
         this.columnChartData5 = daysOfWeek.map(day => [
