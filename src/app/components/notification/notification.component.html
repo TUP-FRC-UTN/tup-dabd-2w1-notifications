@@ -1,5 +1,5 @@
 <section class="py-5">
-  <div class="container p-3 border border-2 rounded shadow-lg">
+  <div class="container p-3 border border-2 rounded shadow-lg" style="margin-top: 0;">
     <div class="row mb-2">
       <div class="d-flex">
         <!-- filtro buscar -->
@@ -24,44 +24,27 @@
         </div>
 
         <!-- filtro fecha -->
-        <form [formGroup]="dateFilterForm" class="d-flex">
-          <div class="ms-2" style="margin-top: 15px">
-            <input
-              type="date"
-              class="form-control me-2"
-              formControlName="startDate"
-              [value]="formatDateForInput(dateFilterForm.get('startDate')?.value)"
-              />
-          </div>
-          <div class="ms-2" style="gap: 10px; margin-top: 15px">
-            <input
-              type="date"
-              class="form-control me-2"
-              formControlName="endDate"
-              [value]="formatDateForInput(dateFilterForm.get('endDate')?.value)"
-            />
-          </div>
-        </form>
-        <!-- botones -->
-        
-        <div class="col-5 text-center" style="margin-top: 15px">
-          <button
-            (click)="borrar()"
-            class="btn mx-1 btn-secondary filterbutton"
-          >
+        <div [formGroup]="dateFilterForm" class="col-2 ms-2">
+          <input type="date" class="form-control me-2" formControlName="startDate" 
+            style="margin-top: 15px; border: 1px solid #ddd; border-radius: 5px;" />
+        </div>
+
+        <div [formGroup]="dateFilterForm" class="col-2 ms-2">
+          <input type="date" class="form-control me-2" formControlName="endDate" 
+            style="margin-top: 15px; border: 1px solid #ddd; border-radius: 5px;" />
+        </div>
+
+     
+        <div class="col-3 text-end" style="margin-top: 15px;">
+          <button (click)="borrar()" class="btn mx-1 btn-secondary filterbutton">
             <i class="bi bi-trash"></i>
           </button>
 
-          <button
-            (click)="exportarAExcel()"
-            class="btn mx-1 btn-success filterbutton"
-          >
+          <button class="btn mx-1 btn-success filterbutton" (click)="exportarAExcel()">
             <i class="bi bi-file-earmark-excel"></i>
           </button>
-          <button
-            (click)="exportarAPDF()"
-            class="btn mx-1 btn-danger filterbutton"
-          >
+
+          <button class="btn mx-1 btn-danger me-4 filterbutton" (click)="exportarAPDF()">
             <i class="bi bi-file-earmark-pdf"></i>
           </button>
         </div>

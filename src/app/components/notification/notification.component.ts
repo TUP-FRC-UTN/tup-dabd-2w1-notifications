@@ -57,6 +57,7 @@ export class NotificationComponent implements OnInit {
     subject: "placeholder",
     message: "placeholder",
     date: "placeholder",
+    type: "placeholder",
   };
   selectedNotificationObject: any;
 
@@ -71,15 +72,15 @@ export class NotificationComponent implements OnInit {
 
   dateFilterForm: FormGroup;
   notificationTypes: any[] = [
-    { value: "Todas", name: "Todas" },
     { value: "Multas", name: "Multas" },
     { value: "Accesos", name: "Accesos" },
     { value: "Pagos", name: "Pagos" },
     { value: "Generales", name: "Generales" },
   ];
-  selectedNotificationType: string[] = ["Todas"];
 
-  dropdownSeleccionadas: any[] = ["Todas"];
+  selectedNotificationType: string[] = [];
+
+  dropdownSeleccionadas: any[] = [];
 
   recibirSeleccionadas(node: any) {
     this.dropdownSeleccionadas = node;
@@ -107,13 +108,22 @@ export class NotificationComponent implements OnInit {
     this.llenarData(this.userId);
     $(document).on("click", ".mark-read-btn", (event) => {
       console.log("CLICK EN MARCAR LEIDA");
-      console.log(this.selectedNotificationObject);
+      this.service.putData(
+        this.selectedNotificationObject.id,
+        this.selectedNotification.type
+      );
+      if (this.selectedNotificationObject) {
+        this.selectedNotificationObject.markedRead = true;
+
+        // Refrescar la tabla para mostrar los cambios
+        this.fillTable();
+      }
     });
 
     // Configure DataTables with search functionality
     $("#myTable").DataTable({
       columns: [
-        { width: "13%" },
+        { width: "14%" },
         { width: "12%" },
         { width: "25%" },
         { width: "40%" },
@@ -125,7 +135,7 @@ export class NotificationComponent implements OnInit {
         { targets: 4, className: "text-center" },
       ],
       dom: '<"mb-3"t>' + '<"d-flex justify-content-between"lp>',
-      select: {style: "single"},
+      select: { style: "os" },
       paging: true,
       searching: true,
       ordering: true,
@@ -150,7 +160,7 @@ export class NotificationComponent implements OnInit {
         .draw();
     });
 
-    this.initialzeDates();
+    this.initializeDates();
     this.dateFilterForm.valueChanges.subscribe(() => {
       this.filterListByDate();
     });
@@ -163,6 +173,7 @@ export class NotificationComponent implements OnInit {
       subject: data[2],
       message: data[3],
       date: data[0],
+      type: data[1].toUpperCase(),
     };
   }
 
@@ -171,12 +182,30 @@ export class NotificationComponent implements OnInit {
       next: (value: Notifications) => {
         console.log("API RESPONSE: ");
         console.log(value);
+
+        // Inicializar markedRead en false para todas las notificaciones nuevas
+        value.access.forEach(
+          (notification) =>
+            (notification.markedRead = notification.markedRead || false)
+        );
+        value.fines.forEach(
+          (notification) =>
+            (notification.markedRead = notification.markedRead || false)
+        );
+        value.payments.forEach(
+          (notification) =>
+            (notification.markedRead = notification.markedRead || false)
+        );
+        value.generals.forEach(
+          (notification) =>
+            (notification.markedRead = notification.markedRead || false)
+        );
+
         this.allNotifications = value;
         this.accessList = [...value.access];
         this.finesList = [...value.fines];
         this.paymentsList = [...value.payments];
         this.generalsList = [...value.generals];
-        this.inventoryList = [...value.inventories];
         this.fillTable();
       },
       error: () => {
@@ -184,7 +213,6 @@ export class NotificationComponent implements OnInit {
       },
     });
   }
-
   fillTable() {
     const table = $("#myTable").DataTable();
     table.clear().draw();
@@ -199,34 +227,49 @@ export class NotificationComponent implements OnInit {
     });
 
     const addRow = (notification: any, tipo: string) => {
+      const getBadgeClass = (tipo: string) => {
+        switch (tipo) {
+          case "Generales":
+            return "text-bg-warning";
+          case "Accesos":
+            return "text-bg-success";
+          case "Multas":
+            return "text-bg-danger";
+          case "Pagos":
+            return "text-bg-indigo";
+          default:
+            return "";
+        }
+      };
+
+      const badgeClass = getBadgeClass(tipo);
+
+      // Aplicar clase fw-bold si no está leída
+      const boldClass = !notification.markedRead ? "fw-bold" : "";
+
       table.row
         .add([
-          this.getTodayDateFormatted(notification.created_datetime),
-          tipo,
-          notification.subject,
-          notification.message,
-          `
-              
-                <a class="btn btn-light align-items-center" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"
-                
-                 style="width:40px; height:40px; font-size:1.2rem; padding-top:0.2rem;">
-                &#8942;
-              </a>
-              
-                  <ul class="dropdown-menu">
-                    <li><a class="dropdown-item consultar-btn" href="#" data-bs-toggle="modal"
-                    data-bs-target="#idMODAL"">Ver más</a></li>
-                    <li><a class="dropdown-item consultar-btn mark-read-btn" 
-                    >Marcar como leida</a></li>
-                  </ul>
-
-          `,
+          `<div class="${boldClass}">${this.getTodayDateFormatted(
+            notification.created_datetime
+          )}</div>`,
+          `<div class="text-center"><span class="badge rounded-pill ${badgeClass}">${tipo}</span></div>`,
+          `<div class="${boldClass}">${notification.subject}</div>`,
+          `<div class="${boldClass}">${notification.message}</div>`,
+          `<a class="btn btn-light align-items-center" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"
+              style="width:40px; height:40px; font-size:1.2rem; padding-top:0.2rem;">
+              &#8942;
+            </a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item consultar-btn" href="#" data-bs-toggle="modal"
+              data-bs-target="#idMODAL">Ver más</a></li>
+              <li><a class="dropdown-item consultar-btn mark-read-btn"
+              >Marcar como leida</a></li>
+            </ul>`,
         ])
         .draw();
     };
-
     this.allNotificationsArray = [];
-    if (this.dropdownSeleccionadas.includes("Todas")) {
+    if (this.dropdownSeleccionadas.length === 0) {
       this.allNotifications.access.forEach((notification) => {
         addRow(notification, "Accesos"),
           this.allNotificationsArray.push(notification);
@@ -278,55 +321,58 @@ export class NotificationComponent implements OnInit {
   exportarAExcel() {
     const tabla = $("#myTable").DataTable();
     const filteredData = tabla.rows({ search: "applied" }).data().toArray();
-    
-    const headers = tabla.columns().header().toArray()
+
+    const headers = tabla
+      .columns()
+      .header()
+      .toArray()
       .slice(0, -1)
-      .map(th => $(th).text());
-    
-    const excelData = filteredData.map(row => 
+      .map((th) => $(th).text());
+
+    const excelData = filteredData.map((row) =>
       row.slice(0, -1).reduce((obj: any, value: any, index: number) => {
         obj[headers[index]] = value;
         return obj;
       }, {})
     );
-  
+
     const worksheet = XLSX.utils.json_to_sheet(excelData);
-    
+
     // Insertar headers manualmente
-    XLSX.utils.sheet_add_aoa(worksheet, [headers], { origin: 'A1' });
-    
+    XLSX.utils.sheet_add_aoa(worksheet, [headers], { origin: "A1" });
+
     // Configurar ancho de columnas
-    worksheet['!cols'] = headers.map(() => ({ width: 20 }));
-    
+    worksheet["!cols"] = headers.map(() => ({ width: 20 }));
+
     // Aplicar estilos a la primera fila
     for (let i = 0; i < headers.length; i++) {
       const cellRef = XLSX.utils.encode_cell({ r: 0, c: i });
       if (!worksheet[cellRef]) continue;
-      
+
       worksheet[cellRef].s = {
-        font: { 
+        font: {
           bold: true,
-          name: 'Arial'
+          name: "Arial",
         },
         alignment: {
-          horizontal: 'center',
-          vertical: 'center'
+          horizontal: "center",
+          vertical: "center",
         },
         border: {
-          top: { style: 'thin' },
-          bottom: { style: 'thin' },
-          left: { style: 'thin' },
-          right: { style: 'thin' }
-        }
+          top: { style: "thin" },
+          bottom: { style: "thin" },
+          left: { style: "thin" },
+          right: { style: "thin" },
+        },
       };
     }
-  
+
     const workBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workBook, worksheet, "Notificaciones");
-    
+
     const today = new Date();
-    const formattedDate = this.datePipe.transform(today, 'dd-MM-yyyy');
-    
+    const formattedDate = this.datePipe.transform(today, "dd-MM-yyyy");
+
     // Usar writeFileXLSX en lugar de writeFile para mantener los estilos
     XLSX.writeFileXLSX(workBook, `Notificaciones_${formattedDate}.xlsx`);
   }
@@ -371,16 +417,8 @@ export class NotificationComponent implements OnInit {
     this.selected = "Todas";
     // Reset del ngselect
     this.selectedNotificationType = ["Todas"];
-    this.dropdownSeleccionadas = ["Todas"];
+    this.dropdownSeleccionadas = [];
 
-    // Emitir el cambio al componente hijo
-    const selectMultipleComponent = document.querySelector(
-      "app-select-multiple"
-    );
-    if (selectMultipleComponent) {
-      (selectMultipleComponent as any).selectedOptions = ["Todas"];
-      (selectMultipleComponent as any).send();
-    }
 
     const searchInput = document.getElementById(
       "searchTerm"
@@ -388,7 +426,7 @@ export class NotificationComponent implements OnInit {
     if (searchInput) {
       searchInput.value = "";
     }
-    this.initialzeDates();
+    this.initializeDates();
   }
 
   getTodayDateFormatted(date: Date): string {
@@ -396,7 +434,7 @@ export class NotificationComponent implements OnInit {
     return this.datePipe.transform(formattedDate, "dd/MM/yyyy HH:mm:ss") || "";
   }
 
-  initialzeDates() {
+  initializeDates() {
     const today = new Date();
     const startDate = new Date(
       today.getFullYear(),

@@ -11,4 +11,5 @@ export interface Payments {
     nombre: string;
     apellido: string;
     dni: number;
+    markedRead: boolean;
 }

@@ -24,11 +24,12 @@ import { DateValidator } from "../../validators/date.validators";
 import { MockUserService } from "../../service/mockUser.service";
 import { AllNotifications } from "../../models/all-notifications";
 import { Inventory } from "../../models/inventory";
+import { SelectMultipleComponent } from "../select-multiple/select-multiple.component";
 
 @Component({
   selector: "app-all-notification",
   standalone: true,
-  imports: [DatePipe, RouterModule, ReactiveFormsModule],
+  imports: [DatePipe, RouterModule, ReactiveFormsModule, SelectMultipleComponent],
   providers: [DatePipe],
   templateUrl: "./all-notification.component.html",
   styleUrl: "./all-notification.component.css",
@@ -59,8 +60,8 @@ export class AllNotificationComponent implements OnInit {
     this.form.get("endDate")?.valueChanges.subscribe((value) => {
       this.updatedList();
     });
-    this.initialzeDates();
     this.llenarData();
+    this.initialzeDates();
 
     this.table = $("#myTable").DataTable({
       dom: '<"mb-3"t>' + '<"d-flex justify-content-between"lp>',
@@ -70,7 +71,8 @@ export class AllNotificationComponent implements OnInit {
       searching: true,
       ordering: true,
       lengthChange: true,
-      pageLength: 10,
+      pageLength: 5,
+      lengthMenu: [5, 10, 25, 50],
       order: [[0, "desc"]],
       language: {
         emptyTable: "Cargando...",
@@ -107,6 +109,22 @@ export class AllNotificationComponent implements OnInit {
         DateValidator.greatherThanToday,
       ]),
     });
+  }
+
+  notificationTypes: any[] = [
+    { value: "Multas", name: "Multas" },
+    { value: "Accesos", name: "Accesos" },
+    { value: "Pagos", name: "Pagos" },
+    { value: "Generales", name: "Generales" },
+  ];
+  selectedNotificationType: string[] = [];
+
+  dropdownSeleccionadas: any[] = ["Todas"];
+
+  recibirSeleccionadas(node: any) {
+    this.dropdownSeleccionadas = node;
+    this.fillTable();
+    console.log(node);
   }
 
   //metodos
