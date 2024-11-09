@@ -13,14 +13,21 @@ import { AllNotifications } from '../../models/all-notifications';
   styleUrls: ['./chart.component.css']
 })
 export class ChartComponent implements OnInit {
-  columnChartType: ChartType = ChartType.PieChart;
-  columnChartType2: ChartType = ChartType.ColumnChart;
-  columnChartType3: ChartType = ChartType.AreaChart;
+  columnChartType: ChartType = ChartType.ColumnChart;
+  c2ChartType: ChartType = ChartType.Gauge;
+  c3ChartType: ChartType = ChartType.PieChart;
+  cChartType: ChartType = ChartType.AreaChart;
+  c4ChartType: ChartType = ChartType.ScatterChart; //es correcto?
   form: FormGroup;
   status: number = 0;
   columnChartData: any[] = []; 
   columnChartData2: any[] = [];
   columnChartData3: any[] = [];
+  columnChartData4: any[] = [];
+  columnChartData5: any[] = [];
+  columnChartData6: any[] = [];
+  columnChartData7: any[] = [];
+  columnChartData8: any[] = [];
 
   constructor(private chartDataService: NotificationRegisterService) {
     this.form = new FormGroup({
@@ -35,16 +42,16 @@ export class ChartComponent implements OnInit {
     vAxis: { title: 'Cantidad de Notificaciones Enviadas' },
     legend: { position: 'none' },
     chartArea: { width: '80%', height: '70%' },
-    colors: ['#800080']
+    colors: ['#4285F4']
   };
 
   columnChartOptions2 = {
-    title: 'Notificaciones Enviadas por Tipo (Access, Payment, Fine, Inventory)',
+    title: 'Notificaciones Enviadas por Tipo (Access, Payment, Fine)',
     hAxis: { title: 'Tipo de Notificación' },
     vAxis: { title: 'Cantidad de Notificaciones' },
     legend: { position: 'none' },
     chartArea: { width: '80%', height: '70%' },
-    colors: ['#8B4513']
+    colors: ['#34A853']
   };
 
   columnChartOptions3 = {
@@ -53,7 +60,34 @@ export class ChartComponent implements OnInit {
     vAxis: { title: 'Cantidad de Notificaciones' },
     legend: { position: 'top' },
     chartArea: { width: '80%', height: '70%' },
-    colors: ['#4285F4', '#34A853', '#FBBC05', '#FF0000']
+    colors: ['#4285F4', '#34A853', '#FBBC05', '#EA4335']
+  };
+
+  columnChartOptions4 = {
+    title: 'Notificaciones Enviadas por Hora del Día',
+    hAxis: { title: 'Horas' },
+    vAxis: { title: 'Cantidad de Notificaciones' },
+    legend: { position: 'bottom' },
+    chartArea: { width: '80%', height: '70%' },
+    colors: ['blue']
+  };
+
+  columnChartOptions5 = {
+    title: 'Distribución de Tipos de Notificación',
+    legend: { position: 'right' },
+    chartArea: { width: '80%', height: '80%' },
+    pieHole: 0.4, //Esto es un semi-donut del pie
+    colors: ['#4285F4', '#34A853', '#FBBC05', '#EA4335']
+  };
+
+  columnChartOptions6 = {
+    title: 'Notificaciones por Mes y Tipo',
+    hAxis: { title: 'Meses' },
+    vAxis: { title: 'Cantidad de Notificaciones' },
+    legend: { position: 'top' },
+    isStacked: true,
+    chartArea: { width: '80%', height: '70%' },
+    colors: ['#4285F4', '#34A853', '#FBBC05', '#EA4335']
   };
 
   ngOnInit(): void {
@@ -62,7 +96,9 @@ export class ChartComponent implements OnInit {
 
   loadChartData(): void {
     const daysOfWeek = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'];
+    const monthsOfYear = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
     const getDayOfWeek = (date: Date) => daysOfWeek[date.getDay() - 1]; // Ajuste del día de la semana (domingo es 0)
+    const getMonthOfYear = (date: Date) => monthsOfYear[date.getMonth() - 1]; // Ajuste del mes del año (diciembre es 0)
   
     this.chartDataService.getData().subscribe(
       (data: AllNotifications) => {
@@ -72,15 +108,20 @@ export class ChartComponent implements OnInit {
         const notificationsPerDay: { [key: string]: number } = {
           'Lunes': 0, 'Martes': 0, 'Miércoles': 0, 'Jueves': 0, 'Viernes': 0
         };
+
+        // Inicializamos las variables para cada mes del año
+        const notificationsPerMonth: { [key: string]: number } = {
+          'Enero': 0, 'Febrero': 0, 'Marzo': 0, 'Abril': 0, 'Mayo': 0, 'Junio': 0, 'Julio': 0, 'Agosto': 0, 'Septiembre': 0, 'Octubre': 0, 'Noviembre': 0, 'Diciembre': 0
+        };
   
-        // Contamos las notificaciones por tipo
+        // Contamos las notificaciones por tipo por dia
         data.access.forEach(a => {
           const dayOfWeek = getDayOfWeek(new Date(a.created_datetime));
           notificationsPerDay[dayOfWeek] += 1;
         });
   
         data.payments.forEach(p => {
-          const dayOfWeek = getDayOfWeek(new Date(p.created_datetime));
+          const dayOfWeek = getDayOfWeek(new Date(p.dateFrom));
           notificationsPerDay[dayOfWeek] += 1;
         });
   
@@ -91,13 +132,37 @@ export class ChartComponent implements OnInit {
 
         data.inventories.forEach(f => {
           const dayOfWeek = getDayOfWeek(new Date(f.created_datetime));
-          notificationsPerDay[dayOfWeek] += 1;
+          notificationsPerMonth[dayOfWeek] += 1;
+        });
+
+        // Contamos las notificaciones por tipo del mes
+        data.access.forEach(a => {
+          const monthsOfYear = getMonthOfYear(new Date(a.created_datetime));
+          notificationsPerMonth[monthsOfYear] += 1;
+        });
+  
+        data.payments.forEach(p => {
+          const monthsOfYear = getMonthOfYear(new Date(p.created_datetime));
+          notificationsPerMonth[monthsOfYear] += 1;
+        });
+  
+        data.fines.forEach(f => {
+          const monthsOfYear = getMonthOfYear(new Date(f.created_datetime));
+          notificationsPerMonth[monthsOfYear] += 1;
+        });
+
+        data.inventories.forEach(f => {
+          const monthsOfYear = getMonthOfYear(new Date(f.created_datetime));
+          notificationsPerMonth[monthsOfYear] += 1;
         });
   
         // Actualizamos el columnChartData sumando todas las notificaciones por día
         this.columnChartData = daysOfWeek.map(day => [day, notificationsPerDay[day]]);
+
+        // Actualizamos el columnChartData sumando todas las notificaciones por mes
+        this.columnChartData6 = monthsOfYear.map(month => [month, notificationsPerMonth[month]]);
   
-        // Datos para el segundo gráfico: Notificaciones por Tipo (Access, Payment, Fine)
+        // Datos para el segundo gráfico: Notificaciones por Tipo (Access, Payment, Fine, Inventory)
         this.columnChartData2 = [
           ['Access', data.access.length],
           ['Payment', data.payments.length],
@@ -112,6 +177,27 @@ export class ChartComponent implements OnInit {
           data.payments.filter(p => getDayOfWeek(new Date(p.created_datetime)) === day).length,
           data.fines.filter(f => getDayOfWeek(new Date(f.created_datetime)) === day).length,
           data.inventories.filter(f => getDayOfWeek(new Date(f.created_datetime)) === day).length
+        ]);
+
+        // Datos para el cuarto gráfico
+        this.columnChartData4 = daysOfWeek.map(day => [day, notificationsPerDay[day]]);
+
+        // Datos para el quinto gráfico
+        this.columnChartData5 = daysOfWeek.map(day => [
+          day,
+          data.access.filter(a => getDayOfWeek(new Date(a.created_datetime)) === day).length,
+          data.payments.filter(p => getDayOfWeek(new Date(p.created_datetime)) === day).length,
+          data.fines.filter(f => getDayOfWeek(new Date(f.created_datetime)) === day).length,
+          data.inventories.filter(f => getDayOfWeek(new Date(f.created_datetime)) === day).length
+        ]);
+
+        // Datos para el sexto gráfico
+        this.columnChartData6 = monthsOfYear.map(day => [
+          day,
+          data.access.filter(a => getMonthOfYear(new Date(a.created_datetime)) === day).length,
+          data.payments.filter(p => getMonthOfYear(new Date(p.created_datetime)) === day).length,
+          data.fines.filter(f => getMonthOfYear(new Date(f.created_datetime)) === day).length,
+          data.inventories.filter(f => getMonthOfYear(new Date(f.created_datetime)) === day).length
         ]);
       },
       (error) => {

@@ -296,6 +296,7 @@ export class AllNotificationComponent implements OnInit {
         item[5] || "N/A",
       ]),
       startY: 30,
+      theme: 'grid'
     });
 
     doc.save(this.formatDate(new Date())+" Registro de Notificaciones.pdf");
