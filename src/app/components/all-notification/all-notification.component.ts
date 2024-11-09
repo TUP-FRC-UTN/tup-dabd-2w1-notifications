@@ -152,93 +152,44 @@ export class AllNotificationComponent implements OnInit {
 
   fillTable() {
     this.table.clear().draw();
-    if (this.data.access.length > 0) {
-        for (let notification of this.data.access) {
-          const date = notification.created_datetime as { [key: string]: any };
-          let dateString = this.formatDate(notification.created_datetime);
-          this.table.row
-            .add([
-              dateString,
-              notification.nombre + " " + notification.apellido,
-              notification.dni,
-              "Acceso",
-              notification.subject,
-              notification.message,
-              
-            ])
-            .draw(false);
-      }
-    }
-    if (this.data.fines.length > 0) {
-        for (let notification of this.data.fines) {
-          const date = notification.created_datetime as { [key: string]: any };
-          let dateString = this.formatDate(notification.created_datetime);
-          this.table.row
-            .add([
-              dateString,
-              notification.nombre + " " + notification.apellido,
-              notification.dni,
-              "Multa",
-              notification.subject,
-              notification.message,
 
-            ])
-            .draw(false);
+    const AddRow = (notification: any, tipo: string) => {
+      //Setear color de Pill
+    const getBadgeClass = (tipo: string) => {
+      switch (tipo) {
+        case "Generales":
+          return "bg-warning";
+        case "Accesos":
+          return "bg-success";
+        case "Multas":
+          return "bg-danger";
+        case "Pagos":
+          return "bg-indigo";
+        default:
+          return "bg-secondary";
       }
-    }
+    };
 
-    if (this.data.payments.length > 0) {
-        for (let notification of this.data.payments) {
-          const date = notification.created_datetime as { [key: string]: any };
-          let dateString = this.formatDate(notification.created_datetime);
-          this.table.row
-            .add([
-              dateString,
-              notification.nombre + " " + notification.apellido,
-              notification.dni,
-              "Pago",
-              notification.subject,
-              notification.message,
+    const badgeClass = getBadgeClass(tipo);
+    const tipoPill = `<span class=" badge rounded-pill ${badgeClass}">${tipo}</span>`;
 
-            ])
-            .draw(false);
-        
-      }
-    }
-    if (this.data.generals.length > 0) {
-        for (let notification of this.data.generals) {
-          const date = notification.created_datetime as { [key: string]: any };
-          let dateString = this.formatDate(notification.created_datetime);
-          this.table.row
-            .add([
-              dateString,
-              notification.nombre + " " + notification.apellido,
-              notification.dni,
-              "General",
-              notification.subject,
-              notification.message,
+    this.table.row
+      .add([
+        this.formatDate(notification.created_datetime),
+        notification.nombre + " " + notification.apellido,
+        notification.dni,
+        tipoPill,
+        notification.subject,
+        notification.message,
+      ])
+      .draw(false);
+  };
 
-            ])
-            .draw(false);
-      }
-    }
-    if (this.data.inventories.length > 0) {
-        for (let notification of this.data.inventories) {
-          const date = notification.created_datetime as { [key: string]: any };
-          let dateString = this.formatDate(notification.created_datetime);
-          this.table.row
-            .add([
-              dateString,
-              "Administración",
-              "",
-              "Inventario",
-              notification.subject,
-              notification.message,
-
-            ])
-            .draw(false);
-      }
-    }
+  this.data.access.forEach((notification) => AddRow(notification, "Accesos"));
+  this.data.fines.forEach((notification) => AddRow(notification, "Multas"));
+  this.data.payments.forEach((notification) => AddRow(notification, "Pagos"));
+  this.data.generals.forEach((notification) => AddRow(notification, "Generales"));
+  this.data.inventories.forEach((notification) => AddRow(notification, "Inventario"));
   }
 
   exportarAExcel() {
@@ -314,6 +265,7 @@ export class AllNotificationComponent implements OnInit {
         item[5] || "N/A",
       ]),
       startY: 30,
+      theme: 'grid'
     });
 
     doc.save(this.formatDate(new Date())+" Registro de Notificaciones.pdf");

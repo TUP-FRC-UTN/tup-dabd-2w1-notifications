@@ -395,11 +395,8 @@ export class NotificationComponent implements OnInit {
     const doc = new jsPDF();
 
     doc.setFontSize(18);
-    doc.text(
-      "Reporte de Notificaciones (" + dateFrom + " / " + dateTo + ")",
-      14,
-      22
-    );
+    doc.text("Reporte de Notificaciones", 14, 22);
+    doc.text("Fechas: Desde " + dateFrom + " hasta " + dateTo + "", 14, 33);
 
     autoTable(doc, {
       head: [["Fecha", "Tipo", "Asunto", "Descripción"]],
@@ -409,7 +406,8 @@ export class NotificationComponent implements OnInit {
         item[2] || "N/A",
         item[3] || "N/A",
       ]),
-      startY: 30,
+      startY: 44,
+      theme: 'grid'
     });
 
     const today = new Date();
