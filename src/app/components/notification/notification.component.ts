@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { CommonModule, DatePipe, JsonPipe } from "@angular/common";
 import {
   FormControl,
@@ -154,11 +154,14 @@ export class NotificationComponent implements OnInit {
 
     // Connect external search input to DataTables
     $("#searchTerm").on("keyup", function () {
-      $("#myTable")
-        .DataTable()
-        .search($(this).val() as string)
-        .draw();
-    });
+      const searchTerm = $(this).val() as string;
+
+      // Si el campo está vacío, resetear la búsqueda
+      if (searchTerm === "") {
+        $("#myTable").DataTable().search("").draw();
+      } else {
+        $("#myTable").DataTable().search(searchTerm).draw();
+      }    });
 
     this.initializeDates();
     this.dateFilterForm.valueChanges.subscribe(() => {
@@ -310,6 +313,8 @@ export class NotificationComponent implements OnInit {
           });
       });
     }
+
+    console.log("filleando");
   }
 
   formatDateForInput(date: string | null): string {
@@ -415,12 +420,17 @@ export class NotificationComponent implements OnInit {
     doc.save(`${formattedDate} Notificaciones.pdf`);
   }
 
+  @ViewChild(SelectMultipleComponent)
+  selectMultipleComponent!: SelectMultipleComponent;
   borrar() {
-    this.selected = "Todas";
-    // Reset del ngselect
-    this.selectedNotificationType = ["Todas"];
+    this.selected = "";
+    this.selectedNotificationType = [];
     this.dropdownSeleccionadas = [];
 
+    // Limpiar la selección en el componente hijo ng-select
+    if (this.selectMultipleComponent) {
+      this.selectMultipleComponent.clearSelection();
+    }
 
     const searchInput = document.getElementById(
       "searchTerm"
@@ -429,8 +439,8 @@ export class NotificationComponent implements OnInit {
       searchInput.value = "";
     }
     this.initializeDates();
+    
   }
-
   getTodayDateFormatted(date: Date): string {
     const formattedDate = new Date(date);
     return this.datePipe.transform(formattedDate, "dd/MM/yyyy HH:mm:ss") || "";
@@ -556,12 +566,6 @@ export class NotificationComponent implements OnInit {
 
     this.fillTable();
   }
-  /*borrar(){
-    this.selected="Todas";
-    this.form.get('startDate')?.reset()
-    this.form.get('endDate')?.reset()
-    this.fillTable()
-  }*/
 
   leida(notification: any) {
     // Marcar la notificación como leída

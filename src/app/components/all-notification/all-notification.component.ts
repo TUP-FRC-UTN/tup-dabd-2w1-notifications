@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { NotificationRegisterService } from "../../service/notification-register.service";
 import { Notifications } from "../../models/notifications";
 import { Access } from "../../models/access";
@@ -489,9 +489,23 @@ export class AllNotificationComponent implements OnInit {
     const day = date.getDate().toString().padStart(2, "0"); // Día debe ser 1-31
     return `${year}-${month}-${day}`; // Retornar en formato yyyy-MM-dd
   }
+
+  @ViewChild(SelectMultipleComponent)
+  selectMultipleComponent!: SelectMultipleComponent;
+
   borrar() {
     this.form.reset();
     const searchInput = document.getElementById('searchTerm') as HTMLInputElement;
+
+    this.selectedNotificationType = [];
+    this.dropdownSeleccionadas = [];
+
+    // Limpiar la selección en el componente hijo ng-select
+    if (this.selectMultipleComponent) {
+      this.selectMultipleComponent.clearSelection();
+    }
+
+
     if (searchInput) {
       searchInput.value = '';
     }

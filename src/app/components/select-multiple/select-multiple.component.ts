@@ -34,4 +34,9 @@ export class SelectMultipleComponent implements OnInit{
   send(){
     this.sendList.emit(this.selectedOptions);
   }
+
+  clearSelection() {
+    this.selectedOptions = [];
+    this.send(); // Emitir los cambios si es necesario
+  }
 }
