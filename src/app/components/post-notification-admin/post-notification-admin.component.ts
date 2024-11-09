@@ -17,6 +17,7 @@ import { ReactiveFormsModule, FormsModule, NgForm } from '@angular/forms';
   standalone: true,
   imports: [FormsModule, NgClass, ReactiveFormsModule],
   templateUrl: './post-notification-admin.component.html',
+  styles: ['.hidden {display:none;}'],
   styleUrl: './post-notification-admin.component.css'
 })
 export class PostNotificationAdminComponent implements AfterViewInit, OnInit{
@@ -59,6 +60,7 @@ export class PostNotificationAdminComponent implements AfterViewInit, OnInit{
   ngAfterViewInit(): void {
       this.setTable();
       this.selectValue = "1"
+      
   }
 
   setTable(): void {
@@ -67,9 +69,8 @@ export class PostNotificationAdminComponent implements AfterViewInit, OnInit{
       
       columnDefs: [
         {
-          targets: 0,
-          orderable: false,
-          className: 'select-checkbox',
+          targets: 4,
+          className: 'text-center align-middle',
         }
       ],
 
@@ -81,8 +82,9 @@ export class PostNotificationAdminComponent implements AfterViewInit, OnInit{
       searching: true,
       ordering: true,
       lengthChange: true,
-      pageLength: 10,
-      order: [[2, "desc"]],
+      pageLength: 5,
+      lengthMenu: [5, 10, 25, 50],
+      order: [[1, "asc"]],
       language: {
         emptyTable: "Cargando...",
         search: "Buscar",
@@ -156,46 +158,6 @@ export class PostNotificationAdminComponent implements AfterViewInit, OnInit{
     }
   }
 
-//Adaptacion REACTIVE FORMS...
-
-// notificationForm: FormGroup;
-  
-// constructor(
-//   private notificationService: NotificationService,
-//   private fb: FormBuilder
-// ) {
-//   this.notificationForm = this.fb.group({
-//     subject: ['', [Validators.required, Validators.maxLength(20)]],
-//     description: ['', Validators.required],
-//     radioButtonValue: ['allUsers'],
-//     selectValue: ['1', Validators.required]
-//   });
-// }
-// clearForm() { 
-  //  this.notificationForm.reset({
-  //   radioButtonValue: 'allUsers',
-   //  selectValue: '1'
-   // });
-  //}
-
-  // onSubmit() {
-  //   if (this.notificationForm.valid && this.notificationForm.get('selectValue')?.value !== '1') {
-  //     this.newNotification.subject = this.notificationForm.get('subject')?.value;
-  //     this.newNotification.description = this.notificationForm.get('description')?.value;
-  //     this.newNotification.channel = this.notificationForm.get('selectValue')?.value;
-
-  //     if (this.notificationForm.get('radioButtonValue')?.value === 'allUsers') {
-  //       this.newNotification.users = this.mapUserApiDTOToUserDTO(this.users);
-  //     } else if (this.notificationForm.get('radioButtonValue')?.value === 'onlyTo') {
-  //       this.newNotification.users = this.getSelectedUsers();
-  //     } else if (this.notificationForm.get('radioButtonValue')?.value === 'exclude') {
-  //       this.newNotification.users = this.getFilteredUsers();
-  //     }
-
-  //     // Rest of your submit logic...
-  //   }
-  // }
-  
 
   clearForm(form : NgForm) {
     // form.reset();

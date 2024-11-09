@@ -66,9 +66,6 @@ export class AllNotificationComponent implements OnInit {
       dom: '<"mb-3"t>' + '<"d-flex justify-content-between"lp>',
       columns: [{ width: '13%' }, { width: '20%' }, { width: '7%' }, { width: '10%' }, { width: '20%' }, { width: '30%' }],
 
-      select: {
-        style: "multi",
-      },
       paging: true,
       searching: true,
       ordering: true,
@@ -229,13 +226,55 @@ export class AllNotificationComponent implements OnInit {
   exportarAExcel() {
     const tabla = this.table;
     const filteredData = tabla.rows({ search: "applied" }).data().toArray();
+    
+    // Obtener los nombres de las columnas
+    const headers = tabla.columns().header().toArray()
+      .map((th: any) => $(th).text());
 
-    const worksheet = XLSX.utils.json_to_sheet(filteredData);
+    // Crear la hoja con los datos
+    const worksheet = XLSX.utils.json_to_sheet(filteredData, { 
+    });
+
+    // Insertar headers manualmente
+    XLSX.utils.sheet_add_aoa(worksheet, [headers], { origin: 'A1' });
+
+    // Configurar ancho de columnas (150px ≈ 20 caracteres en Excel)
+    worksheet['!cols'] = headers.map(() => ({ 
+      width: 20,
+      wch: 20, // ancho en caracteres
+      wpx: 150 // ancho en píxeles
+    }));
+
+    // Configurar que el texto se ajuste automáticamente
+    const range = XLSX.utils.decode_range(worksheet['!ref'] || 'A1');
+    for (let R = range.s.r; R <= range.e.r; R++) {
+      for (let C = range.s.c; C <= range.e.c; C++) {
+        const cellRef = XLSX.utils.encode_cell({ r: R, c: C });
+        if (!worksheet[cellRef]) continue;
+
+        if (!worksheet[cellRef].s) worksheet[cellRef].s = {};
+        worksheet[cellRef].s.alignment = {
+          wrapText: true, // Permitir ajuste de texto
+          vertical: 'top',
+        };
+
+        // Aplicar negrita y centrado a la primera fila (headers)
+        if (R === 0) {
+          worksheet[cellRef].s.font = { bold: true };
+          worksheet[cellRef].s.alignment = {
+            horizontal: 'center',
+            vertical: 'center',
+            wrapText: true
+          };
+        }
+      }
+    }
+
     const workBook = XLSX.utils.book_new();
-
     XLSX.utils.book_append_sheet(workBook, worksheet, "Notificaciones");
-    XLSX.writeFile(workBook, "notificaciones "+this.formatDate(new Date())+".xlsx");
-  }
+    
+    XLSX.writeFile(workBook,this.formatDate(new Date()) + " Registro de Notificaciones.xlsx");
+}
 
   exportarAPDF() {
     const tabla = this.table;
@@ -247,18 +286,19 @@ export class AllNotificationComponent implements OnInit {
     doc.text("Reporte de Notificaciones", 14, 22);
 
     autoTable(doc, {
-      head: [["Asunto", "Descripción", "Fecha", "Nombre Destinatario", "DNI"]],
+      head: [["Fecha", "Destinatario", "DNI", "Tipo", "Asunto", "Descripción"]],
       body: filteredData.map((item: any) => [
         item[0] || "N/A",
         item[1] || "N/A",
         item[2] || "N/A",
         item[3] || "N/A",
         item[4] || "N/A",
+        item[5] || "N/A",
       ]),
       startY: 30,
     });
 
-    doc.save("notificaciones "+this.formatDate(new Date())+".pdf");
+    doc.save(this.formatDate(new Date())+" Registro de Notificaciones.pdf");
   }
 
   //filtro de tipo de notificacion

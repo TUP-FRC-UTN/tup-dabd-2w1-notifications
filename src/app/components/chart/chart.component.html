@@ -20,7 +20,7 @@
           <h5 class="card-title text-secondary mb-1">Notificaciones Enviadas por Día</h5>
           <small class="text-secondary">Estadísticas semanales</small>
         </div>
-        <google-chart [type]="c3ChartType" [data]="columnChartData" [options]="columnChartOptions" class="w-100 expanded-chart-content"></google-chart>
+        <google-chart [type]="columnChartType" [data]="columnChartData" [options]="columnChartOptions" class="w-100 expanded-chart-content"></google-chart>
       </div>
     </div>
   </div>
@@ -43,10 +43,10 @@
             <label>Periodo Hasta</label>
             <input type="date" class="form-control me-2" formControlName="endDate"/>
           </div>
-          <h5 class="card-title text-secondary mb-1">Notificaciones Enviadas por Canal</h5>
+          <h5 class="card-title text-secondary mb-1">Notificaciones Enviadas por Tipo de Notificacion</h5>
           <small class="text-secondary">Estadísticas semanales</small>
         </div>
-        <google-chart [type]="columnChartType" [data]="columnChartData2" [options]="columnChartOptions2" class="w-100 expanded-chart-content"></google-chart>
+        <google-chart [type]="columnChartType2" [data]="columnChartData2" [options]="columnChartOptions2" class="w-100 expanded-chart-content"></google-chart>
       </div>
     </div>
   </div>
@@ -69,26 +69,30 @@
             <label>Periodo Hasta</label>
             <input type="date" class="form-control me-2" formControlName="endDate"/>
           </div>
-          <h5 class="card-title text-secondary mb-1">Notificaciones Enviadas por Día y Tipo de Canal</h5>
+          <h5 class="card-title text-secondary mb-1">Notificaciones Enviadas por Día y Tipo de Notificacion</h5>
           <small class="text-secondary">Estadísticas semanales</small>
         </div>
 
         <div class="d-flex justify-content-start align-items-center mb-3">
           <div class="legend-item d-flex align-items-center me-3">
             <div class="legend-color bg-primary me-1" style="width: 15px; height: 15px; border-radius: 3px; margin-left: 125px;"></div>
-            <small class="text-secondary">Telegram</small>
+            <small class="text-secondary">Access</small>
           </div>
           <div class="legend-item d-flex align-items-center me-3">
             <div class="legend-color bg-success me-1" style="width: 15px; height: 15px; border-radius: 3px;"></div>
-            <small class="text-secondary">Email</small>
+            <small class="text-secondary">Payment</small>
           </div>
           <div class="legend-item d-flex align-items-center">
             <div class="legend-color bg-warning me-1" style="width: 15px; height: 15px; border-radius: 3px;"></div>
-            <small class="text-secondary">Web</small>
+            <small class="text-secondary">Fine</small>
+          </div>
+          <div class="legend-item d-flex align-items-center" style="padding-left: 15px;">
+            <div class="legend-color bg-danger me-1" style="width: 15px; height: 15px; border-radius: 3px;"></div>
+            <small class="text-secondary">Inventory</small>
           </div>
         </div>
 
-        <google-chart [type]="cChartType" [data]="columnChartData3" [options]="columnChartOptions3" class="w-100 expanded-chart-content"></google-chart>
+        <google-chart [type]="columnChartType3" [data]="columnChartData3" [options]="columnChartOptions3" class="w-100 expanded-chart-content"></google-chart>
       </div>
     </div>
   </div>
@@ -99,7 +103,7 @@
     <div class="card border-0 shadow-lg rounded-4 h-100 transition-all hover-scale" (click)="makeBig(1)">
       <div class="card-body">
         <h5 class="card-title text-secondary mb-1">Notificaciones Enviadas por Día</h5>
-        <google-chart [type]="c3ChartType" [data]="columnChartData" [options]="columnChartOptions" class="w-100"></google-chart>
+        <google-chart [type]="columnChartType" [data]="columnChartData" [options]="columnChartOptions" class="w-100"></google-chart>
       </div>
     </div>
   </div>
@@ -108,8 +112,8 @@
     <!-- Gráfico 2 -->
     <div class="card border-0 shadow-lg rounded-4 h-100 transition-all hover-scale" (click)="makeBig(2)">
       <div class="card-body">
-        <h5 class="card-title text-secondary mb-1">Notificaciones Enviadas por Canal</h5>
-        <google-chart [type]="columnChartType" [data]="columnChartData2" [options]="columnChartOptions2" class="w-100"></google-chart>
+        <h5 class="card-title text-secondary mb-1">Notificaciones Enviadas por Tipo de Notificacion</h5>
+        <google-chart [type]="columnChartType2" [data]="columnChartData2" [options]="columnChartOptions2" class="w-100"></google-chart>
       </div>
     </div>
   </div>
@@ -118,8 +122,8 @@
     <!-- Gráfico 3 -->
     <div class="card border-0 shadow-lg rounded-4 h-100 transition-all hover-scale" (click)="makeBig(3)">
       <div class="card-body">
-        <h5 class="card-title text-secondary mb-1">Notificaciones Enviadas por Día y Tipo de Canal</h5>
-        <google-chart [type]="cChartType" [data]="columnChartData3" [options]="columnChartOptions3" class="w-100"></google-chart>
+        <h5 class="card-title text-secondary mb-1">Notificaciones Enviadas por Día y Tipo de Notificacion</h5>
+        <google-chart [type]="columnChartType3" [data]="columnChartData3" [options]="columnChartOptions3" class="w-100"></google-chart>
       </div>
     </div>
   </div>

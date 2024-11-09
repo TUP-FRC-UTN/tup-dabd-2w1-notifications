@@ -1,7 +1,12 @@
 /* You can add global styles to this file, and also import other style files */
 @import "@ng-select/ng-select/themes/default.theme.css";
 
-.btn:hover .filterbutton{
-    background-color: #333333 !important;
-    transform: translateY(-2px);
-  }
+.btn.filterbutton:hover {
+  background-color: #333333 !important;
+  transform: translateY(-2px);
+
+} 
+
+table.dataTable tbody tr.selected {
+  background-color: transparent !important;
+}
