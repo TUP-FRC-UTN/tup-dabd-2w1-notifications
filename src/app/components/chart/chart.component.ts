@@ -4,6 +4,7 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angul
 import { GoogleChartsModule, ChartType } from 'angular-google-charts';
 import { NotificationRegisterService } from '../../service/notification-register.service';
 import { AllNotifications } from '../../models/all-notifications';
+import { count } from 'rxjs';
 
 @Component({
   selector: 'app-chart',
@@ -16,7 +17,7 @@ export class ChartComponent implements OnInit {
   columnChartType: ChartType = ChartType.ColumnChart;
   c2ChartType: ChartType = ChartType.Gauge;
   c3ChartType: ChartType = ChartType.PieChart;
-  cChartType: ChartType = ChartType.AreaChart;
+  cChartType: ChartType = ChartType.BarChart;
   c4ChartType: ChartType = ChartType.ScatterChart;
   form: FormGroup;
   status: number = 0;
@@ -46,12 +47,12 @@ export class ChartComponent implements OnInit {
   };
 
   columnChartOptions2 = {
-    title: 'Notificaciones Enviadas por Tipo (Access, Payment, Fine)',
+    title: 'Notificaciones Enviadas por Tipo (Access, Payment, Fine, Inventory)',
     hAxis: { title: 'Tipo de Notificación' },
     vAxis: { title: 'Cantidad de Notificaciones' },
     legend: { position: 'none' },
     chartArea: { width: '80%', height: '70%' },
-    colors: ['#34A853']
+    colors: ['purple']
   };
 
   columnChartOptions3 = {
@@ -73,11 +74,11 @@ export class ChartComponent implements OnInit {
   };
 
   columnChartOptions5 = {
-    title: 'Distribución de Tipos de Notificación',
+    title: 'Notificaciones Leidas y No Leidas por Semana',
     legend: { position: 'right' },
     chartArea: { width: '80%', height: '80%' },
     pieHole: 0.4, //Esto es un semi-donut del pie
-    colors: ['#4285F4', '#34A853', '#FBBC05', '#EA4335']
+    colors: ['green', 'red']
   };
 
   columnChartOptions6 = {
@@ -95,6 +96,7 @@ export class ChartComponent implements OnInit {
   }
 
   loadChartData(): void {
+    const counterOfBools = ['Leido', 'No Leido'];
     const daysOfWeek = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'];
     const monthsOfYear = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
     const hoursOfDay = ['01:00', '02:00', '03:00', '04:00', '05:00', '06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00',
@@ -102,6 +104,7 @@ export class ChartComponent implements OnInit {
     const getDayOfWeek = (date: Date) => daysOfWeek[date.getDay() - 1]; // Ajuste del día de la semana (domingo es 0)
     const getMonthOfYear = (date: Date) => monthsOfYear[date.getMonth() - 1]; // Ajuste del mes del año (diciembre es 0)
     const getHourOfDay = (date: Date) => hoursOfDay[date.getHours() - 1]; // Ajuste de la hora del dia (las 12 es 0)
+    const getCounterOfBools = (count: Number) => counterOfBools[count.valueOf()];
   
     this.chartDataService.getData().subscribe(
       (data: AllNotifications) => {
@@ -217,12 +220,10 @@ export class ChartComponent implements OnInit {
         this.columnChartData4 = hoursOfDay.map(hour => [hour, notificationsPerHour[hour]]);
 
         // Datos para el quinto gráfico
-        this.columnChartData5 = daysOfWeek.map(day => [
-          day,
-          data.access.filter(a => getDayOfWeek(new Date(a.created_datetime)) === day).length,
-          data.payments.filter(p => getDayOfWeek(new Date(p.created_datetime)) === day).length,
-          data.fines.filter(f => getDayOfWeek(new Date(f.created_datetime)) === day).length,
-          data.inventories.filter(f => getDayOfWeek(new Date(f.created_datetime)) === day).length
+        this.columnChartData5 = counterOfBools.map(count => [
+          count,
+          data.access.filter(a => getCounterOfBools(new Number(a.markedRead)) === count).length,
+          data.access.filter(a => getCounterOfBools(new Number(a.markedRead)) === count).length,
         ]);
 
         // Datos para el sexto gráfico
