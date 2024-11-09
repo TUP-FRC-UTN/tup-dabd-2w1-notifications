@@ -27,6 +27,8 @@ export class NotificationService {
       notificationId: notiId,
       table: table
     }
+    console.log(";", table)
+
     return this.http.put<boolean>(this.urlput, dto); 
   }
 
