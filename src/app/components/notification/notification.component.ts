@@ -149,7 +149,7 @@ export class NotificationComponent implements OnInit {
         .draw();
     });
 
-    this.initialzeDates();
+    this.initializeDates();
     this.dateFilterForm.valueChanges.subscribe(() => {
       this.filterListByDate();
     });
@@ -404,7 +404,7 @@ export class NotificationComponent implements OnInit {
     if (searchInput) {
       searchInput.value = "";
     }
-    this.initialzeDates();
+    this.initializeDates();
   }
 
   getTodayDateFormatted(date: Date): string {
@@ -412,7 +412,7 @@ export class NotificationComponent implements OnInit {
     return this.datePipe.transform(formattedDate, "dd/MM/yyyy HH:mm:ss") || "";
   }
 
-  initialzeDates() {
+  initializeDates() {
     const today = new Date();
     const startDate = new Date(
       today.getFullYear(),

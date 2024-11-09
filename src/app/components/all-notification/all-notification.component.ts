@@ -71,7 +71,8 @@ export class AllNotificationComponent implements OnInit {
       searching: true,
       ordering: true,
       lengthChange: true,
-      pageLength: 10,
+      pageLength: 5,
+      lengthMenu: [5, 10, 25, 50],
       order: [[0, "desc"]],
       language: {
         emptyTable: "Cargando...",
