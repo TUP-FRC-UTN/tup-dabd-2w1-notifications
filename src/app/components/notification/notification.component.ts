@@ -71,15 +71,14 @@ export class NotificationComponent implements OnInit {
 
   dateFilterForm: FormGroup;
   notificationTypes: any[] = [
-    { value: "Todas", name: "Todas" },
     { value: "Multas", name: "Multas" },
     { value: "Accesos", name: "Accesos" },
     { value: "Pagos", name: "Pagos" },
     { value: "Generales", name: "Generales" },
   ];
-  selectedNotificationType: string[] = ["Todas"];
+  selectedNotificationType: string[] = [];
 
-  dropdownSeleccionadas: any[] = ["Todas"];
+  dropdownSeleccionadas: any[] = [];
 
   recibirSeleccionadas(node: any) {
     this.dropdownSeleccionadas = node;
@@ -125,7 +124,7 @@ export class NotificationComponent implements OnInit {
         { targets: 4, className: "text-center" },
       ],
       dom: '<"mb-3"t>' + '<"d-flex justify-content-between"lp>',
-      select: {style: "single"},
+      select: { style: "single" },
       paging: true,
       searching: true,
       ordering: true,
@@ -199,34 +198,46 @@ export class NotificationComponent implements OnInit {
     });
 
     const addRow = (notification: any, tipo: string) => {
+      // Determinar la clase CSS basada en el tipo
+      const getBadgeClass = (tipo: string) => {
+        switch (tipo) {
+          case "Generales":
+            return "text-bg-warning";
+          case "Accesos":
+            return "text-bg-success";
+          case "Multas":
+            return "text-bg-danger";
+          case "Pagos":
+            return "text-bg-indigo"; // Bootstrap 5.3 indigo
+          default:
+            return "";
+        }
+      };
+
+      const badgeClass = getBadgeClass(tipo);
+
       table.row
         .add([
           this.getTodayDateFormatted(notification.created_datetime),
-          tipo,
+          `<div class = text-center><span class=" badge rounded-pill ${badgeClass}">${tipo}</span> </div>`,
           notification.subject,
           notification.message,
-          `
-              
-                <a class="btn btn-light align-items-center" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"
-                
-                 style="width:40px; height:40px; font-size:1.2rem; padding-top:0.2rem;">
-                &#8942;
-              </a>
-              
-                  <ul class="dropdown-menu">
-                    <li><a class="dropdown-item consultar-btn" href="#" data-bs-toggle="modal"
-                    data-bs-target="#idMODAL"">Ver más</a></li>
-                    <li><a class="dropdown-item consultar-btn mark-read-btn" 
-                    >Marcar como leida</a></li>
-                  </ul>
-
-          `,
+          `<a class="btn btn-light align-items-center" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"
+              style="width:40px; height:40px; font-size:1.2rem; padding-top:0.2rem;">
+              &#8942;
+            </a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item consultar-btn" href="#" data-bs-toggle="modal"
+              data-bs-target="#idMODAL">Ver más</a></li>
+              <li><a class="dropdown-item consultar-btn mark-read-btn"
+              >Marcar como leida</a></li>
+            </ul>`,
         ])
         .draw();
     };
 
     this.allNotificationsArray = [];
-    if (this.dropdownSeleccionadas.includes("Todas")) {
+    if (this.dropdownSeleccionadas.length === 0) {
       this.allNotifications.access.forEach((notification) => {
         addRow(notification, "Accesos"),
           this.allNotificationsArray.push(notification);
@@ -278,55 +289,58 @@ export class NotificationComponent implements OnInit {
   exportarAExcel() {
     const tabla = $("#myTable").DataTable();
     const filteredData = tabla.rows({ search: "applied" }).data().toArray();
-    
-    const headers = tabla.columns().header().toArray()
+
+    const headers = tabla
+      .columns()
+      .header()
+      .toArray()
       .slice(0, -1)
-      .map(th => $(th).text());
-    
-    const excelData = filteredData.map(row => 
+      .map((th) => $(th).text());
+
+    const excelData = filteredData.map((row) =>
       row.slice(0, -1).reduce((obj: any, value: any, index: number) => {
         obj[headers[index]] = value;
         return obj;
       }, {})
     );
-  
+
     const worksheet = XLSX.utils.json_to_sheet(excelData);
-    
+
     // Insertar headers manualmente
-    XLSX.utils.sheet_add_aoa(worksheet, [headers], { origin: 'A1' });
-    
+    XLSX.utils.sheet_add_aoa(worksheet, [headers], { origin: "A1" });
+
     // Configurar ancho de columnas
-    worksheet['!cols'] = headers.map(() => ({ width: 20 }));
-    
+    worksheet["!cols"] = headers.map(() => ({ width: 20 }));
+
     // Aplicar estilos a la primera fila
     for (let i = 0; i < headers.length; i++) {
       const cellRef = XLSX.utils.encode_cell({ r: 0, c: i });
       if (!worksheet[cellRef]) continue;
-      
+
       worksheet[cellRef].s = {
-        font: { 
+        font: {
           bold: true,
-          name: 'Arial'
+          name: "Arial",
         },
         alignment: {
-          horizontal: 'center',
-          vertical: 'center'
+          horizontal: "center",
+          vertical: "center",
         },
         border: {
-          top: { style: 'thin' },
-          bottom: { style: 'thin' },
-          left: { style: 'thin' },
-          right: { style: 'thin' }
-        }
+          top: { style: "thin" },
+          bottom: { style: "thin" },
+          left: { style: "thin" },
+          right: { style: "thin" },
+        },
       };
     }
-  
+
     const workBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workBook, worksheet, "Notificaciones");
-    
+
     const today = new Date();
-    const formattedDate = this.datePipe.transform(today, 'dd-MM-yyyy');
-    
+    const formattedDate = this.datePipe.transform(today, "dd-MM-yyyy");
+
     // Usar writeFileXLSX en lugar de writeFile para mantener los estilos
     XLSX.writeFileXLSX(workBook, `Notificaciones_${formattedDate}.xlsx`);
   }

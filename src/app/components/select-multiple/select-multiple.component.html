@@ -7,9 +7,12 @@
     [closeOnSelect]="!multiple"
     [(ngModel)]="selectedOptions"
     [clearable]="false"
-    (ngModelChange)="send()">
+    (ngModelChange)="send()"
+    >
     @if(multiple){
         <ng-template ng-multi-label-tmp let-items="items">
+            @if(selectedOptions.length == 0){
+            Seleccionar por tipo}
             @if(items.length == 1){
                 {{ items[0].name }}
             }
