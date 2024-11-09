@@ -113,7 +113,7 @@ export class PostNotificationAdminComponent implements AfterViewInit, OnInit{
     senderId: 0,
     subject: "",
     description : "",
-    channel: "EMAIL"
+    channel: "EMAIL",
   }
 
   selectedUser: string = ''; 
