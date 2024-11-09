@@ -9,7 +9,7 @@
         <p>Total de notificaciones: {{ maxNotificationsCount }}</p>
       </div>
     </div>
-    
+
     <div class="card border-0 shadow rounded-4 h-100 w-100">
       <div class="card-body">
         <div class="d-flex justify-content-between align-items-center mb-4">
@@ -34,8 +34,16 @@
     </div>
   </div>
 
-  <!-- Gráfico 2: Notificaciones Enviadas por Canal -->
+  <!-- Gráfico 2: Notificaciones Enviadas por Tipo de Notificacion -->
   <div *ngIf="status === 2" class="col-12">
+    <!-- KPI -->
+    <div class="kpi-container">
+      <div class="card border-0 shadow-lg mb-3 rounded-4 h-100 w-100">
+        <h2>Tipo de notificacion con más notificaciones</h2>
+        <p>Tipo de notificacion: {{ maxNotificationsType }}</p>
+        <p>Total de notificaciones: {{ maxNotificationsTypeCount }}</p>
+      </div>
+    </div>
     <div class="card border-0 shadow rounded-4 h-100 w-100">
       <div class="card-body">
         <div class="d-flex justify-content-between align-items-center mb-4">
@@ -60,8 +68,17 @@
     </div>
   </div>
 
-  <!-- Gráfico 3: Notificaciones Enviadas por Día y Tipo de Canal -->
+  <!-- Gráfico 3: Notificaciones Enviadas por Día y Tipo de Notificacion -->
   <div *ngIf="status === 3" class="col-12">
+    <!-- KPI -->
+    <div class="kpi-container">
+      <div class="card border-0 shadow-lg mb-3 rounded-4 h-100 w-100">
+        <h2>Día y tipo de notificacion con más notificaciones</h2>
+        <p>Día: {{ maxNotificationsDay }}</p>
+        <p>Tipo de notificacion: {{ maxNotificationsType }}</p>
+        <p>Total de notificaciones: {{ maxNotificationsCount }}</p>
+      </div>
+    </div>
     <div class="card border-0 shadow rounded-4 h-100 w-100">
       <div class="card-body">
         <div class="d-flex justify-content-between align-items-center mb-4">
@@ -107,6 +124,15 @@
 
   <!-- Gráfico 4: Notificaciones Enviadas por Hora y Dia -->
   <div *ngIf="status === 4" class="col-12">
+    <!-- KPI -->
+    <div class="kpi-container">
+      <div class="card border-0 shadow-lg mb-3 rounded-4 h-100 w-100">
+        <h2>Hora y dia con más notificaciones</h2>
+        <p>Día: {{ maxNotificationsDay }}</p>
+        <p>Hora: {{ maxNotificationsHour }}</p>
+        <p>Total de notificaciones: {{ maxNotificationsHourCount }}</p>
+      </div>
+    </div>
     <div class="card border-0 shadow rounded-4 h-100 w-100">
       <div class="card-body">
         <div class="d-flex justify-content-between align-items-center mb-4">
@@ -133,6 +159,14 @@
 
   <!-- Gráfico 5: Notificaciones Leidas y No Leidas por Semana -->
   <div *ngIf="status === 5" class="col-12">
+  <!-- KPI -->
+  <div class="kpi-container">
+    <div class="card border-0 shadow-lg mb-3 rounded-4 h-100 w-100">
+      <h2>Notificaciones Leidas y No Leidas</h2>
+      <p>Leidas: {{ maxNotificationsRead }}%</p>
+      <p>No Leidas: {{ maxNotificationsUnread }}%</p>
+    </div>
+  </div>
     <div class="card border-0 shadow rounded-4 h-100 w-100">
       <div class="card-body">
         <div class="d-flex justify-content-between align-items-center mb-4">
@@ -170,6 +204,15 @@
 
   <!-- Gráfico 6: Notificaciones por Mes y Tipo -->
   <div *ngIf="status === 6" class="col-12">
+    <!-- KPI -->
+    <div class="kpi-container">
+      <div class="card border-0 shadow-lg mb-3 rounded-4 h-100 w-100">
+        <h2>Mes y tipo de notificacion con más notificaciones</h2>
+        <p>Mes: {{ maxNotificationsMonth }}</p>
+        <p>Tipo de notificacion: {{ maxNotificationsType }}</p>
+        <p>Total de notificaciones: {{ maxNotificationsCount }}</p>
+      </div>
+    </div>
     <div class="card border-0 shadow rounded-4 h-100 w-100">
       <div class="card-body">
         <div class="d-flex justify-content-between align-items-center mb-4">

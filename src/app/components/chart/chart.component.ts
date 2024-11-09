@@ -14,7 +14,15 @@ import { AllNotifications } from '../../models/all-notifications';
 })
 export class ChartComponent implements OnInit {
   maxNotificationsDay: string = '';
+  maxNotificationsType: string = '';
   maxNotificationsCount: number = 0;
+  maxNotificationsTypeCount: number = 0;
+  maxNotificationsHour: string = '';
+  maxNotificationsHourCount: number = 0;
+  maxNotificationsMonth: string = '';
+  maxNotificationsMonthCount: number = 0;
+  maxNotificationsRead: number = 0;
+  maxNotificationsUnread: number = 0;
   columnChartType: ChartType = ChartType.ColumnChart;
   c2ChartType: ChartType = ChartType.Gauge;
   c3ChartType: ChartType = ChartType.PieChart;
@@ -102,18 +110,34 @@ export class ChartComponent implements OnInit {
       const allNotifications = this.flattenNotifications(data);
       const groupedByDay = this.groupByDay(allNotifications);
       const maxDay = this.findMaxNotificationsDay(groupedByDay);
+      const groupedByType = this.groupByType(allNotifications);
+      const maxType = this.findMaxNotificationsType(groupedByType);
+      const groupedByHour = this.groupByHour(allNotifications); 
+      const maxHour = this.findMaxNotificationsHour(groupedByHour); 
+      const groupedByMonth = this.groupByMonth(allNotifications);
+      const maxMonth = this.findMaxNotificationsMonth(groupedByMonth); 
+      const groupedByReadStatus = this.groupByReadStatus(allNotifications);
+      const readNotificationsRate = this.getReadNotificationsRate(groupedByReadStatus);
+      this.maxNotificationsRead = parseFloat(readNotificationsRate.toFixed(2));
+      this.maxNotificationsUnread = parseFloat((100 - readNotificationsRate).toFixed(2));
 
       this.maxNotificationsDay = maxDay.day;
       this.maxNotificationsCount = maxDay.count;
+      this.maxNotificationsType = maxType.type;
+      this.maxNotificationsTypeCount = maxType.count;
+      this.maxNotificationsHour = maxHour.hour;
+      this.maxNotificationsHourCount = maxHour.count;
+      this.maxNotificationsMonth = maxMonth.month;
+      this.maxNotificationsMonthCount = maxMonth.count;
     });
   }
 
-  flattenNotifications(data: AllNotifications): { date: string }[] {
+  flattenNotifications(data: AllNotifications): { type: string; date: string; read: boolean; }[] {
     const all = [
-      ...data.fines.map(x => ({ date: x.created_datetime.toString() })),
-      ...data.access.map(x => ({ date: x.created_datetime.toString() })),
-      ...data.payments.map(x => ({ date: x.created_datetime.toString() })),
-      ...data.inventories.map(x => ({ date: x.created_datetime.toString() })),
+      ...data.fines.map(x => ({ type: 'Fine', date: x.created_datetime.toString(), read: x.markedRead || false })),
+      ...data.access.map(x => ({ type: 'Access', date: x.created_datetime.toString(), read: x.markedRead || false })),
+      ...data.payments.map(x => ({ type: 'Payment', date: x.created_datetime.toString(), read: x.markedRead || false })),
+      ...data.inventories.map(x => ({ type: 'Inventory', date: x.created_datetime.toString(), read: x.markedRead || false })),
     ];
     return all;
   }
@@ -125,6 +149,74 @@ export class ChartComponent implements OnInit {
       return acc;
     }, {} as { [key: string]: number });
   }
+
+  groupByType(notifications: { type: string }[]): { [key: string]: number } {
+    return notifications.reduce((acc, curr) => {
+      acc[curr.type] = (acc[curr.type] || 0) + 1;
+      return acc;
+    }, {} as { [key: string]: number });
+  }
+
+  groupByHour(notifications: { date: string }[]): { [key: string]: number } {
+    return notifications.reduce((acc, curr) => {
+      const hour = new Date(curr.date).getHours(); 
+      const formattedHour = `${hour < 10 ? '0' : ''}${hour}:00`; 
+      acc[formattedHour] = (acc[formattedHour] || 0) + 1;
+      return acc;
+    }, {} as { [key: string]: number });
+  }
+
+  groupByMonth(notifications: { date: string }[]): { [key: string]: number } {
+    return notifications.reduce((acc, curr) => {
+      const month = new Date(curr.date).getMonth(); // Obtenemos el mes (0-11)
+      const months = [
+        'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+      ];
+      acc[months[month]] = (acc[months[month]] || 0) + 1;
+      return acc;
+    }, {} as { [key: string]: number });
+  }
+
+groupByReadStatus(notifications: { type: string; date: string; read: boolean }[]): { [key: string]: { read: number, unread: number } } {
+  return notifications.reduce((acc, curr) => {
+    const week = this.getWeekFromDate(curr.date);
+    if (!acc[week]) {
+      acc[week] = { read: 0, unread: 0 };
+    }
+    if (curr.read) {
+      acc[week].read += 1;
+    } else {
+      acc[week].unread += 1;
+    }
+    return acc;
+  }, {} as { [key: string]: { read: number, unread: number } });
+}
+
+getReadNotificationsRate(groupedData: { [key: string]: { read: number, unread: number } }): number {
+  let totalNotifications = 0;
+  let readNotifications = 0;
+
+  for (const week in groupedData) {
+    totalNotifications += groupedData[week].read + groupedData[week].unread;
+    readNotifications += groupedData[week].read;
+  }
+
+  return totalNotifications > 0 ? (readNotifications / totalNotifications) * 100 : 0;
+}
+
+getWeeklyReadNotifications(groupedData: { [key: string]: { read: number, unread: number } }): number[] {
+  return Object.values(groupedData).map(week => week.read);
+}
+
+getWeeklyUnreadNotifications(groupedData: { [key: string]: { read: number, unread: number } }): number[] {
+  return Object.values(groupedData).map(week => week.unread);
+}
+
+getWeekFromDate(date: string): string {
+  const d = new Date(date);
+  const weekNumber = Math.floor((d.getDate() - 1) / 7) + 1; 
+  return `${d.getFullYear()}-W${weekNumber}`;
+}
 
   findMaxNotificationsDay(groupedData: { [key: string]: number }): { day: string; count: number } {
     let maxDay = '';
@@ -138,6 +230,48 @@ export class ChartComponent implements OnInit {
     }
 
     return { day: maxDay, count: maxCount };
+  }
+
+  findMaxNotificationsType(groupedData: { [key: string]: number }): { type: string; count: number } {
+    let maxType = '';
+    let maxCount = 0;
+  
+    for (const [type, count] of Object.entries(groupedData)) {
+      if (count > maxCount) {
+        maxType = type;
+        maxCount = count;
+      }
+    }
+  
+    return { type: maxType, count: maxCount };
+  }
+
+  findMaxNotificationsHour(groupedData: { [key: string]: number }): { hour: string; count: number } {
+    let maxHour = '';
+    let maxCount = 0;
+  
+    for (const [hour, count] of Object.entries(groupedData)) {
+      if (count > maxCount) {
+        maxHour = hour;
+        maxCount = count;
+      }
+    }
+  
+    return { hour: maxHour, count: maxCount };
+  }
+  
+  findMaxNotificationsMonth(groupedData: { [key: string]: number }): { month: string; count: number } {
+    let maxMonth = '';
+    let maxCount = 0;
+  
+    for (const [month, count] of Object.entries(groupedData)) {
+      if (count > maxCount) {
+        maxMonth = month;
+        maxCount = count;
+      }
+    }
+  
+    return { month: maxMonth, count: maxCount };
   }
 
   loadChartData(): void {
@@ -268,7 +402,10 @@ export class ChartComponent implements OnInit {
         this.columnChartData5 = counterOfBools.map(count => [
           count,
           data.access.filter(a => getCounterOfBools(new Number(a.markedRead)) === count).length,
-          data.access.filter(a => getCounterOfBools(new Number(a.markedRead)) === count).length,
+          data.payments.filter(a => getCounterOfBools(new Number(a.markedRead)) === count).length,
+          data.inventories.filter(a => getCounterOfBools(new Number(a.markedRead)) === count).length,
+          data.fines.filter(a => getCounterOfBools(new Number(a.markedRead)) === count).length,
+          
         ]);
 
         // Datos para el sexto gráfico
