@@ -57,6 +57,7 @@ export class NotificationComponent implements OnInit {
     subject: "placeholder",
     message: "placeholder",
     date: "placeholder",
+    type: "placeholder",
   };
   selectedNotificationObject: any;
 
@@ -76,6 +77,7 @@ export class NotificationComponent implements OnInit {
     { value: "Pagos", name: "Pagos" },
     { value: "Generales", name: "Generales" },
   ];
+
   selectedNotificationType: string[] = [];
 
   dropdownSeleccionadas: any[] = [];
@@ -106,13 +108,22 @@ export class NotificationComponent implements OnInit {
     this.llenarData(this.userId);
     $(document).on("click", ".mark-read-btn", (event) => {
       console.log("CLICK EN MARCAR LEIDA");
-      console.log(this.selectedNotificationObject);
+      this.service.putData(
+        this.selectedNotificationObject.id,
+        this.selectedNotification.type
+      );
+      if (this.selectedNotificationObject) {
+        this.selectedNotificationObject.markedRead = true;
+
+        // Refrescar la tabla para mostrar los cambios
+        this.fillTable();
+      }
     });
 
     // Configure DataTables with search functionality
     $("#myTable").DataTable({
       columns: [
-        { width: "13%" },
+        { width: "14%" },
         { width: "12%" },
         { width: "25%" },
         { width: "40%" },
@@ -124,7 +135,7 @@ export class NotificationComponent implements OnInit {
         { targets: 4, className: "text-center" },
       ],
       dom: '<"mb-3"t>' + '<"d-flex justify-content-between"lp>',
-      select: { style: "single" },
+      select: { style: "os" },
       paging: true,
       searching: true,
       ordering: true,
@@ -162,6 +173,7 @@ export class NotificationComponent implements OnInit {
       subject: data[2],
       message: data[3],
       date: data[0],
+      type: data[1].toUpperCase(),
     };
   }
 
@@ -170,12 +182,30 @@ export class NotificationComponent implements OnInit {
       next: (value: Notifications) => {
         console.log("API RESPONSE: ");
         console.log(value);
+
+        // Inicializar markedRead en false para todas las notificaciones nuevas
+        value.access.forEach(
+          (notification) =>
+            (notification.markedRead = notification.markedRead || false)
+        );
+        value.fines.forEach(
+          (notification) =>
+            (notification.markedRead = notification.markedRead || false)
+        );
+        value.payments.forEach(
+          (notification) =>
+            (notification.markedRead = notification.markedRead || false)
+        );
+        value.generals.forEach(
+          (notification) =>
+            (notification.markedRead = notification.markedRead || false)
+        );
+
         this.allNotifications = value;
         this.accessList = [...value.access];
         this.finesList = [...value.fines];
         this.paymentsList = [...value.payments];
         this.generalsList = [...value.generals];
-        this.inventoryList = [...value.inventories];
         this.fillTable();
       },
       error: () => {
@@ -183,7 +213,6 @@ export class NotificationComponent implements OnInit {
       },
     });
   }
-
   fillTable() {
     const table = $("#myTable").DataTable();
     table.clear().draw();
@@ -198,7 +227,6 @@ export class NotificationComponent implements OnInit {
     });
 
     const addRow = (notification: any, tipo: string) => {
-      // Determinar la clase CSS basada en el tipo
       const getBadgeClass = (tipo: string) => {
         switch (tipo) {
           case "Generales":
@@ -208,7 +236,7 @@ export class NotificationComponent implements OnInit {
           case "Multas":
             return "text-bg-danger";
           case "Pagos":
-            return "text-bg-indigo"; // Bootstrap 5.3 indigo
+            return "text-bg-indigo";
           default:
             return "";
         }
@@ -216,12 +244,17 @@ export class NotificationComponent implements OnInit {
 
       const badgeClass = getBadgeClass(tipo);
 
+      // Aplicar clase fw-bold si no está leída
+      const boldClass = !notification.markedRead ? "fw-bold" : "";
+
       table.row
         .add([
-          this.getTodayDateFormatted(notification.created_datetime),
-          `<div class = text-center><span class=" badge rounded-pill ${badgeClass}">${tipo}</span> </div>`,
-          notification.subject,
-          notification.message,
+          `<div class="${boldClass}">${this.getTodayDateFormatted(
+            notification.created_datetime
+          )}</div>`,
+          `<div class="text-center"><span class="badge rounded-pill ${badgeClass}">${tipo}</span></div>`,
+          `<div class="${boldClass}">${notification.subject}</div>`,
+          `<div class="${boldClass}">${notification.message}</div>`,
           `<a class="btn btn-light align-items-center" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"
               style="width:40px; height:40px; font-size:1.2rem; padding-top:0.2rem;">
               &#8942;
@@ -235,7 +268,6 @@ export class NotificationComponent implements OnInit {
         ])
         .draw();
     };
-
     this.allNotificationsArray = [];
     if (this.dropdownSeleccionadas.length === 0) {
       this.allNotifications.access.forEach((notification) => {
@@ -358,11 +390,8 @@ export class NotificationComponent implements OnInit {
     const doc = new jsPDF();
 
     doc.setFontSize(18);
-    doc.text(
-      "Reporte de Notificaciones (" + dateFrom + " / " + dateTo + ")",
-      14,
-      22
-    );
+    doc.text("Reporte de Notificaciones", 14, 22);
+    doc.text("Fechas: Desde " + dateFrom + " hasta " + dateTo + "", 14, 33);
 
     autoTable(doc, {
       head: [["Fecha", "Tipo", "Asunto", "Descripción"]],
@@ -372,7 +401,8 @@ export class NotificationComponent implements OnInit {
         item[2] || "N/A",
         item[3] || "N/A",
       ]),
-      startY: 30,
+      startY: 44,
+      theme: 'grid'
     });
 
     const today = new Date();
@@ -387,16 +417,8 @@ export class NotificationComponent implements OnInit {
     this.selected = "Todas";
     // Reset del ngselect
     this.selectedNotificationType = ["Todas"];
-    this.dropdownSeleccionadas = ["Todas"];
+    this.dropdownSeleccionadas = [];
 
-    // Emitir el cambio al componente hijo
-    const selectMultipleComponent = document.querySelector(
-      "app-select-multiple"
-    );
-    if (selectMultipleComponent) {
-      (selectMultipleComponent as any).selectedOptions = ["Todas"];
-      (selectMultipleComponent as any).send();
-    }
 
     const searchInput = document.getElementById(
       "searchTerm"

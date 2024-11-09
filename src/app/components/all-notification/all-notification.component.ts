@@ -60,8 +60,8 @@ export class AllNotificationComponent implements OnInit {
     this.form.get("endDate")?.valueChanges.subscribe((value) => {
       this.updatedList();
     });
-    this.initialzeDates();
     this.llenarData();
+    this.initialzeDates();
 
     this.table = $("#myTable").DataTable({
       dom: '<"mb-3"t>' + '<"d-flex justify-content-between"lp>',
@@ -265,6 +265,7 @@ export class AllNotificationComponent implements OnInit {
         item[5] || "N/A",
       ]),
       startY: 30,
+      theme: 'grid'
     });
 
     doc.save(this.formatDate(new Date())+" Registro de Notificaciones.pdf");

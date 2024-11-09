@@ -20,7 +20,7 @@
           <h5 class="card-title text-secondary mb-1">Notificaciones Enviadas por Día</h5>
           <small class="text-secondary">Estadísticas semanales</small>
         </div>
-        <google-chart [type]="columnChartType" [data]="columnChartData" [options]="columnChartOptions" class="w-100 expanded-chart-content"></google-chart>
+        <google-chart [type]="c3ChartType" [data]="columnChartData" [options]="columnChartOptions" class="w-100 expanded-chart-content"></google-chart>
       </div>
     </div>
   </div>
@@ -46,7 +46,7 @@
           <h5 class="card-title text-secondary mb-1">Notificaciones Enviadas por Tipo de Notificacion</h5>
           <small class="text-secondary">Estadísticas semanales</small>
         </div>
-        <google-chart [type]="columnChartType2" [data]="columnChartData2" [options]="columnChartOptions2" class="w-100 expanded-chart-content"></google-chart>
+        <google-chart [type]="columnChartType" [data]="columnChartData2" [options]="columnChartOptions2" class="w-100 expanded-chart-content"></google-chart>
       </div>
     </div>
   </div>
@@ -86,13 +86,128 @@
             <div class="legend-color bg-warning me-1" style="width: 15px; height: 15px; border-radius: 3px;"></div>
             <small class="text-secondary">Fine</small>
           </div>
-          <div class="legend-item d-flex align-items-center" style="padding-left: 15px;">
-            <div class="legend-color bg-danger me-1" style="width: 15px; height: 15px; border-radius: 3px;"></div>
+          <div class="legend-item d-flex align-items-center">
+            <div class="legend-color bg-warning me-1" style="width: 15px; height: 15px; border-radius: 3px;"></div>
             <small class="text-secondary">Inventory</small>
           </div>
         </div>
+        <google-chart [type]="cChartType" [data]="columnChartData3" [options]="columnChartOptions3" class="w-100 expanded-chart-content"></google-chart>
+      </div>
+    </div>
+  </div>
 
-        <google-chart [type]="columnChartType3" [data]="columnChartData3" [options]="columnChartOptions3" class="w-100 expanded-chart-content"></google-chart>
+  <!-- Gráfico 4: Notificaciones Enviadas por Hora y Dia -->
+  <div *ngIf="status === 4" class="col-12">
+    <div class="card border-0 shadow rounded-4 h-100 w-100">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <div class="back-arrow" (click)="makeBig(0)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="gray" class="bi bi-arrow-left-circle-fill" viewBox="0 0 16 16">
+              <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0m3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z"/>
+            </svg>
+          </div>
+          <div [formGroup]="form" class="col-2 ms-2" style="gap: 10px; margin-top: 15px">
+            <label>Periodo Desde</label>
+            <input type="date" class="form-control me-2" formControlName="startDate"/>
+          </div>
+          <div [formGroup]="form" class="col-2 ms-2" style="gap: 10px; margin-top: 15px">
+            <label>Periodo Hasta</label>
+            <input type="date" class="form-control me-2" formControlName="endDate"/>
+          </div>
+          <h5 class="card-title text-secondary mb-1">Notificaciones Enviadas por Hora y Dia</h5>
+          <small class="text-secondary">Estadísticas semanales</small>
+        </div>
+        <google-chart [type]="columnChartType" [data]="columnChartData4" [options]="columnChartOptions4" class="w-100 expanded-chart-content"></google-chart>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gráfico 5: Notificaciones por Distribución de Tipos de Notificación -->
+  <div *ngIf="status === 5" class="col-12">
+    <div class="card border-0 shadow rounded-4 h-100 w-100">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <div class="back-arrow" (click)="makeBig(0)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="gray" class="bi bi-arrow-left-circle-fill" viewBox="0 0 16 16">
+              <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0m3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z"/>
+            </svg>
+          </div>
+          <div [formGroup]="form" class="col-2 ms-2" style="gap: 10px; margin-top: 15px">
+            <label>Periodo Desde</label>
+            <input type="date" class="form-control me-2" formControlName="startDate"/>
+          </div>
+          <div [formGroup]="form" class="col-2 ms-2" style="gap: 10px; margin-top: 15px">
+            <label>Periodo Hasta</label>
+            <input type="date" class="form-control me-2" formControlName="endDate"/>
+          </div>
+          <h5 class="card-title text-secondary mb-1">Notificaciones por Distribución de Tipos de Notificación</h5>
+          <small class="text-secondary">Estadísticas semanales</small>
+        </div>
+
+        <div class="d-flex justify-content-start align-items-center mb-3">
+          <div class="legend-item d-flex align-items-center me-3">
+            <div class="legend-color bg-primary me-1" style="width: 15px; height: 15px; border-radius: 3px; margin-left: 125px;"></div>
+            <small class="text-secondary">Access</small>
+          </div>
+          <div class="legend-item d-flex align-items-center me-3">
+            <div class="legend-color bg-success me-1" style="width: 15px; height: 15px; border-radius: 3px;"></div>
+            <small class="text-secondary">Payment</small>
+          </div>
+          <div class="legend-item d-flex align-items-center">
+            <div class="legend-color bg-warning me-1" style="width: 15px; height: 15px; border-radius: 3px;"></div>
+            <small class="text-secondary">Fine</small>
+          </div>
+          <div class="legend-item d-flex align-items-center">
+            <div class="legend-color bg-warning me-1" style="width: 15px; height: 15px; border-radius: 3px;"></div>
+            <small class="text-secondary">Inventory</small>
+          </div>
+        </div>
+        <google-chart [type]="c3ChartType" [data]="columnChartData5" [options]="columnChartOptions5" class="w-100 expanded-chart-content"></google-chart>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gráfico 6: Notificaciones por Mes y Tipo -->
+  <div *ngIf="status === 6" class="col-12">
+    <div class="card border-0 shadow rounded-4 h-100 w-100">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <div class="back-arrow" (click)="makeBig(0)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="gray" class="bi bi-arrow-left-circle-fill" viewBox="0 0 16 16">
+              <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0m3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z"/>
+            </svg>
+          </div>
+          <div [formGroup]="form" class="col-2 ms-2" style="gap: 10px; margin-top: 15px">
+            <label>Periodo Desde</label>
+            <input type="date" class="form-control me-2" formControlName="startDate"/>
+          </div>
+          <div [formGroup]="form" class="col-2 ms-2" style="gap: 10px; margin-top: 15px">
+            <label>Periodo Hasta</label>
+            <input type="date" class="form-control me-2" formControlName="endDate"/>
+          </div>
+          <h5 class="card-title text-secondary mb-1">Notificaciones Enviadas por Mes y Tipo de Notificacion</h5>
+          <small class="text-secondary">Estadísticas mensuales</small>
+        </div>
+
+        <div class="d-flex justify-content-start align-items-center mb-3">
+          <div class="legend-item d-flex align-items-center me-3">
+            <div class="legend-color bg-primary me-1" style="width: 15px; height: 15px; border-radius: 3px; margin-left: 125px;"></div>
+            <small class="text-secondary">Access</small>
+          </div>
+          <div class="legend-item d-flex align-items-center me-3">
+            <div class="legend-color bg-success me-1" style="width: 15px; height: 15px; border-radius: 3px;"></div>
+            <small class="text-secondary">Payment</small>
+          </div>
+          <div class="legend-item d-flex align-items-center">
+            <div class="legend-color bg-warning me-1" style="width: 15px; height: 15px; border-radius: 3px;"></div>
+            <small class="text-secondary">Fine</small>
+          </div>
+          <div class="legend-item d-flex align-items-center">
+            <div class="legend-color bg-warning me-1" style="width: 15px; height: 15px; border-radius: 3px;"></div>
+            <small class="text-secondary">Inventory</small>
+          </div>
+        </div>
+        <google-chart [type]="c4ChartType" [data]="columnChartData6" [options]="columnChartOptions6" class="w-100 expanded-chart-content"></google-chart>
       </div>
     </div>
   </div>
@@ -103,7 +218,7 @@
     <div class="card border-0 shadow-lg rounded-4 h-100 transition-all hover-scale" (click)="makeBig(1)">
       <div class="card-body">
         <h5 class="card-title text-secondary mb-1">Notificaciones Enviadas por Día</h5>
-        <google-chart [type]="columnChartType" [data]="columnChartData" [options]="columnChartOptions" class="w-100"></google-chart>
+        <google-chart [type]="c3ChartType" [data]="columnChartData" [options]="columnChartOptions" class="w-100"></google-chart>
       </div>
     </div>
   </div>
@@ -113,7 +228,7 @@
     <div class="card border-0 shadow-lg rounded-4 h-100 transition-all hover-scale" (click)="makeBig(2)">
       <div class="card-body">
         <h5 class="card-title text-secondary mb-1">Notificaciones Enviadas por Tipo de Notificacion</h5>
-        <google-chart [type]="columnChartType2" [data]="columnChartData2" [options]="columnChartOptions2" class="w-100"></google-chart>
+        <google-chart [type]="columnChartType" [data]="columnChartData2" [options]="columnChartOptions2" class="w-100"></google-chart>
       </div>
     </div>
   </div>
@@ -123,7 +238,37 @@
     <div class="card border-0 shadow-lg rounded-4 h-100 transition-all hover-scale" (click)="makeBig(3)">
       <div class="card-body">
         <h5 class="card-title text-secondary mb-1">Notificaciones Enviadas por Día y Tipo de Notificacion</h5>
-        <google-chart [type]="columnChartType3" [data]="columnChartData3" [options]="columnChartOptions3" class="w-100"></google-chart>
+        <google-chart [type]="cChartType" [data]="columnChartData3" [options]="columnChartOptions3" class="w-100"></google-chart>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-6 col-md-4 mb-4" *ngIf="status === 0">
+    <!-- Gráfico 4 -->
+    <div class="card border-0 shadow-lg rounded-4 h-100 transition-all hover-scale" (click)="makeBig(4)">
+      <div class="card-body">
+        <h5 class="card-title text-secondary mb-1">Notificaciones Enviadas por Hora y Dia</h5>
+        <google-chart [type]="columnChartType" [data]="columnChartData4" [options]="columnChartOptions4" class="w-100"></google-chart>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-6 col-md-4 mb-4" *ngIf="status === 0">
+    <!-- Gráfico 5 -->
+    <div class="card border-0 shadow-lg rounded-4 h-100 transition-all hover-scale" (click)="makeBig(5)">
+      <div class="card-body">
+        <h5 class="card-title text-secondary mb-1">Notificaciones por Distribución de Tipos de Notificación</h5>
+        <google-chart [type]="c3ChartType" [data]="columnChartData5" [options]="columnChartOptions5" class="w-100"></google-chart>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-6 col-md-4 mb-4" *ngIf="status === 0">
+    <!-- Gráfico 6 -->
+    <div class="card border-0 shadow-lg rounded-4 h-100 transition-all hover-scale" (click)="makeBig(6)">
+      <div class="card-body">
+        <h5 class="card-title text-secondary mb-1">Notificaciones Enviadas por Mes y Tipo de Notificacion</h5>
+        <google-chart [type]="c4ChartType" [data]="columnChartData6" [options]="columnChartOptions6" class="w-100"></google-chart>
       </div>
     </div>
   </div>

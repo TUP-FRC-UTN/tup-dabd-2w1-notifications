@@ -200,7 +200,10 @@ button:hover,
 
 
 
-table.dataTable tbody tr.selected {
-  background-color: transparent !important;
-}
 
+
+
+table.dataTable tbody tr.selected {
+  color: white !important;
+  background-color: #eeeeee !important;
+}
