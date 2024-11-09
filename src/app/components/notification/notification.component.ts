@@ -53,6 +53,7 @@ export class NotificationComponent implements OnInit {
   paymentsList: Payments[] = [];
   generalsList: General[] = [];
   inventoryList: Inventory[] = [];
+
   selectedNotification: any = {
     subject: "placeholder",
     message: "placeholder",
@@ -96,27 +97,46 @@ export class NotificationComponent implements OnInit {
     this.dateFilterForm = new FormGroup({
       startDate: new FormControl(new Date(), [Validators.required]),
       endDate: new FormControl(new Date(), [Validators.required]),
-      // all: new FormControl(true),
-      // fines: new FormControl(false),
-      // access: new FormControl(false),
-      // payments: new FormControl(false),
-      // generals: new FormControl(false),
     });
   }
 
   ngOnInit(): void {
-    this.llenarData(this.userId);
+    this.getNotificationsFromAPI(this.userId);
+
     $(document).on("click", ".mark-read-btn", (event) => {
       console.log("CLICK EN MARCAR LEIDA");
-      this.service.putData(
-        this.selectedNotificationObject.id,
-        this.selectedNotification.type
-      );
       if (this.selectedNotificationObject) {
-        this.selectedNotificationObject.markedRead = true;
-
+        let notificationId = this.selectedNotificationObject.id;
+        let tableName = this.selectedNotificationObject.tableName.toUpperCase()
+        this.service.putData(notificationId,tableName).subscribe({
+        })
         // Refrescar la tabla para mostrar los cambios
-        this.fillTable();
+        // this.fillTable();
+        //obtener objeto de tabla que coincide con la notificacion seleccionada
+        let tableNotification = this.allNotificationsArray[this.selectedNotification.index]
+        let notification;
+        console.log(tableNotification);
+        switch (tableNotification.tableName.toUpperCase()) {
+          
+          case "ACCESS": 
+            this.allNotifications.access[this.selectedNotification.index].markedRead = true
+            break
+          case "GENERAL":
+            this.allNotifications.generals[this.selectedNotification.index].markedRead = true
+            break
+          case "INVENTORY":
+            this.allNotifications.inventories[this.selectedNotification.index].markedRead = true
+            break
+          case "PAYMENTS":
+            this.allNotifications.payments[this.selectedNotification.index].markedRead = true
+            break
+          case "FINES":
+            this.allNotifications.access[this.selectedNotification.index].markedRead = true
+            break
+          //FALTA PROVIDERS, EMPLOYEES, INVENTORY NO SE ESTA MOSTRANDO?
+        }
+        this.fillTable()
+        
       }
     });
 
@@ -168,22 +188,20 @@ export class NotificationComponent implements OnInit {
     this.rolactual = this.activatedRoute.snapshot.params["rol"];
   }
 
-  setNotification(data: any) {
+  setNotification(data: any, index : number) {
     this.selectedNotification = {
       subject: data[2],
       message: data[3],
       date: data[0],
       type: data[1].toUpperCase(),
+      index : index
     };
   }
 
-  llenarData(userId: number) {
+  getNotificationsFromAPI(userId: number) {
     this.service.getData(userId).subscribe({
       next: (value: Notifications) => {
-        console.log("API RESPONSE: ");
-        console.log(value);
-
-        // Inicializar markedRead en false para todas las notificaciones nuevas
+        
         value.access.forEach(
           (notification) =>
             (notification.markedRead = notification.markedRead || false)
@@ -222,7 +240,7 @@ export class NotificationComponent implements OnInit {
         const rowData = table.row(indexes[0]).data();
         let rowIndex = indexes[0];
         this.selectedNotificationObject = this.allNotificationsArray[rowIndex];
-        this.setNotification(rowData);
+        this.setNotification(rowData, rowIndex);
       }
     });
 
@@ -331,7 +349,7 @@ export class NotificationComponent implements OnInit {
 
     const excelData = filteredData.map((row) =>
       row.slice(0, -1).reduce((obj: any, value: any, index: number) => {
-        obj[headers[index]] = value;
+        obj[headers[index]] = this.getTextContent(value)
         return obj;
       }, {})
     );
@@ -377,6 +395,7 @@ export class NotificationComponent implements OnInit {
     XLSX.writeFileXLSX(workBook, `Notificaciones_${formattedDate}.xlsx`);
   }
 
+
   exportarAPDF() {
     const tabla = $("#myTable").DataTable();
     const filteredData = tabla.rows({ search: "applied" }).data().toArray();
@@ -390,21 +409,19 @@ export class NotificationComponent implements OnInit {
     const doc = new jsPDF();
 
     doc.setFontSize(18);
-    doc.text(
-      "Reporte de Notificaciones (" + dateFrom + " / " + dateTo + ")",
-      14,
-      22
-    );
+    doc.text("Reporte de Notificaciones", 14, 22);
+    doc.text("Fechas: Desde " + dateFrom + " hasta " + dateTo + "", 14, 33);
 
     autoTable(doc, {
       head: [["Fecha", "Tipo", "Asunto", "Descripción"]],
       body: filteredData.map((item: any) => [
-        item[0] || "N/A",
-        item[1] || "N/A",
-        item[2] || "N/A",
-        item[3] || "N/A",
+        this.getTextContent(item[0]) || "N/A",
+        this.getTextContent(item[1]) || "N/A",
+        this.getTextContent(item[2]) || "N/A",
+        this.getTextContent(item[3]) || "N/A",
       ]),
-      startY: 30,
+      startY: 44,
+      theme: 'grid'
     });
 
     const today = new Date();
@@ -573,5 +590,14 @@ export class NotificationComponent implements OnInit {
   formatDateFromString(date: string) {
     const [year, month, day] = date.split("-");
     return `${day}-${month}-${year}`;
+  }
+
+  getTextContent(cellData: any): string {
+    // Check if cellData is an HTML element or text
+    if (typeof cellData === "string") {
+      // If it's a string, strip out any HTML tags using a regex
+      return cellData.replace(/<[^>]*>?/gm, '');
+    }
+    return cellData;
   }
 }
