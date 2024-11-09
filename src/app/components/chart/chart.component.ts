@@ -4,7 +4,6 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angul
 import { GoogleChartsModule, ChartType } from 'angular-google-charts';
 import { NotificationRegisterService } from '../../service/notification-register.service';
 import { AllNotifications } from '../../models/all-notifications';
-import { count } from 'rxjs';
 
 @Component({
   selector: 'app-chart',
@@ -14,6 +13,8 @@ import { count } from 'rxjs';
   styleUrls: ['./chart.component.css']
 })
 export class ChartComponent implements OnInit {
+  maxNotificationsDay: string = '';
+  maxNotificationsCount: number = 0;
   columnChartType: ChartType = ChartType.ColumnChart;
   c2ChartType: ChartType = ChartType.Gauge;
   c3ChartType: ChartType = ChartType.PieChart;
@@ -92,17 +93,62 @@ export class ChartComponent implements OnInit {
   };
 
   ngOnInit(): void {
-    this.loadChartData()
+    this.loadChartData();
+    this.loadKpiData();
+  }
+
+  loadKpiData(): void {
+    this.chartDataService.getData().subscribe((data: AllNotifications) => {
+      const allNotifications = this.flattenNotifications(data);
+      const groupedByDay = this.groupByDay(allNotifications);
+      const maxDay = this.findMaxNotificationsDay(groupedByDay);
+
+      this.maxNotificationsDay = maxDay.day;
+      this.maxNotificationsCount = maxDay.count;
+    });
+  }
+
+  flattenNotifications(data: AllNotifications): { date: string }[] {
+    const all = [
+      ...data.fines.map(x => ({ date: x.created_datetime.toString() })),
+      ...data.access.map(x => ({ date: x.created_datetime.toString() })),
+      ...data.payments.map(x => ({ date: x.created_datetime.toString() })),
+      ...data.generals.map(x => ({ date: x.created_datetime.toString() })),
+      ...data.inventories.map(x => ({ date: x.created_datetime.toString() })),
+    ];
+    return all;
+  }
+
+  groupByDay(notifications: { date: string }[]): { [key: string]: number } {
+    return notifications.reduce((acc, curr) => {
+      const date = new Date(curr.date).toISOString().split('T')[0]; // Formato YYYY-MM-DD
+      acc[date] = (acc[date] || 0) + 1;
+      return acc;
+    }, {} as { [key: string]: number });
+  }
+
+  findMaxNotificationsDay(groupedData: { [key: string]: number }): { day: string; count: number } {
+    let maxDay = '';
+    let maxCount = 0;
+
+    for (const [day, count] of Object.entries(groupedData)) {
+      if (count > maxCount) {
+        maxDay = day;
+        maxCount = count;
+      }
+    }
+
+    return { day: maxDay, count: maxCount };
   }
 
   loadChartData(): void {
     const counterOfBools = ['Leido', 'No Leido'];
-    const daysOfWeek = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'];
+    const daysOfWeek = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'];
     const monthsOfYear = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
     const hoursOfDay = ['01:00', '02:00', '03:00', '04:00', '05:00', '06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00',
                         '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00']
     const getDayOfWeek = (date: Date) => daysOfWeek[date.getDay() - 1]; // Ajuste del día de la semana (domingo es 0)
-    const getMonthOfYear = (date: Date) => monthsOfYear[date.getMonth() - 1]; // Ajuste del mes del año (diciembre es 0)
+    const getMonthOfYear = (date: Date) => monthsOfYear[date.getMonth()]; // Ajuste del mes del año (diciembre es 0)
     const getHourOfDay = (date: Date) => hoursOfDay[date.getHours() - 1]; // Ajuste de la hora del dia (las 12 es 0)
     const getCounterOfBools = (count: Number) => counterOfBools[count.valueOf()];
   

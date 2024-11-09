@@ -1,6 +1,15 @@
 <div id="char1" class="row position-relative min-vh-75">
   <!-- Gráfico 1: Notificaciones Enviadas por Día -->
   <div *ngIf="status === 1" class="col-12">
+    <!-- KPI -->
+    <div class="kpi-container">
+      <div class="card border-0 shadow-lg mb-3 rounded-4 h-100 w-100">
+        <h2>Día con más notificaciones</h2>
+        <p>Día: {{ maxNotificationsDay }}</p>
+        <p>Total de notificaciones: {{ maxNotificationsCount }}</p>
+      </div>
+    </div>
+    
     <div class="card border-0 shadow rounded-4 h-100 w-100">
       <div class="card-body">
         <div class="d-flex justify-content-between align-items-center mb-4">
@@ -206,6 +215,29 @@
 
   <!-- Vista principal con gráficos en tamaño normal -->
   <div class="col-6 col-md-4 mb-4" *ngIf="status === 0">
+    <!-- KPI -->
+    <!-- <div class="row">
+      <div class="col mb-3">
+          <div class="card border-0 shadow-lg mb-3 rounded-4 h-100 w-100" [ngClass]="{
+                  '': pieKPIs.topMethod.name === 'Lunes',
+                  '': pieKPIs.topMethod.name === 'Martes',
+                  '': pieKPIs.topMethod.name === 'Miercoles',
+                  '': pieKPIs.topMethod.name === 'Jueves',
+                  '': pieKPIs.topMethod.name === 'Viernes'
+              }">
+              <div class="card-body position-relative">
+                  <i class="bi position-absolute top-50 end-0 translate-middle-y me-4"
+                      style="font-size: 2.5rem; color: #e65100; opacity: 0.8;"></i>
+                  <div class="pe-5">
+                      <h6 class="text-secondary mb-2">Dia donde se enviaron mas notificaciones</h6>
+                      <h3 class="mb-0">{{ pieKPIs.topMethod.name }}</h3>
+                      <small class="text-muted">{{ pieKPIs.topMethod.percentage | number:'1.0-1' }} del dia...HACER</small>
+                  </div>
+              </div>
+          </div>
+      </div>
+    </div> -->
+
     <!-- Gráfico 1 -->
     <div class="card border-0 shadow-lg rounded-4 h-100 transition-all hover-scale" (click)="makeBig(1)">
       <div class="card-body">
@@ -264,9 +296,8 @@
       </div>
     </div>
   </div>
-</div>
 
-<!-- Modal de info -->
+  <!-- Modal de info -->
 <div class="modal fade" id="infoModal" role="dialog">
   <div class="modal-dialog">
       <div class="modal-content">
@@ -287,3 +318,5 @@
       </div>
   </div>
 </div>
+</div>
+
