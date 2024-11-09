@@ -113,7 +113,6 @@ export class ChartComponent implements OnInit {
       ...data.fines.map(x => ({ date: x.created_datetime.toString() })),
       ...data.access.map(x => ({ date: x.created_datetime.toString() })),
       ...data.payments.map(x => ({ date: x.created_datetime.toString() })),
-      ...data.generals.map(x => ({ date: x.created_datetime.toString() })),
       ...data.inventories.map(x => ({ date: x.created_datetime.toString() })),
     ];
     return all;
