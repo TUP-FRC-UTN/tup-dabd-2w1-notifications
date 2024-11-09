@@ -3,11 +3,19 @@
  
     <div class="row mb-2">
       <div class="d-flex">
-        <div class="col-4">
+        <div class="col-3">
           <input type="text" id="searchTerm" placeholder="Buscar..." class="form-control" aria-label="Search" 
             style="margin-top: 15px; border: 1px solid #ddd; border-radius: 5px;" />
         </div>
-
+        
+        <!-- dropdown -->
+        <div class="col-2 ms-2" style="margin-top: 15px">
+          <app-select-multiple
+            [options]="notificationTypes"
+            [optionsChecked]="selectedNotificationType"
+            (sendList)="recibirSeleccionadas($event)"
+          ></app-select-multiple>
+        </div>
      
         <div [formGroup]="form" class="col-2 ms-2">
           <input type="date" class="form-control me-2" formControlName="startDate" 
@@ -20,7 +28,7 @@
         </div>
 
      
-        <div class="col-4 text-end" style="margin-top: 15px;">
+        <div class="col-3 text-end" style="margin-top: 15px;">
           <button (click)="borrar()" class="btn mx-1 btn-secondary filterbutton">
             <i class="bi bi-trash"></i>
           </button>

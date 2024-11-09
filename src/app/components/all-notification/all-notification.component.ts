@@ -24,11 +24,12 @@ import { DateValidator } from "../../validators/date.validators";
 import { MockUserService } from "../../service/mockUser.service";
 import { AllNotifications } from "../../models/all-notifications";
 import { Inventory } from "../../models/inventory";
+import { SelectMultipleComponent } from "../select-multiple/select-multiple.component";
 
 @Component({
   selector: "app-all-notification",
   standalone: true,
-  imports: [DatePipe, RouterModule, ReactiveFormsModule],
+  imports: [DatePipe, RouterModule, ReactiveFormsModule, SelectMultipleComponent],
   providers: [DatePipe],
   templateUrl: "./all-notification.component.html",
   styleUrl: "./all-notification.component.css",
@@ -107,6 +108,22 @@ export class AllNotificationComponent implements OnInit {
         DateValidator.greatherThanToday,
       ]),
     });
+  }
+
+  notificationTypes: any[] = [
+    { value: "Multas", name: "Multas" },
+    { value: "Accesos", name: "Accesos" },
+    { value: "Pagos", name: "Pagos" },
+    { value: "Generales", name: "Generales" },
+  ];
+  selectedNotificationType: string[] = [];
+
+  dropdownSeleccionadas: any[] = ["Todas"];
+
+  recibirSeleccionadas(node: any) {
+    this.dropdownSeleccionadas = node;
+    this.fillTable();
+    console.log(node);
   }
 
   //metodos

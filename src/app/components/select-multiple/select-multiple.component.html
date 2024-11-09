@@ -7,6 +7,7 @@
     [closeOnSelect]="!multiple"
     [(ngModel)]="selectedOptions"
     [clearable]="false"
+    placeholder="Seleccione un tipo"
     (ngModelChange)="send()">
     @if(multiple){
         <ng-template ng-multi-label-tmp let-items="items">

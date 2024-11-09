@@ -71,13 +71,12 @@ export class NotificationComponent implements OnInit {
 
   dateFilterForm: FormGroup;
   notificationTypes: any[] = [
-    { value: "Todas", name: "Todas" },
     { value: "Multas", name: "Multas" },
     { value: "Accesos", name: "Accesos" },
     { value: "Pagos", name: "Pagos" },
     { value: "Generales", name: "Generales" },
   ];
-  selectedNotificationType: string[] = ["Todas"];
+  selectedNotificationType: string[] = [];
 
   dropdownSeleccionadas: any[] = ["Todas"];
 
