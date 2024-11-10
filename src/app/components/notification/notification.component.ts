@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, EventEmitter, OnInit, Output } from "@angular/core";
 import { CommonModule, DatePipe, JsonPipe } from "@angular/common";
 import {
   FormControl,
@@ -45,6 +45,8 @@ import { single } from "rxjs";
   styleUrls: ["./notification.component.css"],
 })
 export class NotificationComponent implements OnInit {
+  //Titulo de la pagina
+ @Output() sendTitle = new EventEmitter<string>();
   userId = 1;
   rolactual: string = "";
   selected: string = "Todas";
