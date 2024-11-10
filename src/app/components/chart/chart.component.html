@@ -25,21 +25,33 @@
               <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0m3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z"/>
             </svg>
           </div>
-          <div [formGroup]="form" class="col-2 ms-2" style="gap: 10px; margin-top: 15px">
-            <label>Periodo Desde</label>
-            <input type="date" class="form-control me-2" formControlName="startDate"/>
+  
+          <div class="col-6">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+              <div class="card-body p-2">
+                <h6 class="card-title">Sábado</h6>
+                <p class="small mb-0">Notificaciones: {{ notificationsSabado }}</p>
+              </div>
+            </div>
           </div>
-          <div [formGroup]="form" class="col-2 ms-2" style="gap: 10px; margin-top: 15px">
-            <label>Periodo Hasta</label>
-            <input type="date" class="form-control me-2" formControlName="endDate"/>
+  
+          <div class="col-6">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+              <div class="card-body p-2">
+                <h6 class="card-title">Domingo</h6>
+                <p class="small mb-0">Notificaciones: {{ notificationsDomingo }}</p>
+              </div>
+            </div>
           </div>
-          <h5 class="card-title text-secondary mb-1">Notificaciones Enviadas por Día</h5>
-          <small class="text-secondary">Estadísticas semanales</small>
+  
         </div>
         <google-chart [type]="columnChartType" [data]="columnChartData" [options]="columnChartOptions" class="w-100 expanded-chart-content"></google-chart>
       </div>
     </div>
-  </div>
+  
+
+    
+      </div>
 
   <!-- Gráfico 2: Notificaciones Enviadas por Tipo de Notificacion -->
   <div *ngIf="status === 2" class="col-12">
@@ -72,7 +84,7 @@
           <h5 class="card-title text-secondary mb-1">Notificaciones Enviadas por Tipo de Notificacion</h5>
           <small class="text-secondary">Estadísticas semanales</small>
         </div>
-        <google-chart [type]="columnChartType" [data]="columnChartData2" [options]="columnChartOptions2" class="w-100 expanded-chart-content"></google-chart>
+        <google-chart [type]="column2ChartType" [data]="columnChartData2" [options]="columnChartOptions2" class="w-100 expanded-chart-content"></google-chart>
       </div>
     </div>
   </div>
@@ -312,7 +324,7 @@
     <div class="card border-0 shadow-lg rounded-4 h-100 transition-all hover-scale" (click)="makeBig(2)">
       <div class="card-body">
         <h5 class="card-title text-secondary mb-1">Notificaciones Enviadas por Tipo de Notificacion</h5>
-        <google-chart [type]="columnChartType" [data]="columnChartData2" [options]="columnChartOptions2" class="w-100"></google-chart>
+        <google-chart [type]="column2ChartType" [data]="columnChartData2" [options]="columnChartOptions2" class="w-100"></google-chart>
       </div>
     </div>
   </div>

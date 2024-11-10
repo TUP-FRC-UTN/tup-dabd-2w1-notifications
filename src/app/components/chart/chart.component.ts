@@ -23,6 +23,7 @@ export class ChartComponent implements OnInit {
   maxNotificationsMonthCount: number = 0;
   maxNotificationsRead: number = 0;
   maxNotificationsUnread: number = 0;
+  column2ChartType: ChartType = ChartType.BarChart;
   columnChartType: ChartType = ChartType.ColumnChart;
   c2ChartType: ChartType = ChartType.Gauge;
   c3ChartType: ChartType = ChartType.PieChart;
@@ -38,6 +39,14 @@ export class ChartComponent implements OnInit {
   columnChartData6: any[] = [];
   columnChartData7: any[] = [];
   columnChartData8: any[] = [];
+  notificationsLunes: number = 0;
+  notificationsMartes: number = 0;
+  notificationsMiercoles: number = 0;
+  notificationsJueves: number = 0;
+  notificationsViernes: number = 0;
+  notificationsSabado: number = 0;
+  notificationsDomingo: number = 0;
+
 
   constructor(private chartDataService: NotificationRegisterService) {
     this.form = new FormGroup({
@@ -47,13 +56,13 @@ export class ChartComponent implements OnInit {
   }
 
   columnChartOptions = {
-    title: 'Notificaciones Enviadas por Día',
-    hAxis: { title: 'Días' },
-    vAxis: { title: 'Cantidad de Notificaciones Enviadas' },
-    legend: { position: 'none' },
-    chartArea: { width: '80%', height: '70%' },
-    colors: ['#4285F4']
+    title: 'Notificaciones Enviadas por Día de la Semana',
+    legend: { position: 'right' },
+    chartArea: { width: '80%', height: '80%' },
+    pieHole: 0.4, // Esto es un gráfico de dona (opcional)
+    colors: ['#4285F4', '#34A853', '#FBBC05', '#EA4335', '#FF6D01', '#46BDC6', '#B080D6']
   };
+  
 
   columnChartOptions2 = {
     title: 'Notificaciones Enviadas por Tipo (Access, Payment, Fine, Inventory)',
@@ -109,6 +118,8 @@ export class ChartComponent implements OnInit {
     this.chartDataService.getData().subscribe((data: AllNotifications) => {
       const allNotifications = this.flattenNotifications(data);
       const groupedByDay = this.groupByDay(allNotifications);
+      const groupedByDayOfWeek = this.groupByDayOfWeek(allNotifications);
+
       const maxDay = this.findMaxNotificationsDay(groupedByDay);
       const groupedByType = this.groupByType(allNotifications);
       const maxType = this.findMaxNotificationsType(groupedByType);
@@ -123,6 +134,13 @@ export class ChartComponent implements OnInit {
 
       this.maxNotificationsDay = maxDay.day;
       this.maxNotificationsCount = maxDay.count;
+      this.notificationsLunes = groupedByDayOfWeek["Lunes"] || 0;
+      this.notificationsMartes = groupedByDayOfWeek["Martes"] || 0;
+      this.notificationsMiercoles = groupedByDayOfWeek["Miércoles"] || 0;
+      this.notificationsJueves = groupedByDayOfWeek["Jueves"] || 0;
+      this.notificationsViernes = groupedByDayOfWeek["Viernes"] || 0;
+      this.notificationsSabado = groupedByDayOfWeek["Sábado"] || 0;
+      this.notificationsDomingo = groupedByDayOfWeek["Domingo"] || 0;
       this.maxNotificationsType = maxType.type;
       this.maxNotificationsTypeCount = maxType.count;
       this.maxNotificationsHour = maxHour.hour;
@@ -218,6 +236,19 @@ getWeekFromDate(date: string): string {
   return `${d.getFullYear()}-W${weekNumber}`;
 }
 
+  groupByDayOfWeek(notifications: { date: string }[]): { [key: string]: number } {
+    const daysOfWeek = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+    
+    return notifications.reduce((acc, curr) => {
+      const date = new Date(curr.date);
+      const dayName = daysOfWeek[date.getDay()]; // Obtenemos el nombre del día de la semana
+      acc[dayName] = (acc[dayName] || 0) + 1;
+      return acc;
+    }, {} as { [key: string]: number });
+  }
+  
+  
+
   findMaxNotificationsDay(groupedData: { [key: string]: number }): { day: string; count: number } {
     let maxDay = '';
     let maxCount = 0;
@@ -303,6 +334,13 @@ getWeekFromDate(date: string): string {
           '01:00': 0, '02:00': 0, '03:00': 0, '04:00': 0, '05:00': 0, '06:00': 0, '07:00': 0, '08:00': 0, '09:00': 0, '10:00': 0, '11:00': 0, '12:00': 0, '13:00': 0, '14:00': 0, '15:00': 0, '16:00': 0,
           '17:00': 0, '18:00': 0, '19:00': 0, '20:00': 0, '21:00': 0, '22:00': 0, '23:00': 0, '00:00':0
         };
+
+        const allNotifications = this.flattenNotifications(data);
+        const notificationsByDayOfWeek = this.groupByDayOfWeek(allNotifications);
+        console.log('Datos agrupados por día de la semana:', notificationsByDayOfWeek);
+
+        this.columnChartData = Object.entries(notificationsByDayOfWeek).map(
+          ([day, count]) => [day, count]);
   
         // Contamos las notificaciones por tipo por dia
         data.access.forEach(a => {
@@ -373,7 +411,6 @@ getWeekFromDate(date: string): string {
         });
   
         // Actualizamos el columnChartData sumando todas las notificaciones por día
-        this.columnChartData = daysOfWeek.map(day => [day, notificationsPerDay[day]]);
 
         // Actualizamos el columnChartData sumando todas las notificaciones por mes
         this.columnChartData6 = monthsOfYear.map(month => [month, notificationsPerMonth[month]]);

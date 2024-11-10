@@ -120,6 +120,7 @@ export class PostNotificationAdminComponent implements AfterViewInit, OnInit{
 
   onSubmit(form: NgForm) {
     console.log('click: ', form.value);
+
     
 
     if (form.valid && this.selectValue != "1") {
@@ -178,7 +179,10 @@ export class PostNotificationAdminComponent implements AfterViewInit, OnInit{
         
         let user: UserDTO = {
           id: rowData.id,
-          email: "solis.luna.ignacio@gmail.com",
+          nombre: rowData.name,
+          apellido: "pepitosadsdasda",
+          dni: 9999999,
+          email: "dasadsasdasd@dasdasdas",
           telegramChatId: 5869258860
         };
         users.push(user);
@@ -194,7 +198,10 @@ export class PostNotificationAdminComponent implements AfterViewInit, OnInit{
     let userDTOArray : UserDTO[] = []
     for (let user of userApiArr) {
       let userDTO : UserDTO = {
-        id: user.id,
+        id: 1,
+        nombre: user.name,
+        apellido: user.lastname,
+        dni: 999999,
         email: user.email,
         telegramChatId : 0
       }
