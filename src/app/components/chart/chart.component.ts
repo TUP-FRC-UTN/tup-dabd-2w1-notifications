@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { GoogleChartsModule, ChartType } from 'angular-google-charts';
 import { NotificationRegisterService } from '../../service/notification-register.service';
 import { AllNotifications } from '../../models/all-notifications';
@@ -13,6 +13,7 @@ import { AllNotifications } from '../../models/all-notifications';
   styleUrls: ['./chart.component.css']
 })
 export class ChartComponent implements OnInit {
+  filterForm: FormGroup = this.fb.group({});
   maxNotificationsDay: string = '';
   maxNotificationsType: string = '';
   maxNotificationsCount: number = 0;
@@ -25,10 +26,7 @@ export class ChartComponent implements OnInit {
   maxNotificationsUnread: number = 0;
   column2ChartType: ChartType = ChartType.BarChart;
   columnChartType: ChartType = ChartType.ColumnChart;
-  c2ChartType: ChartType = ChartType.Gauge;
   c3ChartType: ChartType = ChartType.PieChart;
-  cChartType: ChartType = ChartType.BarChart;
-  c4ChartType: ChartType = ChartType.ScatterChart;
   form: FormGroup;
   status: number = 0;
   columnChartData: any[] = []; 
@@ -37,8 +35,6 @@ export class ChartComponent implements OnInit {
   columnChartData4: any[] = [];
   columnChartData5: any[] = [];
   columnChartData6: any[] = [];
-  columnChartData7: any[] = [];
-  columnChartData8: any[] = [];
   notificationsLunes: number = 0;
   notificationsMartes: number = 0;
   notificationsMiercoles: number = 0;
@@ -47,8 +43,7 @@ export class ChartComponent implements OnInit {
   notificationsSabado: number = 0;
   notificationsDomingo: number = 0;
 
-
-  constructor(private chartDataService: NotificationRegisterService) {
+  constructor(private chartDataService: NotificationRegisterService, private fb: FormBuilder) {
     this.form = new FormGroup({
       startDate: new FormControl(new Date()),
       endDate: new FormControl(new Date()),
@@ -112,6 +107,11 @@ export class ChartComponent implements OnInit {
   ngOnInit(): void {
     this.loadChartData();
     this.loadKpiData();
+    this.filterForm = this.fb.group({
+      startDate: [''],
+      endDate: [''],
+      readStatus: ['all']
+    });
   }
 
   loadKpiData(): void {
