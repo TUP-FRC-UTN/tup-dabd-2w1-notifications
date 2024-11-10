@@ -27,6 +27,7 @@ import { Inventory } from "../../models/inventory";
 import { NgSelectComponent } from "@ng-select/ng-select";
 import { SelectMultipleComponent } from "../select-multiple/select-multiple.component";
 import { single } from "rxjs";
+import { end } from "@popperjs/core";
 
 @Component({
   selector: "app-notification",
@@ -167,7 +168,7 @@ export class NotificationComponent implements OnInit {
       pageLength: 5,
       lengthMenu: [5, 10, 25, 50],
       language: {
-        emptyTable: "Cargando...",
+        emptyTable: "No hay notificaciones para mostrar",
         search: "Buscar",
         loadingRecords: "Cargando...",
         zeroRecords: "No se han encontrado registros",
@@ -526,6 +527,7 @@ export class NotificationComponent implements OnInit {
     this.allNotifications.fines = filterByDate(this.finesList, startDate, endDate);
     this.allNotifications.payments = filterByDate(this.paymentsList, startDate, endDate);
     this.allNotifications.generals = filterByDate(this.generalsList, startDate, endDate);
+    this.allNotifications.inventories = filterByDate(this.inventoryList,startDate,endDate)
   
     this.fillTable();
   }
