@@ -200,8 +200,8 @@ button:hover,
 
 
 
-/* :host {
-  --dt-row-selected: 138, 138, 138, 0.102;
+:host {
+  --dt-row-selected: 145, 145, 145;
   --dt-row-selected-text: 0,0,0;
   --dt-row-selected-link: 9, 10, 11;
-} */
+}
