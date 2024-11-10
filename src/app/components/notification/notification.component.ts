@@ -77,6 +77,7 @@ export class NotificationComponent implements OnInit {
     { value: "Accesos", name: "Accesos" },
     { value: "Pagos", name: "Pagos" },
     { value: "Generales", name: "Generales" },
+    {value: "Inventario",name: "Inventario"}
   ];
 
   selectedNotificationType: string[] = [];
@@ -106,32 +107,31 @@ export class NotificationComponent implements OnInit {
     $(document).on("click", ".mark-read-btn", (event) => {
       console.log("CLICK EN MARCAR LEIDA");
       if (this.selectedNotificationObject) {
-        let notificationId = this.selectedNotificationObject.id;
-        let tableName = this.selectedNotificationObject.tableName.toUpperCase()
-        this.service.putData(notificationId,tableName).subscribe({
-        })
-        // Refrescar la tabla para mostrar los cambios
-        // this.fillTable();
-        //obtener objeto de tabla que coincide con la notificacion seleccionada
-        let tableNotification = this.allNotificationsArray[this.selectedNotification.index]
+        let selectedNotificationId = this.selectedNotificationObject.id
+        let selectedNotificationTableName = this.selectedNotificationObject.tableName.toUpperCase();
         let notification;
-        console.log(tableNotification);
-        switch (tableNotification.tableName.toUpperCase()) {
+        this.service.putData(selectedNotificationId,selectedNotificationTableName).subscribe()
+        switch (this.selectedNotificationObject.tableName.toUpperCase()) {
           
           case "ACCESS": 
-            this.allNotifications.access[this.selectedNotification.index].markedRead = true
-            break
+          notification = this.allNotifications.access.find(n => n.id == this.selectedNotificationObject.id)
+          if (notification) notification.markedRead = true;
+          break
           case "GENERAL":
-            this.allNotifications.generals[this.selectedNotification.index].markedRead = true
+            notification = this.allNotifications.generals.find(n => n.id == this.selectedNotificationObject.id)
+            if (notification) notification.markedRead = true;
             break
           case "INVENTORY":
-            this.allNotifications.inventories[this.selectedNotification.index].markedRead = true
+            notification = this.allNotifications.inventories.find(n => n.id == this.selectedNotificationObject.id)
+            if (notification) notification.markedRead = true;
             break
           case "PAYMENTS":
-            this.allNotifications.payments[this.selectedNotification.index].markedRead = true
+            notification = this.allNotifications.payments.find(n => n.id == this.selectedNotificationObject.id)
+            if (notification) notification.markedRead = true;
             break
           case "FINES":
-            this.allNotifications.access[this.selectedNotification.index].markedRead = true
+            notification = this.allNotifications.fines.find(n => n.id == this.selectedNotificationObject.id)
+            if (notification) notification.markedRead = true;
             break
           //FALTA PROVIDERS, EMPLOYEES, INVENTORY NO SE ESTA MOSTRANDO?
         }
@@ -145,9 +145,9 @@ export class NotificationComponent implements OnInit {
       columns: [
         { width: "14%" },
         { width: "12%" },
-        { width: "25%" },
+        { width: "20%" },
         { width: "40%" },
-        { width: "11%" },
+        { width: "16%" },
       ],
 
       columnDefs: [
@@ -189,6 +189,7 @@ export class NotificationComponent implements OnInit {
   }
 
   setNotification(data: any, index : number) {
+    
     this.selectedNotification = {
       subject: data[2],
       message: data[3],
@@ -224,6 +225,7 @@ export class NotificationComponent implements OnInit {
         this.finesList = [...value.fines];
         this.paymentsList = [...value.payments];
         this.generalsList = [...value.generals];
+        this.inventoryList = [...value.inventories]
         this.fillTable();
       },
       error: () => {
@@ -235,7 +237,8 @@ export class NotificationComponent implements OnInit {
     const table = $("#myTable").DataTable();
     table.clear().draw();
 
-    table.on("select", (e, dt, type, indexes) => {
+    table.on("select", (e, dt, type, indexes,$element) => {
+      
       if (type === "row") {
         const rowData = table.row(indexes[0]).data();
         let rowIndex = indexes[0];
@@ -255,6 +258,8 @@ export class NotificationComponent implements OnInit {
             return "text-bg-danger";
           case "Pagos":
             return "text-bg-indigo";
+          case "Inventario":
+            return "text-bg-primary"
           default:
             return "";
         }
@@ -304,6 +309,10 @@ export class NotificationComponent implements OnInit {
         addRow(notification, "Generales"),
           this.allNotificationsArray.push(notification);
       });
+      this.allNotifications.inventories.forEach((notification)=>{
+        addRow(notification,"Inventario")
+        this.allNotificationsArray.push(notification)
+      })
     } else {
       this.dropdownSeleccionadas.forEach((e) => {
         if (e === "Accesos")
@@ -326,6 +335,13 @@ export class NotificationComponent implements OnInit {
             addRow(notification, "Generales"),
               this.allNotificationsArray.push(notification);
           });
+        if (e=== "Inventario") {
+          this.allNotifications.inventories.forEach((notification)=>{
+            addRow(notification,"Inventario")
+            this.allNotificationsArray.push(notification)
+          })
+        }
+        
       });
     }
   }
