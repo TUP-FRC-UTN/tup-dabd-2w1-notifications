@@ -318,7 +318,7 @@ export class AllNotificationComponent implements OnInit {
         item[0] || "N/A",
         item[1] || "N/A",
         item[2] || "N/A",
-        item[3] || "N/A",
+        this.getTextContent(item[3]) || "N/A",
         item[4] || "N/A",
         item[5] || "N/A",
       ]),
