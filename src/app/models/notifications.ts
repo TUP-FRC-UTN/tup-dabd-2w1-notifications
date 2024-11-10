@@ -9,4 +9,5 @@ export interface Notifications {
     access:Access[];
     payments:Payments[];
     generals:General[];
+    inventories: Inventory[]
 }
