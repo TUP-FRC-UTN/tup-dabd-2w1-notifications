@@ -199,9 +199,9 @@ export class NotificationComponent implements OnInit {
   setNotification(data: any, index : number) {
     
     this.selectedNotification = {
-      subject: data[2],
-      message: data[3],
-      date: data[0],
+      subject: this.getTextContent(data[2]),
+      message: this.getTextContent(data[3]),
+      date: this.getTextContent(data[0]),
       type: data[1].toUpperCase(),
       index : index
     };
