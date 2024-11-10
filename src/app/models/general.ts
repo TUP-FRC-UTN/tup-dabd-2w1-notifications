@@ -8,5 +8,6 @@ export interface General {
     markedRead:boolean;
     nombre: string;
     apellido: string;
+    tableName:string;
     dni: number;
 }

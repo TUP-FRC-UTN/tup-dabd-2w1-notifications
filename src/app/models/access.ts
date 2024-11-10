@@ -7,5 +7,6 @@ export interface Access {
     nombre: string;
     apellido: string;
     dni: number;
+    tableName:string;
     markedRead:boolean;
 }

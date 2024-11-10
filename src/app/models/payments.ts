@@ -6,6 +6,7 @@ export interface Payments {
     status: string;            
     ownerId: number;           
     message:string
+    tableName:string;
     created_datetime:Date;
     amount: number;
     nombre: string;

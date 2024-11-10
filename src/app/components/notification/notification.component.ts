@@ -67,7 +67,6 @@ export class NotificationComponent implements OnInit {
     access: [],
     payments: [],
     generals: [],
-    inventories: [],
   };
   allNotificationsArray: any[] = [];
 
@@ -123,9 +122,6 @@ export class NotificationComponent implements OnInit {
             break
           case "GENERAL":
             this.allNotifications.generals[this.selectedNotification.index].markedRead = true
-            break
-          case "INVENTORY":
-            this.allNotifications.inventories[this.selectedNotification.index].markedRead = true
             break
           case "PAYMENTS":
             this.allNotifications.payments[this.selectedNotification.index].markedRead = true
@@ -205,28 +201,29 @@ export class NotificationComponent implements OnInit {
     this.service.getData(userId).subscribe({
       next: (value: Notifications) => {
         
-        value.access.forEach(
-          (notification) =>
-            (notification.markedRead = notification.markedRead || false)
-        );
-        value.fines.forEach(
-          (notification) =>
-            (notification.markedRead = notification.markedRead || false)
-        );
-        value.payments.forEach(
-          (notification) =>
-            (notification.markedRead = notification.markedRead || false)
-        );
-        value.generals.forEach(
-          (notification) =>
-            (notification.markedRead = notification.markedRead || false)
-        );
+        // value.access.forEach(
+        //   (notification) =>
+        //     (notification.markedRead = notification.markedRead || false)
+        // );
+        // value.fines.forEach(
+        //   (notification) =>
+        //     (notification.markedRead = notification.markedRead || false)
+        // );
+        // value.payments.forEach(
+        //   (notification) =>
+        //     (notification.markedRead = notification.markedRead || false)
+        // );
+        // value.generals.forEach(
+        //   (notification) =>
+        //     (notification.markedRead = notification.markedRead || false)
+        // );
 
         this.allNotifications = value;
         this.accessList = [...value.access];
         this.finesList = [...value.fines];
         this.paymentsList = [...value.payments];
         this.generalsList = [...value.generals];
+        console.log(this.allNotifications)
         this.fillTable();
       },
       error: () => {
@@ -484,105 +481,29 @@ export class NotificationComponent implements OnInit {
     return `${year}-${month}-${day}`; // Retornar en formato yyyy-MM-dd
   }
 
+
   filterListByDate() {
-    let accessList: Access[] = [];
-    this.allNotifications.access = this.accessList;
-    this.allNotifications.access.forEach((e) => {
-      const apiDate = new Date(e.created_datetime);
-
-      const createdDate = new Date(
-        apiDate.getFullYear(),
-        apiDate.getMonth(),
-        apiDate.getDate(),
-        apiDate.getHours(),
-        apiDate.getMinutes(),
-        apiDate.getSeconds()
-      );
-      const startDate2 = new Date(
-        this.dateFilterForm.get("startDate")?.value ?? new Date()
-      );
-      const endDate2 = new Date(
-        this.dateFilterForm.get("endDate")?.value ?? new Date()
-      );
-
-      if (
-        createdDate.toISOString().split("T")[0] >=
-          startDate2.toISOString().split("T")[0] &&
-        createdDate.toISOString().split("T")[0] <=
-          endDate2.toISOString().split("T")[0]
-      ) {
-        accessList.push(e);
-      }
-    });
-    this.allNotifications.access = accessList;
-
-    let finesList: Fine[] = [];
-    this.allNotifications.fines = this.finesList;
-    this.allNotifications.fines.forEach((e) => {
-      const createdDate = new Date(e.created_datetime);
-      const startDate2 = new Date(
-        this.dateFilterForm.get("startDate")?.value ?? new Date()
-      );
-      const endDate2 = new Date(
-        this.dateFilterForm.get("endDate")?.value ?? new Date()
-      );
-
-      if (
-        createdDate.toISOString().split("T")[0] >=
-          startDate2.toISOString().split("T")[0] &&
-        createdDate.toISOString().split("T")[0] <=
-          endDate2.toISOString().split("T")[0]
-      ) {
-        finesList.push(e);
-      }
-    });
-    this.allNotifications.fines = finesList;
-
-    let paymentsList: Payments[] = [];
-    this.allNotifications.payments = this.paymentsList;
-    this.allNotifications.payments.forEach((e) => {
-      const createdDate = new Date(e.created_datetime);
-      const startDate2 = new Date(
-        this.dateFilterForm.get("startDate")?.value ?? new Date()
-      );
-      const endDate2 = new Date(
-        this.dateFilterForm.get("endDate")?.value ?? new Date()
-      );
-
-      if (
-        createdDate.toISOString().split("T")[0] >=
-          startDate2.toISOString().split("T")[0] &&
-        createdDate.toISOString().split("T")[0] <=
-          endDate2.toISOString().split("T")[0]
-      ) {
-        paymentsList.push(e);
-      }
-    });
-    this.allNotifications.payments = paymentsList;
-
-    let generalsList: General[] = [];
-    this.allNotifications.generals = this.generalsList;
-    this.allNotifications.generals.forEach((e) => {
-      const createdDate = new Date(e.created_datetime);
-      const startDate2 = new Date(
-        this.dateFilterForm.get("startDate")?.value ?? new Date()
-      );
-      const endDate2 = new Date(
-        this.dateFilterForm.get("endDate")?.value ?? new Date()
-      );
-      if (
-        createdDate.toISOString().split("T")[0] >=
-          startDate2.toISOString().split("T")[0] &&
-        createdDate.toISOString().split("T")[0] <=
-          endDate2.toISOString().split("T")[0]
-      ) {
-        generalsList.push(e);
-      }
-    });
-    this.allNotifications.generals = generalsList;
-
+    const filterByDate = (list: any[], startDate: Date, endDate: Date): any[] => {
+      return list.filter((e) => {
+        const createdDate = new Date(e.created_datetime);
+        const createdDateStr = createdDate.toISOString().split("T")[0];
+        const startDateStr = startDate.toISOString().split("T")[0];
+        const endDateStr = endDate.toISOString().split("T")[0];
+        return createdDateStr >= startDateStr && createdDateStr <= endDateStr;
+      });
+    };
+  
+    const startDate = new Date(this.dateFilterForm.get("startDate")?.value ?? new Date());
+    const endDate = new Date(this.dateFilterForm.get("endDate")?.value ?? new Date());
+  
+    this.allNotifications.access = filterByDate(this.accessList, startDate, endDate);
+    this.allNotifications.fines = filterByDate(this.finesList, startDate, endDate);
+    this.allNotifications.payments = filterByDate(this.paymentsList, startDate, endDate);
+    this.allNotifications.generals = filterByDate(this.generalsList, startDate, endDate);
+  
     this.fillTable();
   }
+  
 
   leida(notification: any) {
     // Marcar la notificación como leída
