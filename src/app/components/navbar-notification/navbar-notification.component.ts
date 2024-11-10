@@ -9,8 +9,9 @@ import { Fine } from "../../models/fine";
 import { General } from "../../models/general";
 import { Inventory } from "../../models/inventory";
 import { Payments } from "../../models/payments";
+import { Notifications } from "../../models/notifications";
 
-type Notification = Access | Fine | General | Inventory | Payments;
+type Notification = Access | Fine | General | Payments;
 
 @Component({
   selector: "app-navbar-notification",
@@ -64,17 +65,20 @@ export class NavbarNotificationComponent {
   }
 
   fetchNotifications(): void {
-    this.notificationService.getData(this.userId).subscribe((data: AllNotifications) => {
-      this.notifications = [
-        ...data.fines, 
-        ...data.access, 
-        ...data.payments, 
-        ...data.generals,
-        ...data.inventories
-      ].sort((a, b) => 
-        new Date(b.created_datetime).getTime() - new Date(a.created_datetime).getTime()
-      );
-    });
+    this.notificationService.getData(this.userId).subscribe({
+      next: (data:Notifications) => {
+        this.notifications = [
+          ...data.fines, 
+          ...data.access, 
+          ...data.payments, 
+          ...data.generals,
+        ].sort((a, b) => 
+          new Date(b.created_datetime).getTime() - new Date(a.created_datetime).getTime()
+        );
+      }
+    })
+
+
   }
 
   get recentNotifications(): Notification[] {
@@ -89,19 +93,9 @@ export class NavbarNotificationComponent {
     this.fetchNotifications();
   }
 
-  markAsRead(notification: Notification): void {
-    const notificationTypes: Record<string, string> = {
-      'Ingreso de visitante': 'ACCESS',
-      'Nueva notificacion de multa': 'FINES',
-      'Notificacion General': 'GENERAL',
-      'Notificacion de Inventario': 'INVENTORY',
-      'payments': 'PAYMENTS'
-    };
-
-    const type = notificationTypes[notification.subject];
-    
-    if (type) {
-      this.notificationService.putData(notification.id, type).subscribe({
+  markAsRead(notification: Notification): void {    
+    if (notification.tableName) {
+      this.notificationService.putData(notification.id, notification.tableName.toUpperCase()).subscribe({
         next: () => this.fetchNotifications()
       });
     }
