@@ -250,7 +250,10 @@ export class AllNotificationComponent implements OnInit {
   exportarAExcel() {
     const tabla = this.table;
     const filteredData = tabla.rows({ search: "applied" }).data().toArray();
-    
+    filteredData.forEach((arr:any)=>{
+      
+      arr[3] = this.getTextContent(arr[3])
+    });
     // Obtener los nombres de las columnas
     const headers = tabla.columns().header().toArray()
       .map((th: any) => $(th).text());
@@ -430,5 +433,13 @@ export class AllNotificationComponent implements OnInit {
     this.selected = "Todas";
     this.initialzeDates();
     this.fillTable();
+  }
+  getTextContent(cellData: any): string {
+    // Check if cellData is an HTML element or text
+    if (typeof cellData === "string") {
+      // If it's a string, strip out any HTML tags using a regex
+      return cellData.replace(/<[^>]*>?/gm, '');
+    }
+    return cellData;
   }
 }

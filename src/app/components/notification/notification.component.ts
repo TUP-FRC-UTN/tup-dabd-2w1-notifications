@@ -421,7 +421,7 @@ export class NotificationComponent implements OnInit {
     const formattedDate = this.datePipe.transform(today, "dd-MM-yyyy");
 
     // Usar writeFileXLSX en lugar de writeFile para mantener los estilos
-    XLSX.writeFileXLSX(workBook, `Notificaciones_${formattedDate}.xlsx`);
+    XLSX.writeFileXLSX(workBook, `${formattedDate}_Notificaciones.xlsx`);
   }
 
 
