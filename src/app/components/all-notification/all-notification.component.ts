@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { NotificationRegisterService } from "../../service/notification-register.service";
 import { Notifications } from "../../models/notifications";
 import { Access } from "../../models/access";
@@ -51,6 +51,23 @@ export class AllNotificationComponent implements OnInit {
     generals: [],
     inventories: [],
   };
+  notificationTypes: any[] = [
+    { value: "Multas", name: "Multas" },
+    { value: "Accesos", name: "Accesos" },
+    { value: "Pagos", name: "Pagos" },
+    { value: "Generales", name: "Generales" },
+    { value: "Inventario", name: "Inventario"}
+  ];
+
+  selectedNotificationType: string[] = [];
+
+  dropdownSeleccionadas: any[] = [];
+
+  recibirSeleccionadas(node: any) {
+    this.dropdownSeleccionadas = node;
+    this.fillTable();
+    console.log(node);
+  }
 
   //onInit y onDestroy
   ngOnInit(): void {
@@ -110,23 +127,6 @@ export class AllNotificationComponent implements OnInit {
       ]),
     });
   }
-
-  notificationTypes: any[] = [
-    { value: "Multas", name: "Multas" },
-    { value: "Accesos", name: "Accesos" },
-    { value: "Pagos", name: "Pagos" },
-    { value: "Generales", name: "Generales" },
-  ];
-  selectedNotificationType: string[] = [];
-
-  dropdownSeleccionadas: any[] = ["Todas"];
-
-  recibirSeleccionadas(node: any) {
-    this.dropdownSeleccionadas = node;
-    this.fillTable();
-    console.log(node);
-  }
-
   //metodos
   llenarData() {
     const getSubscription = this.service.getData().subscribe({
@@ -152,93 +152,97 @@ export class AllNotificationComponent implements OnInit {
 
   fillTable() {
     this.table.clear().draw();
-    if (this.data.access.length > 0) {
-        for (let notification of this.data.access) {
-          const date = notification.created_datetime as { [key: string]: any };
-          let dateString = this.formatDate(notification.created_datetime);
-          this.table.row
-            .add([
-              dateString,
-              notification.nombre + " " + notification.apellido,
-              notification.dni,
-              "Acceso",
-              notification.subject,
-              notification.message,
+
+    const AddRow = (notification: any, tipo: string) => {
+      //Setear color de Pill
+    const getBadgeClass = (tipo: string) => {
+      switch (tipo) {
+        case "Generales":
+          return "bg-warning";
+        case "Accesos":
+          return "bg-success";
+        case "Multas":
+          return "bg-danger";
+        case "Pagos":
+          return "bg-indigo";
+        default:
+          return "bg-secondary";
+      }
+    };
+
+    const badgeClass = getBadgeClass(tipo);
+    const tipoPill = `<span class=" badge rounded-pill ${badgeClass}">${tipo}</span>`;
+    if(tipo === "Inventario"){
+      this.table.row
+      .add([
+        this.formatDate(notification.created_datetime),
+        "",
+        "",
+        tipoPill,
+        notification.subject,
+        notification.message,
+      ])
+      .draw(false);
+
+    }else{
+      this.table.row
+      .add([
+        this.formatDate(notification.created_datetime),
+        notification.nombre + " " + notification.apellido,
+        notification.dni,
+        tipoPill,
+        notification.subject,
+        notification.message,
+      ])
+      .draw(false);
+    }
+
+  };
+
+    if (this.dropdownSeleccionadas.length === 0) {
+      this.data.access.forEach((notification) => {
+        AddRow(notification, "Accesos")
+      });
+      this.data.fines.forEach((notification) => {
+        AddRow(notification, "Multas")
+      });
+      this.data.payments.forEach((notification) => {
+        AddRow(notification, "Pagos")
+      });
+      this.data.generals.forEach((notification) => {
+        AddRow(notification, "Generales")
+      });
+      this.data.inventories.forEach((notification) => {
+        AddRow(notification, "Inventario")
+      });
+    } else {
+      this.dropdownSeleccionadas.forEach((e) => {
+        if (e === "Accesos")
+          this.data.access.forEach((notification) => {
+            AddRow(notification, "Accesos")
+
+          });
+        if (e === "Multas")
+          this.data.fines.forEach((notification) => {
+            AddRow(notification, "Multas")
+          });
+        if (e === "Pagos")
+          this.data.payments.forEach((notification) => {
+            AddRow(notification, "Pagos")
               
-            ])
-            .draw(false);
-      }
-    }
-    if (this.data.fines.length > 0) {
-        for (let notification of this.data.fines) {
-          const date = notification.created_datetime as { [key: string]: any };
-          let dateString = this.formatDate(notification.created_datetime);
-          this.table.row
-            .add([
-              dateString,
-              notification.nombre + " " + notification.apellido,
-              notification.dni,
-              "Multa",
-              notification.subject,
-              notification.message,
-
-            ])
-            .draw(false);
-      }
+          });
+        if (e === "Generales")
+          this.data.generals.forEach((notification) => {
+            AddRow(notification, "Generales")
+          });
+        if (e === "Inventario")
+          this.data.inventories.forEach((notification) => {
+            AddRow(notification, "Inventario")
+          });
+      });
     }
 
-    if (this.data.payments.length > 0) {
-        for (let notification of this.data.payments) {
-          const date = notification.created_datetime as { [key: string]: any };
-          let dateString = this.formatDate(notification.created_datetime);
-          this.table.row
-            .add([
-              dateString,
-              notification.nombre + " " + notification.apellido,
-              notification.dni,
-              "Pago",
-              notification.subject,
-              notification.message,
-
-            ])
-            .draw(false);
-        
-      }
-    }
-    if (this.data.generals.length > 0) {
-        for (let notification of this.data.generals) {
-          const date = notification.created_datetime as { [key: string]: any };
-          let dateString = this.formatDate(notification.created_datetime);
-          this.table.row
-            .add([
-              dateString,
-              notification.nombre + " " + notification.apellido,
-              notification.dni,
-              "General",
-              notification.subject,
-              notification.message,
-
-            ])
-            .draw(false);
-      }
-    }
-    if (this.data.inventories.length > 0) {
-        for (let notification of this.data.inventories) {
-          const date = notification.created_datetime as { [key: string]: any };
-          let dateString = this.formatDate(notification.created_datetime);
-          this.table.row
-            .add([
-              dateString,
-              "Administración",
-              "",
-              "Inventario",
-              notification.subject,
-              notification.message,
-
-            ])
-            .draw(false);
-      }
-    }
+    console.log("filleando");
   }
 
   exportarAExcel() {
@@ -314,6 +318,7 @@ export class AllNotificationComponent implements OnInit {
         item[5] || "N/A",
       ]),
       startY: 30,
+      theme: 'grid'
     });
 
     doc.save(this.formatDate(new Date())+" Registro de Notificaciones.pdf");
@@ -355,120 +360,31 @@ export class AllNotificationComponent implements OnInit {
   }
   //filtro por fechas
   updatedList() {
-    let accessList: Access[] = [];
-    this.data.access = this.originalAccessList;
-    this.data.access.forEach((e) => {
-      console.log(e.created_datetime);
-      const apiDate = new Date(e.created_datetime);
-      console.log(apiDate);
-      const createdDate = new Date(
-        apiDate.getFullYear(),
-        apiDate.getMonth(),
-        apiDate.getDate(),
-        apiDate.getHours(),
-        apiDate.getMinutes(),
-        apiDate.getSeconds()
-      );
-      const startDate2 = new Date(
-        this.form.get("startDate")?.value ?? new Date()
-      );
-      const endDate2 = new Date(this.form.get("endDate")?.value ?? new Date());
-      console.log(createdDate);
-      console.log(startDate2);
-      console.log(endDate2);
-
-      if (
-        createdDate.toISOString().split("T")[0] >=
-          startDate2.toISOString().split("T")[0] &&
-        createdDate.toISOString().split("T")[0] <=
-          endDate2.toISOString().split("T")[0]
-      ) {
-        accessList.push(e);
-      }
-    });
-    this.data.access = accessList;
-
-    let finesList: Fine[] = [];
-    this.data.fines = this.originalFinesList;
-    this.data.fines.forEach((e) => {
-      const createdDate = new Date(e.created_datetime);
-      const startDate2 = new Date(
-        this.form.get("startDate")?.value ?? new Date()
-      );
-      const endDate2 = new Date(this.form.get("endDate")?.value ?? new Date());
-
-      if (
-        createdDate.toISOString().split("T")[0] >=
-          startDate2.toISOString().split("T")[0] &&
-        createdDate.toISOString().split("T")[0] <=
-          endDate2.toISOString().split("T")[0]
-      ) {
-        finesList.push(e);
-      }
-    });
-    this.data.fines = finesList;
-
-    let paymentsList: Payments[] = [];
-    this.data.payments = this.originalPaymentsList;
-    this.data.payments.forEach((e) => {
-      const createdDate = new Date(e.created_datetime);
-      const startDate2 = new Date(
-        this.form.get("startDate")?.value ?? new Date()
-      );
-      const endDate2 = new Date(this.form.get("endDate")?.value ?? new Date());
-
-      if (
-        createdDate.toISOString().split("T")[0] >=
-          startDate2.toISOString().split("T")[0] &&
-        createdDate.toISOString().split("T")[0] <=
-          endDate2.toISOString().split("T")[0]
-      ) {
-        paymentsList.push(e);
-      }
-    });
-    this.data.payments = paymentsList;
-
-    let generalsList: General[] = [];
-    this.data.generals = this.originalGeneralsList;
-    this.data.generals.forEach((e) => {
-      const createdDate = new Date(e.created_datetime);
-      const startDate2 = new Date(
-        this.form.get("startDate")?.value ?? new Date()
-      );
-      const endDate2 = new Date(this.form.get("endDate")?.value ?? new Date());
-      if (
-        createdDate.toISOString().split("T")[0] >=
-          startDate2.toISOString().split("T")[0] &&
-        createdDate.toISOString().split("T")[0] <=
-          endDate2.toISOString().split("T")[0]
-      ) {
-        generalsList.push(e);
-      }
-    });
-    this.data.generals = generalsList;
-
-    let InventoryList: Inventory[] = [];
-    this.data.inventories = this.originalInventoryList;
-    this.data.inventories.forEach((e) => {
-      const createdDate = new Date(e.created_datetime);
-      const startDate2 = new Date(
-        this.form.get("startDate")?.value ?? new Date()
-      );
-      const endDate2 = new Date(this.form.get("endDate")?.value ?? new Date());
-      if (
-        createdDate.toISOString().split("T")[0] >=
-          startDate2.toISOString().split("T")[0] &&
-        createdDate.toISOString().split("T")[0] <=
-          endDate2.toISOString().split("T")[0]
-      ) {
-        InventoryList.push(e);
-      }
-    });
-    this.data.inventories = InventoryList;
+  
+    const filterListByDate = (list: any[], startDate: Date, endDate: Date): any[] => {
+      return list.filter((e) => {
+        const createdDate = new Date(e.created_datetime);
+        const createdDateStr = createdDate.toISOString().split("T")[0];
+        const startDateStr = startDate.toISOString().split("T")[0];
+        const endDateStr = endDate.toISOString().split("T")[0];
+        return createdDateStr >= startDateStr && createdDateStr <= endDateStr;
+      });
+    };
+  
+    const startDate = new Date(this.form.get("startDate")?.value ?? new Date());
+    const endDate = new Date(this.form.get("endDate")?.value ?? new Date());
+  
+    this.data.access = filterListByDate(this.originalAccessList, startDate, endDate);
+    this.data.fines = filterListByDate(this.originalFinesList, startDate, endDate);
+    this.data.payments = filterListByDate(this.originalPaymentsList, startDate, endDate);
+    this.data.generals = filterListByDate(this.originalGeneralsList, startDate, endDate);
+    this.data.inventories = filterListByDate(this.originalInventoryList, startDate, endDate);
+  
 
     this.fillTable();
     console.log(this.data);
   }
+  
   initialzeDates() {
     const today = new Date();
     const startDate = new Date(
@@ -489,9 +405,23 @@ export class AllNotificationComponent implements OnInit {
     const day = date.getDate().toString().padStart(2, "0"); // Día debe ser 1-31
     return `${year}-${month}-${day}`; // Retornar en formato yyyy-MM-dd
   }
+
+  @ViewChild(SelectMultipleComponent)
+  selectMultipleComponent!: SelectMultipleComponent;
+
   borrar() {
     this.form.reset();
     const searchInput = document.getElementById('searchTerm') as HTMLInputElement;
+
+    this.selectedNotificationType = [];
+    this.dropdownSeleccionadas = [];
+
+    // Limpiar la selección en el componente hijo ng-select
+    if (this.selectMultipleComponent) {
+      this.selectMultipleComponent.clearSelection();
+    }
+
+
     if (searchInput) {
       searchInput.value = '';
     }

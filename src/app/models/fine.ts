@@ -7,6 +7,7 @@ export interface Fine {
     isWarning:boolean;
     markedRead:boolean;
     nombre: string;
+    tableName:string;
     apellido: string;
     dni: number;
 }

@@ -71,6 +71,12 @@
       
 
       <div class="nav-item mt-auto">
+        <button class="nav-link d-flex text-light w-100 px-3 py-2" 
+        (click)="redirect('home/chart')"
+        >
+          <i class="bi bi-bar-chart"></i>
+          @if (expand) {<span class="ms-2">Gráficos</span>}
+        </button>
         <button class="nav-link d-flex text-light w-100 px-3 py-2">
           <i class="bi-info-circle"></i>
           @if (expand) {<span class="ms-2">Ayuda</span>}

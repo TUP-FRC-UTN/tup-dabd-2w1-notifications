@@ -4,4 +4,5 @@ export interface Inventory {
     message:string;
     created_datetime:Date;
     markedRead:boolean;
+    tableName:string;
 }
