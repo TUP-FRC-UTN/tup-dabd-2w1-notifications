@@ -135,7 +135,7 @@ export class NotificationComponent implements OnInit {
             notification = this.allNotifications.fines.find(n => n.id == this.selectedNotificationObject.id)
             if (notification) notification.markedRead = true;
             break
-          //FALTA PROVIDERS, EMPLOYEES, INVENTORY NO SE ESTA MOSTRANDO?
+          
         }
         this.fillTable()
         
