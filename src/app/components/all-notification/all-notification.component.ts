@@ -164,7 +164,9 @@ export class AllNotificationComponent implements OnInit {
         case "Multas":
           return "bg-danger";
         case "Pagos":
-          return "bg-indigo";
+          return "text-bg-indigo";
+        case "Inventario":
+          return "text-bg-primary"
         default:
           return "bg-secondary";
       }
