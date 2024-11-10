@@ -7,10 +7,17 @@
  -->      <form class="row g-3 needs-validation" #form="ngForm" (ngSubmit)="onSubmit(form)">
         <div class="col-md-12" style="display: flex; gap: 60px;">
           <label for="inputSubject" class="form-label">Asunto</label>
-          <input type="text" class="form-control" id="inputSubject" name="subject" required maxlength="20" #subject="ngModel" [(ngModel)]="newNotification.subject">
+          <input type="text" class="form-control" id="inputSubject" name="subject" required 
+          maxlength="20" #subject="ngModel" 
+          [(ngModel)]="newNotification.subject"
+          [ngClass]="{
+            'is-invalid': subject.invalid && subject.touched,
+            'is-valid': subject.valid && subject.touched
+          }"
+          >
         </div>
         @if ((subject.invalid && (subject.dirty || subject.touched)) || (subject.invalid && form.submitted)) {
-          <div style="color: red;">
+          <div style="color: red; margin-left: 7em;">
             El asunto es requerido y debe tener máximo 20 caracteres.
           </div>
         } 
@@ -21,11 +28,16 @@
            <textarea class="form-control" id="inputDescription" name="description" 
                       required 
                       #description="ngModel" [(ngModel)]="newNotification.description"
-                      style="resize: none;height: 6em;" >
+                      style="resize: none;height: 6em;" 
+                      [ngClass]="{
+                        'is-invalid': description.invalid && description.touched,
+                        'is-valid': description.valid && description.touched
+                      }"
+                      >
           </textarea>
         </div>
         @if ((description.invalid && (description.dirty || description.touched)) || (description.invalid && form.submitted) ){
-          <div style="color: red;">
+          <div style="color: red; margin-left: 7em;">
             El mensaje no debe estar vacío
           </div>
         }
