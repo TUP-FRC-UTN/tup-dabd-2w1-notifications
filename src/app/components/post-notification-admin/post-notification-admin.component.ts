@@ -36,7 +36,7 @@ export class PostNotificationAdminComponent implements AfterViewInit, OnInit{
   constructor(private notificationService: NotificationService) {}
   selectValue : string = "1";
   users : UserApiDTO[] = []
-
+  
   ngOnInit(): void {
     
       const users = this.httpClient.get<UserApiDTO[]>
@@ -44,6 +44,7 @@ export class PostNotificationAdminComponent implements AfterViewInit, OnInit{
       .subscribe(response =>
         {this.users = response;
           this.fillTable();
+          console.log(this.users);
       })
   }
 
@@ -110,7 +111,7 @@ export class PostNotificationAdminComponent implements AfterViewInit, OnInit{
 
   newNotification : NotificationGeneralDTO = {
     users : [],
-    senderId: 0,
+    senderId: 1,
     subject: "",
     description : "",
     channel: "EMAIL",
@@ -164,21 +165,22 @@ export class PostNotificationAdminComponent implements AfterViewInit, OnInit{
     // form.reset();
     // this.radioButtonValue = "allUsers";
     let table = $("#myTable").DataTable()
-    table.search((d) => d.includes('Alice')).draw();
+    
   }
   getSelectedUsers() : UserDTO[]{
     let table = $("#myTable").DataTable();
     
     let users : UserDTO[] = []
+    const component = this;
     
     $("#myTable tbody tr").each(function () {
       const checkbox = $(this).find("input.userCheckbox");
       if (checkbox.is(":checked")) {
 
         const rowData = $("#myTable").DataTable().row(this).data();
-        
         let user: UserDTO = {
-          id: rowData.id,
+          //encontrar el ID del user a travez del DNI
+          id: component.users.find(user => user.dni == rowData[2])?.id || 1,
           nombre: rowData.name,
           apellido: "pepitosadsdasda",
           dni: 9999999,
@@ -198,7 +200,7 @@ export class PostNotificationAdminComponent implements AfterViewInit, OnInit{
     let userDTOArray : UserDTO[] = []
     for (let user of userApiArr) {
       let userDTO : UserDTO = {
-        id: 1,
+        id: user.id,
         nombre: user.name,
         apellido: user.lastname,
         dni: 999999,
@@ -221,6 +223,7 @@ export class PostNotificationAdminComponent implements AfterViewInit, OnInit{
     
     filteredUserDTOArray[0].telegramChatId = 5869258860;
     filteredUserDTOArray[0].email = "solis.luna.ignacio@gmail.com"
+    console.log(filteredUserDTOArray);
     return filteredUserDTOArray;
     
   }
