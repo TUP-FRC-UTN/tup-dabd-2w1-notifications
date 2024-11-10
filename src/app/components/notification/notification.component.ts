@@ -1,5 +1,5 @@
 
-import { Component, EventEmitter, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, OnInit, Output, ViewChild } from "@angular/core";
 import { CommonModule, DatePipe, JsonPipe } from "@angular/common";
 import {
   FormControl,
@@ -70,6 +70,7 @@ export class NotificationComponent implements OnInit {
     access: [],
     payments: [],
     generals: [],
+    inventories: []
   };
   allNotificationsArray: any[] = [];
 
