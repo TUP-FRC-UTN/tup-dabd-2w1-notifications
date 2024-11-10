@@ -58,32 +58,13 @@ export class ChartComponent implements OnInit {
     colors: ['#4285F4', '#34A853', '#FBBC05', '#EA4335', '#FF6D01', '#46BDC6', '#B080D6']
   };
   
-
   columnChartOptions2 = {
-    title: 'Notificaciones Enviadas por Tipo (Access, Payment, Fine, Inventory)',
+    title: 'Notificaciones Enviadas por Tipo (Accesos, Pagos, Multas, Inventario)',
     hAxis: { title: 'Tipo de Notificación' },
     vAxis: { title: 'Cantidad de Notificaciones' },
     legend: { position: 'none' },
     chartArea: { width: '80%', height: '70%' },
     colors: ['purple']
-  };
-
-  columnChartOptions3 = {
-    title: 'Notificaciones Enviadas por Día y Tipo de Notificación',
-    hAxis: { title: 'Días' },
-    vAxis: { title: 'Cantidad de Notificaciones' },
-    legend: { position: 'top' },
-    chartArea: { width: '80%', height: '70%' },
-    colors: ['#4285F4', '#34A853', '#FBBC05', '#EA4335']
-  };
-
-  columnChartOptions4 = {
-    title: 'Notificaciones Enviadas por Hora del Día',
-    hAxis: { title: 'Horas' },
-    vAxis: { title: 'Cantidad de Notificaciones' },
-    legend: { position: 'bottom' },
-    chartArea: { width: '80%', height: '70%' },
-    colors: ['blue']
   };
 
   columnChartOptions5 = {
@@ -92,16 +73,6 @@ export class ChartComponent implements OnInit {
     chartArea: { width: '80%', height: '80%' },
     pieHole: 0.4, //Esto es un semi-donut del pie
     colors: ['green', 'red']
-  };
-
-  columnChartOptions6 = {
-    title: 'Notificaciones por Mes y Tipo',
-    hAxis: { title: 'Meses' },
-    vAxis: { title: 'Cantidad de Notificaciones' },
-    legend: { position: 'top' },
-    isStacked: true,
-    chartArea: { width: '80%', height: '70%' },
-    colors: ['#4285F4', '#34A853', '#FBBC05', '#EA4335']
   };
 
   ngOnInit(): void {
@@ -119,7 +90,6 @@ export class ChartComponent implements OnInit {
       const allNotifications = this.flattenNotifications(data);
       const groupedByDay = this.groupByDay(allNotifications);
       const groupedByDayOfWeek = this.groupByDayOfWeek(allNotifications);
-
       const maxDay = this.findMaxNotificationsDay(groupedByDay);
       const groupedByType = this.groupByType(allNotifications);
       const maxType = this.findMaxNotificationsType(groupedByType);
