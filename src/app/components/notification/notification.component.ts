@@ -27,7 +27,7 @@ import { Inventory } from "../../models/inventory";
 import { NgSelectComponent } from "@ng-select/ng-select";
 import { SelectMultipleComponent } from "../select-multiple/select-multiple.component";
 import { single } from "rxjs";
-import { end } from "@popperjs/core";
+
 
 @Component({
   selector: "app-notification",
