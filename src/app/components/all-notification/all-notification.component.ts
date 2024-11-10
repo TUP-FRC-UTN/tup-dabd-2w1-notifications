@@ -178,7 +178,7 @@ export class AllNotificationComponent implements OnInit {
       this.table.row
       .add([
         this.formatDate(notification.created_datetime),
-        "",
+        notification.userId,
         "",
         tipoPill,
         notification.subject,
