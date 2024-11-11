@@ -83,7 +83,7 @@ export class ChartComponent implements OnInit {
     legend: { position: 'right' },
     chartArea: { width: '80%', height: '80%' },
     pieHole: 0.4, //Esto es un semi-donut del pie
-    colors: ['green', 'red']
+    colors: ['red', 'green']
   };
 
   ngOnInit(): void {
@@ -287,7 +287,7 @@ getWeekFromDate(date: string): string {
   }
 
   loadChartData(): void {
-    const counterOfBools = ['Leido', 'No Leido'];
+    const counterOfBools = ['No Leido', 'Leido'];
     const daysOfWeek = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'];
     const monthsOfYear = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
     const hoursOfDay = ['01:00', '02:00', '03:00', '04:00', '05:00', '06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00',
@@ -419,10 +419,10 @@ getWeekFromDate(date: string): string {
         // Datos para el quinto gráfico
         this.columnChartData5 = counterOfBools.map(count => [
           count,
-          data.access.filter(a => getCounterOfBools(new Number(a.markedRead)) === count).length,
-          data.payments.filter(a => getCounterOfBools(new Number(a.markedRead)) === count).length,
-          data.inventories.filter(a => getCounterOfBools(new Number(a.markedRead)) === count).length,
-          data.fines.filter(a => getCounterOfBools(new Number(a.markedRead)) === count).length,
+          data.access.filter(a => getCounterOfBools(new Number(a.markedRead)) === count).length +
+          data.payments.filter(a => getCounterOfBools(new Number(a.markedRead)) === count).length +
+          data.inventories.filter(a => getCounterOfBools(new Number(a.markedRead)) === count).length +
+          data.fines.filter(a => getCounterOfBools(new Number(a.markedRead)) === count).length 
           
         ]);
 
