@@ -318,11 +318,17 @@ export class AllNotificationComponent implements OnInit {
   exportarAPDF() {
     const tabla = this.table;
     const filteredData = tabla.rows({ search: "applied" }).data().toArray();
-
+    const dateFrom = this.formatDateFromString(
+      this.form.controls["startDate"].value
+    );
+    const dateTo= this.formatDateFromString(
+      this.form.controls["endDate"].value
+    );
     const doc = new jsPDF();
 
     doc.setFontSize(18);
     doc.text("Reporte de Notificaciones", 14, 22);
+    doc.text("Fechas: Desde " + dateFrom + " hasta " + dateTo + "", 14, 33);
 
     autoTable(doc, {
       head: [["Fecha", "Destinatario", "DNI", "Tipo", "Asunto", "Descripción"]],
@@ -334,7 +340,7 @@ export class AllNotificationComponent implements OnInit {
         item[4] || "N/A",
         item[5] || "N/A",
       ]),
-      startY: 30,
+      startY: 44,
       theme: "grid",
     });
 
@@ -474,6 +480,12 @@ export class AllNotificationComponent implements OnInit {
     this.initialzeDates();
     this.fillTable();
   }
+
+  formatDateFromString(date: string) {
+    const [year, month, day] = date.split("-");
+    return `${day}-${month}-${year}`;
+  }
+
   getTextContent(cellData: any): string {
     // Check if cellData is an HTML element or text
     if (typeof cellData === "string") {
