@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, OnInit } from "@angular/core";
+import { Component, EventEmitter, OnInit, Output } from "@angular/core";
 import {
   FormBuilder,
   FormControl,
@@ -24,6 +24,9 @@ import { Inventory } from "../../models/inventory";
   styleUrls: ["./chart.component.css"],
 })
 export class ChartComponent implements OnInit {
+  //output para mostrar el titulo de la pag
+  @Output() sendTitle = new EventEmitter<string>();
+
   filterForm: FormGroup = this.fb.group({});
   maxNotificationsDay: string = "";
   maxNotificationsType: string = "";
@@ -83,8 +86,8 @@ export class ChartComponent implements OnInit {
   columnChartOptions = {
     title: "Notificaciones Enviadas por Día de la Semana",
     legend: { position: "right" },
-    chartArea: { width: "80%", height: "80%" },
-    pieHole: 0.4, // Esto es un gráfico de dona (opcional)
+    chartArea: { width: "95%", height: "80%" },
+    
     colors: [
       "#4285F4",
       "#34A853",
@@ -526,10 +529,16 @@ export class ChartComponent implements OnInit {
       notificationsByDayOfWeek
     );
 
-    this.columnChartData = Object.entries(notificationsByDayOfWeek).map(
-      ([day, count]) => [day, count]
-    );
-
+    if (Object.keys(notificationsByDayOfWeek).length == 0){
+       this.columnChartData = [["No hay datos para mostrar",0]]
+    }
+    else {
+      this.columnChartData = Object.entries(notificationsByDayOfWeek).map(
+        ([day, count]) => [day, count]
+      );
+  
+    }
+    
     // Contamos las notificaciones por tipo por dia
     this.allNotifications.access.forEach((a) => {
       const dayOfWeek = getDayOfWeek(new Date(a.created_datetime));
