@@ -61,6 +61,8 @@ export class ChartComponent implements OnInit {
     generals: [],
     inventories: [],
   };
+  //contador para mostrar en KPI de Total de notificaciones enviadas
+  allNotificationsCounter = 0;
 
   accessList: Access[] = [];
   finesList: Fine[] = [];
@@ -187,7 +189,10 @@ export class ChartComponent implements OnInit {
       this.maxNotificationsHourCount = maxHour.count;
       this.maxNotificationsMonth = maxMonth.month;
       this.maxNotificationsMonthCount = maxMonth.count;
+    //calcular total de notificaciones enviadas para mostrar en el KPI
+    this.allNotificationsCounter = Object.values(this.allNotifications).reduce((sum, arr) => sum + arr.length, 0);
     });
+    
   }
 
   flattenNotifications(
