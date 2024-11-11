@@ -86,6 +86,9 @@ export class AllNotificationComponent implements OnInit {
         { width: "20%" },
         { width: "30%" },
       ],
+      columnDefs: [
+        { targets: 3, className: "text-center align-middle" },
+      ],
 
       paging: true,
       searching: true,
@@ -190,8 +193,8 @@ export class AllNotificationComponent implements OnInit {
         this.table.row
           .add([
             this.formatDate(notification.created_datetime),
-            notification.userId,
-            "",
+            "Alice Jhonson",
+            "12345678",
             tipoPill,
             notification.subject,
             notification.message,
