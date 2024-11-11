@@ -29,7 +29,12 @@ import { SelectMultipleComponent } from "../select-multiple/select-multiple.comp
 @Component({
   selector: "app-all-notification",
   standalone: true,
-  imports: [DatePipe, RouterModule, ReactiveFormsModule, SelectMultipleComponent],
+  imports: [
+    DatePipe,
+    RouterModule,
+    ReactiveFormsModule,
+    SelectMultipleComponent,
+  ],
   providers: [DatePipe],
   templateUrl: "./all-notification.component.html",
   styleUrl: "./all-notification.component.css",
@@ -56,7 +61,7 @@ export class AllNotificationComponent implements OnInit {
     { value: "Accesos", name: "Accesos" },
     { value: "Pagos", name: "Pagos" },
     { value: "Generales", name: "Generales" },
-    { value: "Inventario", name: "Inventario"}
+    { value: "Inventario", name: "Inventario" },
   ];
 
   selectedNotificationType: string[] = [];
@@ -71,18 +76,16 @@ export class AllNotificationComponent implements OnInit {
 
   //onInit y onDestroy
   ngOnInit(): void {
-    this.form.get("startDate")?.valueChanges.subscribe((value) => {
-      this.updatedList();
-    });
-    this.form.get("endDate")?.valueChanges.subscribe((value) => {
-      this.updatedList();
-    });
-    this.llenarData();
-    this.initialzeDates();
-
     this.table = $("#myTable").DataTable({
       dom: '<"mb-3"t>' + '<"d-flex justify-content-between"lp>',
-      columns: [{ width: '13%' }, { width: '20%' }, { width: '7%' }, { width: '10%' }, { width: '20%' }, { width: '30%' }],
+      columns: [
+        { width: "13%" },
+        { width: "20%" },
+        { width: "7%" },
+        { width: "10%" },
+        { width: "20%" },
+        { width: "30%" },
+      ],
 
       paging: true,
       searching: true,
@@ -99,7 +102,6 @@ export class AllNotificationComponent implements OnInit {
         lengthMenu: "_MENU_",
         info: " ",
       },
-      
     });
 
     // Connect external search input to DataTables
@@ -108,6 +110,16 @@ export class AllNotificationComponent implements OnInit {
         .DataTable()
         .search($(this).val() as string)
         .draw();
+    });
+
+    this.llenarData();
+    this.initialzeDates();
+
+    this.form.get("startDate")?.valueChanges.subscribe((value) => {
+      this.updatedList();
+    });
+    this.form.get("endDate")?.valueChanges.subscribe((value) => {
+      this.updatedList();
     });
   }
   //injecciones
@@ -155,91 +167,87 @@ export class AllNotificationComponent implements OnInit {
 
     const AddRow = (notification: any, tipo: string) => {
       //Setear color de Pill
-    const getBadgeClass = (tipo: string) => {
-      switch (tipo) {
-        case "Generales":
-          return "bg-warning";
-        case "Accesos":
-          return "bg-success";
-        case "Multas":
-          return "bg-danger";
-        case "Pagos":
-          return "text-bg-indigo";
-        case "Inventario":
-          return "text-bg-primary"
-        default:
-          return "bg-secondary";
+      const getBadgeClass = (tipo: string) => {
+        switch (tipo) {
+          case "Generales":
+            return "bg-warning";
+          case "Accesos":
+            return "bg-success";
+          case "Multas":
+            return "bg-danger";
+          case "Pagos":
+            return "text-bg-indigo";
+          case "Inventario":
+            return "text-bg-primary";
+          default:
+            return "bg-secondary";
+        }
+      };
+
+      const badgeClass = getBadgeClass(tipo);
+      const tipoPill = `<span class=" badge rounded-pill ${badgeClass}">${tipo}</span>`;
+      if (tipo === "Inventario") {
+        this.table.row
+          .add([
+            this.formatDate(notification.created_datetime),
+            notification.userId,
+            "",
+            tipoPill,
+            notification.subject,
+            notification.message,
+          ])
+          .draw(false);
+      } else {
+        this.table.row
+          .add([
+            this.formatDate(notification.created_datetime),
+            notification.nombre + " " + notification.apellido,
+            notification.dni,
+            tipoPill,
+            notification.subject,
+            notification.message,
+          ])
+          .draw(false);
       }
     };
 
-    const badgeClass = getBadgeClass(tipo);
-    const tipoPill = `<span class=" badge rounded-pill ${badgeClass}">${tipo}</span>`;
-    if(tipo === "Inventario"){
-      this.table.row
-      .add([
-        this.formatDate(notification.created_datetime),
-        notification.userId,
-        "",
-        tipoPill,
-        notification.subject,
-        notification.message,
-      ])
-      .draw(false);
-
-    }else{
-      this.table.row
-      .add([
-        this.formatDate(notification.created_datetime),
-        notification.nombre + " " + notification.apellido,
-        notification.dni,
-        tipoPill,
-        notification.subject,
-        notification.message,
-      ])
-      .draw(false);
-    }
-
-  };
-
     if (this.dropdownSeleccionadas.length === 0) {
       this.data.access.forEach((notification) => {
-        AddRow(notification, "Accesos")
+        AddRow(notification, "Accesos");
       });
       this.data.fines.forEach((notification) => {
-        AddRow(notification, "Multas")
+        AddRow(notification, "Multas");
       });
       this.data.payments.forEach((notification) => {
-        AddRow(notification, "Pagos")
+        AddRow(notification, "Pagos");
       });
       this.data.generals.forEach((notification) => {
-        AddRow(notification, "Generales")
+        AddRow(notification, "Generales");
       });
       this.data.inventories.forEach((notification) => {
-        AddRow(notification, "Inventario")
+        AddRow(notification, "Inventario");
       });
     } else {
       this.dropdownSeleccionadas.forEach((e) => {
         if (e === "Accesos")
           this.data.access.forEach((notification) => {
-            AddRow(notification, "Accesos")
-
+            AddRow(notification, "Accesos");
           });
         if (e === "Multas")
           this.data.fines.forEach((notification) => {
-            AddRow(notification, "Multas")
+            AddRow(notification, "Multas");
           });
         if (e === "Pagos")
           this.data.payments.forEach((notification) => {
-            AddRow(notification, "Pagos")
-              
+            AddRow(notification, "Pagos");
           });
         if (e === "Generales")
           this.data.generals.forEach((notification) => {
-            AddRow(notification, "Generales")
+            AddRow(notification, "Generales");
           });
         if (e === "Inventario")
           this.data.inventories.forEach((notification) => {
-            AddRow(notification, "Inventario")
+            AddRow(notification, "Inventario");
           });
       });
     }
@@ -250,30 +258,31 @@ export class AllNotificationComponent implements OnInit {
   exportarAExcel() {
     const tabla = this.table;
     const filteredData = tabla.rows({ search: "applied" }).data().toArray();
-    filteredData.forEach((arr:any)=>{
-      
-      arr[3] = this.getTextContent(arr[3])
+    filteredData.forEach((arr: any) => {
+      arr[3] = this.getTextContent(arr[3]);
     });
     // Obtener los nombres de las columnas
-    const headers = tabla.columns().header().toArray()
+    const headers = tabla
+      .columns()
+      .header()
+      .toArray()
       .map((th: any) => $(th).text());
 
     // Crear la hoja con los datos
-    const worksheet = XLSX.utils.json_to_sheet(filteredData, { 
-    });
+    const worksheet = XLSX.utils.json_to_sheet(filteredData, {});
 
     // Insertar headers manualmente
-    XLSX.utils.sheet_add_aoa(worksheet, [headers], { origin: 'A1' });
+    XLSX.utils.sheet_add_aoa(worksheet, [headers], { origin: "A1" });
 
     // Configurar ancho de columnas (150px ≈ 20 caracteres en Excel)
-    worksheet['!cols'] = headers.map(() => ({ 
+    worksheet["!cols"] = headers.map(() => ({
       width: 20,
       wch: 20, // ancho en caracteres
-      wpx: 150 // ancho en píxeles
+      wpx: 150, // ancho en píxeles
     }));
 
     // Configurar que el texto se ajuste automáticamente
-    const range = XLSX.utils.decode_range(worksheet['!ref'] || 'A1');
+    const range = XLSX.utils.decode_range(worksheet["!ref"] || "A1");
     for (let R = range.s.r; R <= range.e.r; R++) {
       for (let C = range.s.c; C <= range.e.c; C++) {
         const cellRef = XLSX.utils.encode_cell({ r: R, c: C });
@@ -282,16 +291,16 @@ export class AllNotificationComponent implements OnInit {
         if (!worksheet[cellRef].s) worksheet[cellRef].s = {};
         worksheet[cellRef].s.alignment = {
           wrapText: true, // Permitir ajuste de texto
-          vertical: 'top',
+          vertical: "top",
         };
 
         // Aplicar negrita y centrado a la primera fila (headers)
         if (R === 0) {
           worksheet[cellRef].s.font = { bold: true };
           worksheet[cellRef].s.alignment = {
-            horizontal: 'center',
-            vertical: 'center',
-            wrapText: true
+            horizontal: "center",
+            vertical: "center",
+            wrapText: true,
           };
         }
       }
@@ -299,9 +308,12 @@ export class AllNotificationComponent implements OnInit {
 
     const workBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workBook, worksheet, "Notificaciones");
-    
-    XLSX.writeFile(workBook,this.formatDate(new Date()) + " Registro de Notificaciones.xlsx");
-}
+
+    XLSX.writeFile(
+      workBook,
+      this.formatDate(new Date()) + " Registro de Notificaciones.xlsx"
+    );
+  }
 
   exportarAPDF() {
     const tabla = this.table;
@@ -323,10 +335,10 @@ export class AllNotificationComponent implements OnInit {
         item[5] || "N/A",
       ]),
       startY: 30,
-      theme: 'grid'
+      theme: "grid",
     });
 
-    doc.save(this.formatDate(new Date())+" Registro de Notificaciones.pdf");
+    doc.save(this.formatDate(new Date()) + " Registro de Notificaciones.pdf");
   }
 
   //filtro de tipo de notificacion
@@ -365,8 +377,11 @@ export class AllNotificationComponent implements OnInit {
   }
   //filtro por fechas
   updatedList() {
-  
-    const filterListByDate = (list: any[], startDate: Date, endDate: Date): any[] => {
+    const filterListByDate = (
+      list: any[],
+      startDate: Date,
+      endDate: Date
+    ): any[] => {
       return list.filter((e) => {
         const createdDate = new Date(e.created_datetime);
         const createdDateStr = createdDate.toISOString().split("T")[0];
@@ -375,29 +390,53 @@ export class AllNotificationComponent implements OnInit {
         return createdDateStr >= startDateStr && createdDateStr <= endDateStr;
       });
     };
-  
+
     const startDate = new Date(this.form.get("startDate")?.value ?? new Date());
     const endDate = new Date(this.form.get("endDate")?.value ?? new Date());
-  
-    this.data.access = filterListByDate(this.originalAccessList, startDate, endDate);
-    this.data.fines = filterListByDate(this.originalFinesList, startDate, endDate);
-    this.data.payments = filterListByDate(this.originalPaymentsList, startDate, endDate);
-    this.data.generals = filterListByDate(this.originalGeneralsList, startDate, endDate);
-    this.data.inventories = filterListByDate(this.originalInventoryList, startDate, endDate);
-  
+
+    this.data.access = filterListByDate(
+      this.originalAccessList,
+      startDate,
+      endDate
+    );
+    this.data.fines = filterListByDate(
+      this.originalFinesList,
+      startDate,
+      endDate
+    );
+    this.data.payments = filterListByDate(
+      this.originalPaymentsList,
+      startDate,
+      endDate
+    );
+    this.data.generals = filterListByDate(
+      this.originalGeneralsList,
+      startDate,
+      endDate
+    );
+    this.data.inventories = filterListByDate(
+      this.originalInventoryList,
+      startDate,
+      endDate
+    );
 
     this.fillTable();
     console.log(this.data);
   }
-  
+
   initialzeDates() {
     const today = new Date();
     const startDate = new Date(
       today.getFullYear(),
       today.getMonth() - 1,
-      today.getDay()
+      today.getDate()
     );
-    const endDate = today;
+    console.log(today.toISOString(), "startDate", today.getDate(), today.getMonth(), today.getFullYear());
+    const endDate = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate() +1
+    );
 
     this.form.patchValue({
       startDate: this.formatDate2(startDate),
@@ -416,7 +455,9 @@ export class AllNotificationComponent implements OnInit {
 
   borrar() {
     this.form.reset();
-    const searchInput = document.getElementById('searchTerm') as HTMLInputElement;
+    const searchInput = document.getElementById(
+      "searchTerm"
+    ) as HTMLInputElement;
 
     this.selectedNotificationType = [];
     this.dropdownSeleccionadas = [];
@@ -426,9 +467,8 @@ export class AllNotificationComponent implements OnInit {
       this.selectMultipleComponent.clearSelection();
     }
 
-
     if (searchInput) {
-      searchInput.value = '';
+      searchInput.value = "";
     }
     this.selected = "Todas";
     this.initialzeDates();
@@ -438,7 +478,7 @@ export class AllNotificationComponent implements OnInit {
     // Check if cellData is an HTML element or text
     if (typeof cellData === "string") {
       // If it's a string, strip out any HTML tags using a regex
-      return cellData.replace(/<[^>]*>?/gm, '');
+      return cellData.replace(/<[^>]*>?/gm, "");
     }
     return cellData;
   }

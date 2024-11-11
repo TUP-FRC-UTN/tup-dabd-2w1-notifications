@@ -492,9 +492,13 @@ export class NotificationComponent implements OnInit {
     const startDate = new Date(
       today.getFullYear(),
       today.getMonth() - 1,
-      today.getDay()
+      today.getDate()
     );
-    const endDate = today;
+    const endDate = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate() +1
+    );
 
     this.dateFilterForm.patchValue({
       startDate: this.formatDate(startDate),
