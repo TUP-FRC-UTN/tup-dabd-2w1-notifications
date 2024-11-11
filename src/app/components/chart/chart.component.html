@@ -9,19 +9,19 @@
       <label for="endDate" style="font-size: 1.1em;">Periodo Hasta</label>
       <input id="endDate" type="date" class="form-control form-control-sm" formControlName="endDate" style="font-size:.9em; ">
     </div>
-    <div class="col-6 d-flex justify-content-center align-items-center" style="gap: 10px;">
-      <label style="font-size: 1em; margin-right: 10px;">Estado de Lectura:</label>
-      <div class="form-check form-check-inline">
+    <div class="col-6 d-flex justify-content-center align-items-center mt-3" style="gap: 10px;">
+      <label style="font-size: 1.3em; margin-right: 10px;">Estado de Lectura:</label>
+      <div class="form-check form-check-inline mt-1">
         <input class="form-check-input" type="radio" name="readStatus" checked value="Todas" formControlName="readStatus">
-        <label class="form-check-label" style="font-size: 0.8em;">Todas</label>
+        <label class="form-check-label" style="font-size: 1em;">Todas</label>
       </div>
-      <div class="form-check form-check-inline">
+      <div class="form-check form-check-inline mt-1">
         <input class="form-check-input" type="radio" name="readStatus" value="Leídas" formControlName="readStatus">
-        <label class="form-check-label" style="font-size: 0.8em;">Leídas</label>
+        <label class="form-check-label" style="font-size: 1em;">Leídas</label>
       </div>
-      <div class="form-check form-check-inline">
+      <div class="form-check form-check-inline mt-1">
         <input class="form-check-input" type="radio" name="readStatus" value="No Leídas" formControlName="readStatus">
-        <label class="form-check-label" style="font-size: 0.8em;">No Leídas</label>
+        <label class="form-check-label" style="font-size: 1em;">No Leídas</label>
       </div>
     </div>
   </div> 
@@ -58,7 +58,7 @@
       </div>
       <div class="card shadow-sm flex-grow-1">
         <div class="card-body p-2 d-flex flex-column">
-          <h4 class="card-title text-center mt-3">Total de notificaciones enviadas: {{allNotificationsCounter}}</h4>
+          <h4 class="card-title text-center mt-3">Total de Notificaciones Enviadas: {{allNotificationsCounter}}</h4>
         
         </div>
       </div>
