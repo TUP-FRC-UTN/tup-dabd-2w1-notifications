@@ -421,7 +421,7 @@ export class ChartComponent implements OnInit {
       "Miércoles",
       "Jueves",
       "Viernes",
-      "Sabado",
+      "Sábado",
       "Domingo",
     ];
     const monthsOfYear = [
@@ -528,14 +528,19 @@ export class ChartComponent implements OnInit {
       "Datos agrupados por día de la semana:",
       notificationsByDayOfWeek
     );
-
+    //para chart 1: si no hay datos, en vez de mostrar "table has no entries" muestra un mensaje en vez del error de Google charts
     if (Object.keys(notificationsByDayOfWeek).length == 0){
        this.columnChartData = [["No hay datos para mostrar",0]]
     }
     else {
-      this.columnChartData = Object.entries(notificationsByDayOfWeek).map(
-        ([day, count]) => [day, count]
-      );
+      // this.columnChartData = Object.entries(notificationsByDayOfWeek).map(
+      //   ([day, count]) => [day, count]
+      // );
+      console.log(notificationsByDayOfWeek);
+      this.columnChartData = daysOfWeek.map(day => [
+        day,
+        notificationsByDayOfWeek[day] || 0, // Use 0 if the day key is missing
+      ]);
   
     }
     
