@@ -24,12 +24,7 @@ button:hover, .date-input:hover {
 }
 
 google-chart {
-    transition: all 0.4s ease;
     height: 100%;
-}
-
-#char1 {
-    padding-top: 40px;
 }
 
 .chart-title {
@@ -49,17 +44,10 @@ google-chart {
 }
 
 google-chart {
-    transition: all 0.4s ease;
-    height: 100%;
-}
-
-google-chart {
-    width: 100%; /* Máxima adaptabilidad */
+    width: 100%; 
     height: calc(100% - 20px);
     margin: 0 auto;
-    padding: 0; /* Reduce espacio adicional */
-}
-
-.card {
-    overflow:
+    padding: 0; 
+    transition: all 0.4s ease;
+    height: 100%;
 }

@@ -60,11 +60,22 @@ export class ChartComponent implements OnInit {
   
   columnChartOptions2 = {
     title: 'Notificaciones Enviadas por Tipo (Accesos, Pagos, Multas, Inventario)',
-    hAxis: { title: 'Tipo de Notificación' },
-    vAxis: { title: 'Cantidad de Notificaciones' },
+    hAxis: { 
+      title: 'Tipo de Notificación',
+      textStyle: {
+        fontSize: 14, 
+      }
+    },
+    vAxis: { 
+      title: 'Cantidad de Notificaciones',
+      textStyle: {
+        fontSize: 14,
+      }
+    },
     legend: { position: 'none' },
     chartArea: { width: '80%', height: '70%' },
-    colors: ['purple']
+    colors: ['purple'],
+    
   };
 
   columnChartOptions5 = {
@@ -387,10 +398,10 @@ getWeekFromDate(date: string): string {
   
         // Datos para el segundo gráfico: Notificaciones por Tipo (Access, Payment, Fine, Inventory)
         this.columnChartData2 = [
-          ['Access', data.access.length],
-          ['Payment', data.payments.length],
-          ['Fine', data.fines.length],
-          ['Inventory', data.inventories.length]
+          ['Acc', data.access.length],
+          ['Pag', data.payments.length],
+          ['Mult', data.fines.length],
+          ['Inv', data.inventories.length]
         ];
   
         // Datos para el tercer gráfico: Notificaciones por Día y Tipo de Notificación
