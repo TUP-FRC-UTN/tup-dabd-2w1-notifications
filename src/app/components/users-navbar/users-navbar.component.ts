@@ -15,7 +15,7 @@ import { MockUserService } from '../../service/mockUser.service';
 export class UsersNavbarComponent {
   //Expande el side
   expand: boolean = false;
-  pageTitle: string = "Página Principal"
+  pageTitle: string = "Página Princial"
 
   constructor(private router: Router) { }
   // private readonly authService = inject(AuthService);
@@ -151,7 +151,7 @@ export class UsersNavbarComponent {
     this.expand = !this.expand;
   }
 
-  redirect(path: string) {
+  redirect(path: string, title: string) {
     // if(path === '/login'){
     //   this.authService.logOut();
     //   this.router.navigate([path]);
@@ -160,7 +160,7 @@ export class UsersNavbarComponent {
     //   this.router.navigate([path]);
     // }
     this.router.navigate([path]);
-    this.setTitle("Página Principal")
+    this.setTitle(title)
   }
 
   setTitle(title: string) {
