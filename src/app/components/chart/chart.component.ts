@@ -139,6 +139,7 @@ export class ChartComponent implements OnInit {
     this.filterForm.valueChanges.subscribe(() => {
       this.filterListByDate();
       this.filterListByStatus();
+      this.allNotificationsCounter = this.calculateTotalNotifications();
     });
 
     this.filterListByDate();
@@ -190,9 +191,8 @@ export class ChartComponent implements OnInit {
       this.maxNotificationsMonth = maxMonth.month;
       this.maxNotificationsMonthCount = maxMonth.count;
     //calcular total de notificaciones enviadas para mostrar en el KPI
-    this.allNotificationsCounter = Object.values(this.allNotifications).reduce((sum, arr) => sum + arr.length, 0);
-    });
-    
+    this.allNotificationsCounter = this.calculateTotalNotifications();
+    })
   }
 
   flattenNotifications(
@@ -784,5 +784,9 @@ export class ChartComponent implements OnInit {
     }
     this.loadChartData();
     return this.allNotifications;
+  }
+  //calcula el total de notificaciones enviadas para mostrar en el KPI
+  calculateTotalNotifications(){
+    return Object.values(this.allNotifications).reduce((sum, arr) => sum + arr.length, 0);
   }
 }
