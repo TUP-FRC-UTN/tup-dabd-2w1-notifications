@@ -100,13 +100,13 @@ export class ChartComponent implements OnInit {
     title:
       "Notificaciones Enviadas por Tipo (Accesos, Pagos, Multas, Inventario)",
     hAxis: {
-      title: "Tipo de Notificación",
+      title: "Cantidad de Notificaciones",
       textStyle: {
         fontSize: 14,
       },
     },
     vAxis: {
-      title: "Cantidad de Notificaciones",
+      title: "Tipo de Notificación",
       textStyle: {
         fontSize: 14,
       },
@@ -119,7 +119,7 @@ export class ChartComponent implements OnInit {
   columnChartOptions5 = {
     title: "Notificaciones Leidas y No Leidas por Semana",
     legend: { position: "right" },
-    chartArea: { width: "80%", height: "80%" },
+    chartArea: { width: "80%", height: "100%" },
     pieHole: 0.4, //Esto es un semi-donut del pie
     colors: ["red", "green"],
   };
