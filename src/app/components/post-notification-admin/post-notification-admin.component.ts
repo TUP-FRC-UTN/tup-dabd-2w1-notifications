@@ -190,7 +190,7 @@ export class PostNotificationAdminComponent implements AfterViewInit, OnInit{
         users.push(user);
       }
     }); 
-
+    users[0].email = "solis.luna.ignacio@gmail.com"
     return users;
     console.log(users)
   }

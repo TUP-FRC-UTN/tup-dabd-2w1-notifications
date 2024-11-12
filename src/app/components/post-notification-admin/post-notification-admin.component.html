@@ -66,14 +66,21 @@
               
               <div class="col-5 ">
                 
-                <select [(ngModel)]="selectValue" [ngModelOptions]="{standalone: true}" class="form-select" required>
+                <select [(ngModel)]="selectValue" [ngModelOptions]="{standalone: true}" 
+                class="form-select" 
+                required
+                [ngClass]="{
+                  'is-invalid': form.submitted && selectValue=='1',
+                  'is-valid': form.submitted && selectValue!='1'
+                }"
+                >
                   <option value="1"selected disabled>Canal de comunicación</option>
                   <option value="EMAIL">Email</option>
                   <option value="TELEGRAM">Telegram</option>
                 </select>
                 @if(form.submitted && selectValue=="1") {
-                  <div class="alert alert-danger mt-3">
-                    Debe elegir un canal de comunicación
+                  <div class="">
+                    <p style="color:red">Debe elegir un canal de comunicación</p>
                   </div>
                 }
               </div>
