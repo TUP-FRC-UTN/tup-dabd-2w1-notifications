@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { NotificationService } from '../../service/notification.service';
 import { UserApiDTO } from '../../models/DTOs/UserApiDTO';
 import $ from 'jquery';
@@ -11,6 +11,7 @@ import { NotificationGeneralDTO } from '../../models/DTOs/NotificationGeneralDTO
 import { UserDTO } from '../../models/DTOs/UserDTO';
 import Swal from 'sweetalert2';
 import { ReactiveFormsModule, FormsModule, NgForm } from '@angular/forms';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-post-notification-admin',
@@ -20,7 +21,7 @@ import { ReactiveFormsModule, FormsModule, NgForm } from '@angular/forms';
   styles: ['.hidden {display:none;}'],
   styleUrl: './post-notification-admin.component.css'
 })
-export class PostNotificationAdminComponent implements AfterViewInit, OnInit{
+export class PostNotificationAdminComponent implements AfterViewInit, OnInit,OnDestroy{
 
  //Botones
  @Input() info: string = "";
@@ -34,8 +35,13 @@ export class PostNotificationAdminComponent implements AfterViewInit, OnInit{
 
   httpClient : HttpClient = inject(HttpClient);
   constructor(private notificationService: NotificationService) {}
+
   selectValue : string = "1";
   users : UserApiDTO[] = []
+  subscription = new Subscription()
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe()
+  }
   
   ngOnInit(): void {
     
@@ -139,7 +145,7 @@ export class PostNotificationAdminComponent implements AfterViewInit, OnInit{
 
       this.newNotification.channel = this.selectValue;
       
-      this.notificationService.postNotification(this.newNotification).subscribe({
+      const postNotification =this.notificationService.postNotification(this.newNotification).subscribe({
         next: (response: any) => {
           console.log('Notificacion enviada: ', response);
           Swal.fire({
@@ -149,11 +155,14 @@ export class PostNotificationAdminComponent implements AfterViewInit, OnInit{
             showConfirmButton: true,
             confirmButtonText: 'Aceptar'
           });
+          
         },
         error: (error) => {
           console.error('Error al enviar la notificacion: ', error);
         }
       });
+      this.subscription.add(postNotification)
+      
     }
     else {
       console.log("form invalid");

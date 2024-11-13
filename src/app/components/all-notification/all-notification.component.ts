@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { NotificationRegisterService } from "../../service/notification-register.service";
 import { Notifications } from "../../models/notifications";
 import { Access } from "../../models/access";
@@ -25,6 +25,7 @@ import { MockUserService } from "../../service/mockUser.service";
 import { AllNotifications } from "../../models/all-notifications";
 import { Inventory } from "../../models/inventory";
 import { SelectMultipleComponent } from "../select-multiple/select-multiple.component";
+import { Subscription } from "rxjs";
 
 @Component({
   selector: "app-all-notification",
@@ -39,7 +40,7 @@ import { SelectMultipleComponent } from "../select-multiple/select-multiple.comp
   templateUrl: "./all-notification.component.html",
   styleUrl: "./all-notification.component.css",
 })
-export class AllNotificationComponent implements OnInit {
+export class AllNotificationComponent implements OnInit,OnDestroy {
   //propiedades
   selected: string = "Todas";
   originalAccessList: Access[] = [];
@@ -56,6 +57,7 @@ export class AllNotificationComponent implements OnInit {
     generals: [],
     inventories: [],
   };
+  subscription = new Subscription()
   notificationTypes: any[] = [
     { value: "Multas", name: "Multas" },
     { value: "Accesos", name: "Accesos" },
@@ -73,7 +75,9 @@ export class AllNotificationComponent implements OnInit {
     this.fillTable();
     console.log(node);
   }
-
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe()
+  }
   //onInit y onDestroy
   ngOnInit(): void {
     this.table = $("#myTable").DataTable({
@@ -128,7 +132,6 @@ export class AllNotificationComponent implements OnInit {
   //injecciones
   constructor(
     private service: NotificationRegisterService,
-    private serviceUser: MockUserService,
     private datePipe: DatePipe
   ) {
     this.form = new FormGroup({
@@ -142,6 +145,7 @@ export class AllNotificationComponent implements OnInit {
       ]),
     });
   }
+
   //metodos
   llenarData() {
     const getSubscription = this.service.getData().subscribe({
@@ -160,6 +164,7 @@ export class AllNotificationComponent implements OnInit {
         alert("error al cargar las notifications");
       },
     });
+    this.subscription.add(getSubscription)
   }
   formatDate(date: Date): string {
     return this.datePipe.transform(date, "dd/MM/yyyy hh:mm:ss") || "";

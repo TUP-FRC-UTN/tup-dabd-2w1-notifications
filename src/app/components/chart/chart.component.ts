@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, EventEmitter, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, OnDestroy, OnInit, Output } from "@angular/core";
 import {
   FormBuilder,
   FormControl,
@@ -15,6 +15,7 @@ import { Fine } from "../../models/fine";
 import { Payments } from "../../models/payments";
 import { General } from "../../models/general";
 import { Inventory } from "../../models/inventory";
+import { Subscription } from "rxjs";
 
 @Component({
   selector: "app-chart",
@@ -23,7 +24,7 @@ import { Inventory } from "../../models/inventory";
   templateUrl: "./chart.component.html",
   styleUrls: ["./chart.component.css"],
 })
-export class ChartComponent implements OnInit {
+export class ChartComponent implements OnInit,OnDestroy{
   //output para mostrar el titulo de la pag
   @Output() sendTitle = new EventEmitter<string>();
 
@@ -56,6 +57,7 @@ export class ChartComponent implements OnInit {
   notificationsViernes: number = 0;
   notificationsSabado: number = 0;
   notificationsDomingo: number = 0;
+  subscritipon = new Subscription()
 
   allNotifications: AllNotifications = {
     fines: [],
@@ -81,6 +83,9 @@ export class ChartComponent implements OnInit {
       startDate: new FormControl(new Date()),
       endDate: new FormControl(new Date()),
     });
+  }
+  ngOnDestroy(): void {
+    this.subscritipon.unsubscribe()
   }
 
   columnChartOptions = {
@@ -149,7 +154,7 @@ export class ChartComponent implements OnInit {
   }
 
   loadKpiData(): void {
-    this.chartDataService.getData().subscribe((data: AllNotifications) => {
+     const getNotifications= this.chartDataService.getData().subscribe((data: AllNotifications) => {
       this.allNotifications = data;
       this.allNotifications = data;
       this.accessList = [...data.access];
@@ -196,6 +201,7 @@ export class ChartComponent implements OnInit {
     //calcular total de notificaciones enviadas para mostrar en el KPI
     this.allNotificationsCounter = this.calculateTotalNotifications();
     })
+    this.subscritipon.add(getNotifications)
   }
 
   flattenNotifications(

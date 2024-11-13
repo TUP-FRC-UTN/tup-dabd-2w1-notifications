@@ -1,4 +1,4 @@
-import { Component, ElementRef, Renderer2, EventEmitter, Output } from "@angular/core";
+import { Component, ElementRef, Renderer2, EventEmitter, Output, OnInit, OnDestroy } from "@angular/core";
 import { NotificationService } from "../../service/notification.service";
 import { CommonModule, DatePipe } from "@angular/common";
 import { Router, RouterModule } from "@angular/router";
@@ -10,6 +10,7 @@ import { General } from "../../models/general";
 import { Inventory } from "../../models/inventory";
 import { Payments } from "../../models/payments";
 import { Notifications } from "../../models/notifications";
+import { Subscription } from "rxjs";
 
 type Notification = Access | Fine | General | Payments;
 declare var bootstrap: any;
@@ -26,13 +27,14 @@ declare var bootstrap: any;
   templateUrl: "./navbar-notification.component.html",
   styleUrl: "./navbar-notification.component.css",
 })
-export class NavbarNotificationComponent {
+export class NavbarNotificationComponent implements OnInit,OnDestroy {
   private modalInstance: any;
 
   showNotificationsDropdown = false;
   notifications: Notification[] = [];
   userId: number = 1;
   selectedNotification: Notification | null = null;
+  subscription = new Subscription()
   
   @Output() sendTitle = new EventEmitter<string>();
   private clickListener: () => void;
@@ -83,7 +85,8 @@ export class NavbarNotificationComponent {
   ngOnDestroy(): void {
     if (this.modalInstance) {
       this.modalInstance.dispose();
-    }
+      this.subscription.unsubscribe()
+  }
     this.cleanupBackdrops();
     this.clickListener();  }
 
@@ -98,7 +101,7 @@ export class NavbarNotificationComponent {
   }
 
   fetchNotifications(): void {
-    this.notificationService.getData(this.userId).subscribe({
+    const getNotifications = this.notificationService.getData(this.userId).subscribe({
       next: (data:Notifications) => {
         this.notifications = [
           ...data.fines, 
@@ -108,8 +111,11 @@ export class NavbarNotificationComponent {
         ].sort((a, b) => 
           new Date(b.created_datetime).getTime() - new Date(a.created_datetime).getTime()
         );
-      }
+      },
+      error: (error) => console.log(error)
     })
+    this.subscription.add(getNotifications)
+    
 
 
   }
@@ -137,9 +143,12 @@ export class NavbarNotificationComponent {
 
   markAsRead(notification: Notification): void {    
     if (notification.tableName) {
-      this.notificationService.putData(notification.id, notification.tableName.toUpperCase()).subscribe({
-        next: () => this.fetchNotifications()
+      const putNotification = this.notificationService.putData(notification.id, notification.tableName.toUpperCase()).subscribe({
+        next: () => this.fetchNotifications(),
+        error: (error) => console.log(error)
       });
+
+      this.subscription.add(putNotification)
     }
   }
 
