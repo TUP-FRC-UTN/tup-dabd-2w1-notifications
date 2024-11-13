@@ -2,7 +2,7 @@ import { Component, ElementRef, Renderer2, EventEmitter, Output } from "@angular
 import { NotificationService } from "../../service/notification.service";
 import { CommonModule, DatePipe } from "@angular/common";
 import { Router, RouterModule } from "@angular/router";
-import { NotificationComponent } from "../notification/notification.component";
+
 import { AllNotifications } from "../../models/all-notifications";
 import { Access } from "../../models/access";
 import { Fine } from "../../models/fine";
@@ -18,7 +18,7 @@ type Notification = Access | Fine | General | Payments;
   standalone: true,
   imports: [
     CommonModule,
-    NotificationComponent,
+
     DatePipe,
     RouterModule,
   ],
@@ -29,6 +29,7 @@ export class NavbarNotificationComponent {
   showNotificationsDropdown = false;
   notifications: Notification[] = [];
   userId: number = 1;
+  selectedNotification: Notification | null = null;
   
   @Output() sendTitle = new EventEmitter<string>();
   private clickListener: () => void;
@@ -91,6 +92,11 @@ export class NavbarNotificationComponent {
   toggleNotificationsAndFetch(): void {
     this.toggleNotifications();
     this.fetchNotifications();
+  }
+
+  selectNotification(notification: Notification): void {
+    this.selectedNotification = notification;
+    this.markAsRead(notification);
   }
 
   markAsRead(notification: Notification): void {    
