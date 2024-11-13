@@ -12,6 +12,7 @@ import { Payments } from "../../models/payments";
 import { Notifications } from "../../models/notifications";
 
 type Notification = Access | Fine | General | Payments;
+declare var bootstrap: any;
 
 @Component({
   selector: "app-navbar-notification",
@@ -26,6 +27,8 @@ type Notification = Access | Fine | General | Payments;
   styleUrl: "./navbar-notification.component.css",
 })
 export class NavbarNotificationComponent {
+  private modalInstance: any;
+
   showNotificationsDropdown = false;
   notifications: Notification[] = [];
   userId: number = 1;
@@ -49,11 +52,40 @@ export class NavbarNotificationComponent {
 
   ngOnInit(): void {
     this.fetchNotifications();
+    this.initializeModal();
+  }
+
+  private initializeModal(): void {
+    const modalElement = document.getElementById('modalNotificationBell');
+    if (modalElement) {
+      this.modalInstance = new bootstrap.Modal(modalElement, {
+        backdrop: true,
+        keyboard: true
+      });
+
+      // Agregar listener para limpiar backdrops al cerrar
+      modalElement.addEventListener('hidden.bs.modal', () => {
+        this.cleanupBackdrops();
+      });
+    }
+  }
+
+  private cleanupBackdrops(): void {
+    // Remover todos los backdrops existentes
+    const backdrops = document.querySelectorAll('.modal-backdrop');
+    backdrops.forEach(backdrop => {
+      backdrop.remove();
+    });
+    // Remover la clase modal-open del body
+    document.body.classList.remove('modal-open');
   }
 
   ngOnDestroy(): void {
-    this.clickListener();
-  }
+    if (this.modalInstance) {
+      this.modalInstance.dispose();
+    }
+    this.cleanupBackdrops();
+    this.clickListener();  }
 
   showNotifications(): void {
     this.sendTitle.emit('Notificaciones');
@@ -97,7 +129,11 @@ export class NavbarNotificationComponent {
   selectNotification(notification: Notification): void {
     this.selectedNotification = notification;
     this.markAsRead(notification);
-  }
+    // Limpiar backdrops existentes antes de abrir el modal
+    this.cleanupBackdrops();
+    if (this.modalInstance) {
+      this.modalInstance.show();
+    }  }
 
   markAsRead(notification: Notification): void {    
     if (notification.tableName) {
