@@ -96,7 +96,12 @@ export class ChartComponent implements OnInit{
     columnChartOptions = {
       //title: "Notificaciones Enviadas por Día de la Semana",
       legend: { position: "right" },
-      chartArea: { width: "95%", height: "80%" },
+      chartArea: { width: "93%", height: "80%" },
+      animation: {
+        startup: true,
+        duration: 500,
+        easing: 'out',
+      },
       vAxis: {format:'0'},
       colors: [
         "#4285F4",
@@ -118,7 +123,6 @@ export class ChartComponent implements OnInit{
         },
       },
       vAxis: {
-        title: "Tipo de Notificación",
         textStyle: {
           fontSize: 14,
         },
@@ -834,8 +838,8 @@ export class ChartComponent implements OnInit{
       const readPercentage = (currentReadAmount / total) * 100;
       const unreadPercentage = (currentUnreadAmount / total) * 100;
   
-      this.kpiTotalRead = readPercentage
-      this.kpiTotalUnread = unreadPercentage
+      this.kpiTotalRead = parseFloat(readPercentage.toFixed(2))
+      this.kpiTotalUnread = parseFloat(unreadPercentage.toFixed(2))
       this.kpiGeneral = this.generalsList.length
     }
   
