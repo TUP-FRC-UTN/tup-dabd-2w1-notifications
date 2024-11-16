@@ -1,20 +1,14 @@
   <!-- Fila superior: Filtros -->
   <div class="container">
-    <div class="row col-12  border-0 rounded-2 p-2 shadow mb-4" style="flex: 0 0 ; justify-content: center; align-items: center;margin-top: 0px;" [formGroup]="filterForm">
-      <div class="col-3 mt-3">
-        <!-- <label for="startDate" style="font-size: 1.1em;">Periodo Desde</label> -->
+    <div class="row col-12  border-0 rounded-2 p-2 shadow mb-4" style="flex: 0 0 ; justify-content: center; align-items: center;margin-top: 6%;" [formGroup]="filterForm">
+      <div class="col-3">
         <input id="startDate" type="date" class="form-control form-control-sm rounded" formControlName="startDate" style="font-size:.9em;">
       </div>
-      <div class="col-3 mt-3">
-        <!-- comentado porque no sigue estandar -->
-        <!-- <label for="endDate" style="font-size: 1.1em;">Periodo Hasta</label> -->
+      <div class="col-3">
         <input id="endDate" type="date" class="form-control form-control-sm rounded" formControlName="endDate" style="font-size:.9em; ">
       </div>
-      <div class="col-6  justify-content-center align-items-center mt-4" style="gap: 10px;">
-        
-        
-        <button type="button" class="btn btn-primary bi bi-funnel-fill " title="filtrar" data-bs-toggle="modal" data-bs-target="#exampleModal"></button>
-
+      <div class="col-6 d-flex justify-content-end align-items-center" style="gap: 10px;">      
+        <button type="button" class="btn btn-primary bi bi-funnel-fill ms-2" title="filtrar" data-bs-toggle="modal" data-bs-target="#exampleModal"></button>
 
         <!-- Modal -->
         <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -54,7 +48,7 @@
           </div>
         </div>
         
-        <button type="button" class="btn btn-secondary bi bi-trash filterbutton" title="Limpiar Filtros"
+        <button type="button" class="btn btn-secondary bi bi-trash filterbutton ms-2" title="Limpiar Filtros"
       (click)="clearFiltered()"></button>
       </div>
     </div> 
@@ -68,7 +62,6 @@
           <h6 class="card-subtitle text-center text-secondary">Notificaciones Enviadas:</h6>
           <h3 class="text-center " style="font-size: 20px;"> {{allNotificationsCounter}}</h3>
         </div>
-        
       </div>
       <div class="card border-0 shadow-lg mb-3 hover-scale rounded-4">
         <div class="card-body p-2 rounded-4" style="background-color: #e7f1ff">
@@ -77,7 +70,6 @@
           <h6 class="card-subtitle text-center text-secondary">Notificaciones Generales Enviadas:</h6>
           <h3 class="text-center " style="font-size: 20px;">{{this.kpiGeneral}}</h3>
         </div>
-        
       </div>
       <div class="card shadow-sm flex-grow-1 card border-0 rounded-4 shadow-lg mb-3 hover-scale">
         <div class="card-body p-2 d-flex flex-column rounded-4" style="background-color: #d8ffedde">
@@ -85,7 +77,6 @@
           <h6 class="card-title text-center text-secondary">Notificaciones Leídas:</h6>
           <h3 class="text-center" style="font-size: 20px;"> {{this.kpiTotalRead}}%</h3>
         </div>
-        
       </div>
       <div class="card border-0 shadow-lg mb-3 hover-scale rounded-4">
         <div class="card-body p-2 rounded-4" style="background-color: #ffccd4">
@@ -93,19 +84,15 @@
           <h6 class="card-title text-center text-secondary">Notificaciones No Leídas:</h6>
           <h3 class="text-center" style="font-size: 20px;"> {{this.kpiTotalUnread}}%</h3>
         </div>
-        
       </div>
-
-      
     </div>
-    <div class="col-10 d-flex">
+  <div class="col-10 d-flex">
       <!-- CHARTS -->
     <div class="card shadow rounded-4 hover-scale col-8 mt-3" style="box-sizing: border-box; height: 31.85em;">
       <div class="">
         <div class="">
           <div class="card-body">
             <h6 class="card-title text-center mt-1" style="font-size: 1.2em; margin-bottom: 8px;">Notificaciones Enviadas por Día</h6>
-            
             <hr style="margin-top:2.1em">
             <google-chart
               [type]="columnChartType"
@@ -117,10 +104,8 @@
           </div>
         </div>
     </div>
-   
-    </div>
-    
-    
+    </div>  
+  
     <div class="col-4 d-flex flex-column mt-3" style="margin-left:1%;" >
       <div class="card shadow rounded-4 hover-scale" style="height:31.80em">
         <div class="card-body">
@@ -136,27 +121,7 @@
           </google-chart>
         </div>
       </div>
-      
       </div>
-      <!-- FIN CHARTS -->
     </div>
-    
     </div>
-    
-    
-        <!-- GRAFICO TORTA -->
-        <!-- <div class="card shadow-sm ">
-          <div class="card-body p-2 d-flex flex-column">
-            <h6 class="card-title text-center mb-3" style="font-size: 1.2em; margin-bottom: 5px;">Leídas y No Leídas</h6>
-            
-            <google-chart
-              [type]="c3ChartType"
-              [data]="columnChartData5"
-              [options]="columnChartOptions5"
-              class="w-100"
-              style="height: 100%;">
-            </google-chart>
-          </div>
-        </div> -->
-
-</div>
+  </div>

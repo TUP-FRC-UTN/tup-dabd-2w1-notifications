@@ -1,12 +1,6 @@
 import { CommonModule } from "@angular/common";
 import { Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild } from "@angular/core";
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-} from "@angular/forms";
+import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { GoogleChartsModule, ChartType } from "angular-google-charts";
 import { NotificationRegisterService } from "../../service/notification-register.service";
 import { AllNotifications } from "../../models/all-notifications";
@@ -593,9 +587,6 @@ export class ChartComponent implements OnInit{
          this.columnChartData = [["No hay datos para mostrar",0]]
       }
       else {
-        // this.columnChartData = Object.entries(notificationsByDayOfWeek).map(
-        //   ([day, count]) => [day, count]
-        // );
         console.log(notificationsByDayOfWeek);
         this.columnChartData = daysOfWeek.map(day => [
           day,
@@ -630,7 +621,6 @@ export class ChartComponent implements OnInit{
         notificationsPerMonth[dayOfWeek] += 1;
       });
   
-      // Contamos las notificaciones por tipo del mes
       this.allNotifications.access.forEach((a) => {
         const monthsOfYear = getMonthOfYear(new Date(a.created_datetime));
         notificationsPerMonth[monthsOfYear] += 1;
@@ -672,7 +662,6 @@ export class ChartComponent implements OnInit{
         notificationsPerHour[hoursOfDay] += 1;
       });
   
-      // Actualizamos el columnChartData sumando todas las notificaciones por día
   
       // Actualizamos el columnChartData sumando todas las notificaciones por mes
       this.columnChartData6 = monthsOfYear.map((month) => [
