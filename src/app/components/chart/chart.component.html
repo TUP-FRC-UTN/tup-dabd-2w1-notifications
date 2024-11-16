@@ -1,6 +1,6 @@
   <!-- Fila superior: Filtros -->
   <div class="container">
-    <div class="row col-12 sticky-section border-0 rounded-2 p-2 shadow mb-4" style="flex: 0 0 ; justify-content: center; align-items: center;margin-top: 0px;" [formGroup]="filterForm">
+    <div class="row col-12  border-0 rounded-2 p-2 shadow mb-4" style="flex: 0 0 ; justify-content: center; align-items: center;margin-top: 0px;" [formGroup]="filterForm">
       <div class="col-3 mt-3">
         <!-- <label for="startDate" style="font-size: 1.1em;">Periodo Desde</label> -->
         <input id="startDate" type="date" class="form-control form-control-sm rounded" formControlName="startDate" style="font-size:.9em;">
@@ -11,19 +11,49 @@
         <input id="endDate" type="date" class="form-control form-control-sm rounded" formControlName="endDate" style="font-size:.9em; ">
       </div>
       <div class="col-6  justify-content-center align-items-center mt-4" style="gap: 10px;">
-        <label style="font-size: 1.3em; margin-right: 10px;">Estado de Lectura:</label>
-        <div class="form-check form-check-inline mt-1">
-          <input class="form-check-input" type="radio" name="readStatus" checked value="Todas" formControlName="readStatus">
-          <label class="form-check-label" style="font-size: 1em;">Todas</label>
+        
+        
+        <button type="button" class="btn btn-primary bi bi-funnel-fill " title="filtrar" data-bs-toggle="modal" data-bs-target="#exampleModal"></button>
+
+
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Filtros</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body ">
+                <div class="col-6 ms-2" style="margin-top: 15px">
+                  <app-select-multiple 
+                    [options]="notificationTypes"
+                    [optionsChecked]="selectedNotificationType"
+                    (sendList)="recibirSeleccionadas($event)"
+                  ></app-select-multiple>
+                </div>
+                <hr>
+                <label style="font-size: 1.3em; margin-right: 10px;">Estado de Lectura:</label>
+                <div class="form-check form-check-inline mt-1">
+                  <input class="form-check-input" type="radio" name="readStatus" checked value="Todas" formControlName="readStatus">
+                  <label class="form-check-label" style="font-size: 1em;">Todas</label>
+                </div>
+                <div class="form-check form-check-inline mt-1">
+                  <input class="form-check-input" type="radio" name="readStatus" value="Leídas" formControlName="readStatus">
+                  <label class="form-check-label" style="font-size: 1em;">Leídas</label>
+                </div>
+                <div class="form-check form-check-inline mt-1">
+                  <input class="form-check-input" type="radio" name="readStatus" value="No Leídas" formControlName="readStatus">
+                  <label class="form-check-label" style="font-size: 1em;">No Leídas</label>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="form-check form-check-inline mt-1">
-          <input class="form-check-input" type="radio" name="readStatus" value="Leídas" formControlName="readStatus">
-          <label class="form-check-label" style="font-size: 1em;">Leídas</label>
-        </div>
-        <div class="form-check form-check-inline mt-1">
-          <input class="form-check-input" type="radio" name="readStatus" value="No Leídas" formControlName="readStatus">
-          <label class="form-check-label" style="font-size: 1em;">No Leídas</label>
-        </div>
+        
         <button type="button" class="btn btn-secondary bi bi-trash filterbutton" title="Limpiar Filtros"
       (click)="clearFiltered()"></button>
       </div>

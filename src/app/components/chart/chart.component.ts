@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, EventEmitter, OnDestroy, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild } from "@angular/core";
 import {
   FormBuilder,
   FormControl,
@@ -16,11 +16,12 @@ import { Payments } from "../../models/payments";
 import { General } from "../../models/general";
 import { Inventory } from "../../models/inventory";
 import { Subscription } from "rxjs";
+import { SelectMultipleComponent } from "../select-multiple/select-multiple.component";
 
 @Component({
   selector: "app-chart",
   standalone: true,
-  imports: [GoogleChartsModule, FormsModule, CommonModule, ReactiveFormsModule],
+  imports: [GoogleChartsModule, FormsModule, CommonModule, ReactiveFormsModule,SelectMultipleComponent],
   templateUrl: "./chart.component.html",
   styleUrls: ["./chart.component.css"],
 })
@@ -28,6 +29,17 @@ export class ChartComponent implements OnInit{
     //output para mostrar el titulo de la pag
     @Output() sendTitle = new EventEmitter<string>();
   
+    notificationTypes: any[] = [
+      { value: "Multas", name: "Multas" },
+      { value: "Accesos", name: "Accesos" },
+      { value: "Pagos", name: "Pagos" },
+      { value: "Generales", name: "Generales" },
+      {value: "Inventario",name: "Inventario"}
+    ];
+  
+    selectedNotificationType: string[] = [];
+  
+    dropdownSeleccionadas: any[] = [];
     kpiTotalRead = 0
     kpiTotalUnread = 0
     kpiGeneral = 0
@@ -148,9 +160,11 @@ export class ChartComponent implements OnInit{
       this.initializeDates();
   
       this.filterForm.valueChanges.subscribe(() => {
+        console.log(this.dropdownSeleccionadas)
         this.filterListByDate();
         this.filterListByStatus();
         this.allNotificationsCounter = this.calculateTotalNotifications();
+        this.loadChartData()
         console.log("testest")
       });
   
@@ -159,7 +173,6 @@ export class ChartComponent implements OnInit{
   
     loadKpiData(): void {
       this.chartDataService.getData().subscribe((data: AllNotifications) => {
-        this.allNotifications = data;
         this.allNotifications = data;
         this.accessList = [...data.access];
         this.finesList = [...data.fines];
@@ -420,6 +433,43 @@ export class ChartComponent implements OnInit{
       }
   
       return { month: maxMonth, count: maxCount };
+    }
+    
+
+    
+    filterData(){
+      if (this.dropdownSeleccionadas.length === 0) {
+
+        this.allNotifications.access = this.accessList
+        this.allNotifications.fines = this.finesList
+        this.allNotifications.payments = this.paymentsList
+        this.allNotifications.generals = this.generalsList
+        this.allNotifications.inventories = this.inventoryList
+        
+      } else {
+        this.dropdownSeleccionadas.forEach((e) => {
+          this.allNotifications.access = []
+          this.allNotifications.fines = []
+          this.allNotifications.payments = []
+          this.allNotifications.generals = []
+          this.allNotifications.inventories = []
+          if (e === "Accesos"){
+            this.allNotifications.access = this.accessList
+          }
+          if (e === "Multas"){
+            this.allNotifications.fines = this.finesList
+          }
+          if (e === "Pagos"){
+            this.allNotifications.payments = this.paymentsList
+          }
+          if (e === "Generales"){
+            this.allNotifications.generals = this.generalsList
+          }
+          if (e=== "Inventario"){
+            this.allNotifications.inventories = this.inventoryList
+          }
+        });
+      }        
     }
   
     loadChartData(): void {
@@ -823,8 +873,20 @@ export class ChartComponent implements OnInit{
     calculateTotalNotifications(){
       return Object.values(this.allNotifications).reduce((sum, arr) => sum + arr.length, 0);
     }
+    recibirSeleccionadas(node: any) {
+      this.dropdownSeleccionadas = node;
+      this.filterData();
+      this.loadChartData();
+      console.log(node);
+    }
+    @ViewChild(SelectMultipleComponent)
+    selectMultipleComponent!: SelectMultipleComponent;
     clearFiltered() {
+      this.selectedNotificationType = [],
       this.initializeDates()
+      if (this.selectMultipleComponent) {
+        this.selectMultipleComponent.clearSelection();
+      }
       this.filterForm.patchValue({
         readStatus: "Todas"
       })

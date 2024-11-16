@@ -85,6 +85,7 @@ export class NotificationComponent implements OnInit,OnDestroy{
   ];
 
   selectedNotificationType: string[] = [];
+  
 
   dropdownSeleccionadas: any[] = [];
 
