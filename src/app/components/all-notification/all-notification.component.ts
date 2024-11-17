@@ -216,23 +216,7 @@ export class AllNotificationComponent implements OnInit,OnDestroy {
 
       const badgeClass = getBadgeClass(tipo);
       const tipoPill = `<span class=" badge rounded-pill ${badgeClass}">${tipo}</span>`;
-      if (tipo === "Inventario") {
-        const row = this.table.row
-          .add([
-            this.formatDate(notification.created_datetime),
-            "Alice Jhonson",
-            "12345678",
-            tipoPill,
-            notification.subject,
-            notification.message,
-          ])
-          .draw(false);
-
-          // $(row).on('click', () => {
-            
-          //   this.openModal(this.selectedNotification);
-          // })
-      } else {
+      
         const row = this.table.row
           .add([
             this.formatDate(notification.created_datetime),
@@ -245,7 +229,7 @@ export class AllNotificationComponent implements OnInit,OnDestroy {
           .draw(false);
 
           // $(row).on('click', () => this.openModal(this.selectedNotification));
-      }
+      
     };
 
     if (this.dropdownSeleccionadas.length === 0) {

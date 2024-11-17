@@ -199,9 +199,7 @@ export class PostNotificationAdminComponent implements AfterViewInit, OnInit,OnD
         users.push(user);
       }
     }); 
-    users[0].email = "solis.luna.ignacio@gmail.com"
     return users;
-    console.log(users)
   }
 
   mapUserApiDTOToUserDTO(userApiArr : UserApiDTO[]) : UserDTO[]{
