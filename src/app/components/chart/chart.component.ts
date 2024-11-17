@@ -157,8 +157,6 @@ export class ChartComponent implements OnInit{
         console.log(this.dropdownSeleccionadas)
         this.filterListByDate();
         this.filterListByStatus();
-        this.allNotificationsCounter = this.calculateTotalNotifications();
-        this.loadChartData()
         console.log("testest")
       });
   
@@ -177,6 +175,7 @@ export class ChartComponent implements OnInit{
         
         this.loadChartData();
         this.calculatePercentages()
+        this.allNotificationsCounter = this.calculateTotalNotifications();
   
         const allNotifications = this.flattenNotifications(data);
         const groupedByDay = this.groupByDay(allNotifications);
@@ -211,8 +210,6 @@ export class ChartComponent implements OnInit{
         this.maxNotificationsHourCount = maxHour.count;
         this.maxNotificationsMonth = maxMonth.month;
         this.maxNotificationsMonthCount = maxMonth.count;
-      //calcular total de notificaciones enviadas para mostrar en el KPI
-      this.allNotificationsCounter = this.calculateTotalNotifications();
       console.log(this.columnChartData5);
       })
     }
