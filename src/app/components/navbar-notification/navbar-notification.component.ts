@@ -12,7 +12,7 @@ import { Payments } from "../../models/payments";
 import { Notifications } from "../../models/notifications";
 import { Subscription } from "rxjs";
 
-type Notification = Access | Fine | General | Payments;
+type Notification = Access | Fine | General | Payments | Inventory;
 declare var bootstrap: any;
 
 @Component({
@@ -108,6 +108,7 @@ export class NavbarNotificationComponent implements OnInit,OnDestroy {
           ...data.access, 
           ...data.payments, 
           ...data.generals,
+          ...data.inventories,
         ].sort((a, b) => 
           new Date(b.created_datetime).getTime() - new Date(a.created_datetime).getTime()
         );

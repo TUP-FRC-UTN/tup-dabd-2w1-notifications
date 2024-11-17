@@ -75,7 +75,7 @@ export class ChartComponent implements OnInit{
     };
     //contador para mostrar en KPI de Total de notificaciones enviadas
     allNotificationsCounter = 0;
-  
+    
     accessList: Access[] = [];
     finesList: Fine[] = [];
     paymentsList: Payments[] = [];
@@ -163,6 +163,7 @@ export class ChartComponent implements OnInit{
       });
   
       this.filterListByDate();
+      
     }
   
     loadKpiData(): void {
@@ -173,8 +174,9 @@ export class ChartComponent implements OnInit{
         this.paymentsList = [...data.payments];
         this.generalsList = [...data.generals];
         this.inventoryList = [...data.inventories];
-  
+        
         this.loadChartData();
+        this.calculatePercentages()
   
         const allNotifications = this.flattenNotifications(data);
         const groupedByDay = this.groupByDay(allNotifications);
@@ -735,7 +737,6 @@ export class ChartComponent implements OnInit{
           (f) => getMonthOfYear(new Date(f.created_datetime)) === day
         ).length,
       ]);
-      this.calculatePercentages()
     }
   
     makeBig(status: number) {
