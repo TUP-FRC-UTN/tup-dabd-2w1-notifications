@@ -46,7 +46,7 @@ export class PostNotificationAdminComponent implements AfterViewInit, OnInit,OnD
   ngOnInit(): void {
     
       const users = this.httpClient.get<UserApiDTO[]>
-      ("https://my-json-server.typicode.com/405786MoroBenjamin/users-responses/users")
+      ("http://localhost:8080/general/getUsers")
       .subscribe(response =>
         {this.users = response;
           this.fillTable();
@@ -148,6 +148,7 @@ export class PostNotificationAdminComponent implements AfterViewInit, OnInit,OnD
       const postNotification =this.notificationService.postNotification(this.newNotification).subscribe({
         next: (response: any) => {
           console.log('Notificacion enviada: ', response);
+          console.log(this.newNotification.users[0].telegramChatId);
           Swal.fire({
             title: '¡Notificación enviada!',
             text: 'La notificacion ha sido enviada correctamente.',
@@ -189,13 +190,14 @@ export class PostNotificationAdminComponent implements AfterViewInit, OnInit,OnD
         const rowData = $("#myTable").DataTable().row(this).data();
         let user: UserDTO = {
           //encontrar el ID del user a travez del DNI
-          id: component.users.find(user => user.dni == rowData[2])?.id || 1,
-          nombre: rowData.name,
-          apellido: "pepitosadsdasda",
-          dni: 9999999,
-          email: "dasadsasdasd@dasdasdas",
-          telegramChatId: 5869258860
+          id: component.users.find(user => user.dni == rowData[2])?.id || 4,
+          nombre: component.users.find(user => user.dni == rowData[2])?.name || "test",
+          apellido: component.users.find(user => user.dni == rowData[2])?.lastname || "test",
+          dni: component.users.find(user => user.dni == rowData[2])?.dni || 9999999,
+          email: component.users.find(user => user.dni == rowData[2])?.email || "test@test.com",
+          telegramChatId: component.users.find(user => user.dni == rowData[2])?.telegram_id || 801000,
         };
+        console.log("mira bro" +user.telegramChatId + " " + user.dni + " " + user.id);
         users.push(user);
       }
     }); 
@@ -228,8 +230,6 @@ export class PostNotificationAdminComponent implements AfterViewInit, OnInit,OnD
     
     let filteredUserDTOArray = this.mapUserApiDTOToUserDTO(filteredUsers);
     
-    filteredUserDTOArray[0].telegramChatId = 5869258860;
-    filteredUserDTOArray[0].email = "solis.luna.ignacio@gmail.com"
     console.log(filteredUserDTOArray);
     return filteredUserDTOArray;
     
