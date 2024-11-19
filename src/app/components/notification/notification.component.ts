@@ -167,10 +167,21 @@ export class NotificationComponent implements OnInit,OnDestroy{
         { width: "40%" },
         { width: "16%" },
       ],
-
+  
       columnDefs: [
         { targets: 0, className: "text-center align-middle" },
         { targets: 4, className: "text-center" },
+        {
+          // Truncar la descripción (columna 3, índice 3)
+          targets: 3, 
+          render: function (data: string) {
+            const maxLength = 80; // Máxima longitud de caracteres
+            if (data && data.length > maxLength) {
+              return data.substring(0, maxLength) + '...'; // Truncar y añadir '...'
+            }
+            return data; // Si el texto no es largo, devolverlo tal cual
+          }
+        },
       ],
       dom: '<"mb-3"t>' + '<"d-flex justify-content-between"lp>',
       select: { style: "os" },
@@ -294,6 +305,8 @@ export class NotificationComponent implements OnInit,OnDestroy{
 
       // Aplicar clase fw-bold si no está leída
       const boldClass = !notification.markedRead ? "fw-bold" : "";
+      
+      const truncatedDescription =  this.truncateText(notification.message, 50)
 
       table.row
         .add([
@@ -373,6 +386,12 @@ export class NotificationComponent implements OnInit,OnDestroy{
     console.log("filleando");
   }
 
+  truncateText(text: string, length: number): string {
+    if (!text) return ''; // Si no hay texto, devuelve una cadena vacía
+    if (text.length <= length) return text; // Si el texto no es largo, devuélvelo tal cual
+    return text.substring(0, length) + "..."; // Si es más largo, trúncalo y agrega "..."
+  }
+  
   formatDateForInput(date: string | null): string {
     if (!date) return "";
     const parsedDate = new Date(date);
