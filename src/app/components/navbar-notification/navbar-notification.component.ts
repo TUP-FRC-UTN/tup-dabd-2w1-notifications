@@ -10,7 +10,7 @@ import { General } from "../../models/general";
 import { Inventory } from "../../models/inventory";
 import { Payments } from "../../models/payments";
 import { Notifications } from "../../models/notifications";
-import { Subscription } from "rxjs";
+import { count, Subscription } from "rxjs";
 
 type Notification = Access | Fine | General | Payments | Inventory;
 declare var bootstrap: any;
@@ -51,10 +51,28 @@ export class NavbarNotificationComponent implements OnInit,OnDestroy {
       }
     });
   }
+  lstNotification:Notifications = {
+    fines: [],
+    access: [],
+    payments: [],
+    generals: [],
+    inventories: []
+  };
+  counterNotificationsNoRead =0
+  NotificationsNoRead(){
+    this.counterNotificationsNoRead =0
+    this.notifications.forEach(a=> {
+      if(a.markedRead ===false){
+        this.counterNotificationsNoRead+=1
+      }
+    })
+    console.log(this.counterNotificationsNoRead)
+  }
 
   ngOnInit(): void {
     this.fetchNotifications();
     this.initializeModal();
+
   }
 
   private initializeModal(): void {
@@ -112,6 +130,7 @@ export class NavbarNotificationComponent implements OnInit,OnDestroy {
         ].sort((a, b) => 
           new Date(b.created_datetime).getTime() - new Date(a.created_datetime).getTime()
         );
+        this.NotificationsNoRead()
       },
       error: (error) => console.log(error)
     })
