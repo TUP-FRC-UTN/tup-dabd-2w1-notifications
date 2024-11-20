@@ -5,6 +5,8 @@ import { NavbarNotificationComponent } from '../navbar-notification/navbar-notif
 import { SideButton } from '../../models/SideButton';
 import { MockUserService } from '../../service/mockUser.service';
 
+declare var bootstrap: any;
+
 @Component({
   selector: 'app-users-navbar',
   standalone: true,
@@ -170,5 +172,12 @@ export class UsersNavbarComponent {
   selectRole(role : string){
     this.actualRole = role;
     this.serviceUser.setRol(role)
+  }
+
+  
+  openModal() {
+    console.log("Click")
+    const modal = new bootstrap.Modal(document.getElementById('infoModal')!);
+    modal.show();
   }
 }

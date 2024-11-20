@@ -12,6 +12,8 @@ import { Inventory } from "../../models/inventory";
 import { Subscription } from "rxjs";
 import { SelectMultipleComponent } from "../select-multiple/select-multiple.component";
 
+declare var bootstrap: any;
+
 @Component({
   selector: "app-chart",
   standalone: true,
