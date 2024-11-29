@@ -14,7 +14,7 @@ export const routes: Routes = [
     path: "home", component: UsersNavbarComponent,
     children: [
       { path: "chart", component: ChartComponent },
-      { path: "notifications", component: NotificationComponent },
+      { path: "notifications/show", component: NotificationComponent },
       {
         path: "admin-post-notification",
         component: PostNotificationAdminComponent,
